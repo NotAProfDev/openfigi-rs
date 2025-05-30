@@ -1,0 +1,6 @@
+# https://rust-lang.github.io/rustfmt/
+error_on_line_overflow = true
+error_on_unformatted = true
+newline_style = "Unix"
+style_edition = "2024"
+use_field_init_shorthand = true

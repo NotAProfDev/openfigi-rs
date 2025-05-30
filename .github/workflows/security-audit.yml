@@ -1,0 +1,34 @@
+name: Security audit
+on:
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+  push:
+    branches: [ main ]
+    paths: 
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  security_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch repository
+        uses: actions/checkout@v4
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+      # Generate Cargo.lock, as it's best practice to exclude it from version control in libraries
+      - name: Generate Cargo.lock
+        if: hashFiles('Cargo.lock') == ''
+        run: cargo generate-lockfile
+      - name: Check for vulnerabilities
+        run: cargo audit

@@ -1,0 +1,53 @@
+name: 📖 Documentation Improvement
+description: Suggest improvements or report issues with documentation
+title: "[Docs] <short description>"
+labels: [documentation, needs-triage]
+assignees: [NotAProfDev]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve our documentation!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the documentation issue or suggestion.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise description of the documentation issue or suggestion.
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where is the documentation issue? (file, section, etc)
+    validations:
+      required: false
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+      description: What would you like to see improved or changed? If possible, provide a minimal example or specific text to add or change.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the documentation issue here. You may also attach relevant logs, screenshots, or crash dumps if available.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/NotAProfDev/openfigi-rs/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

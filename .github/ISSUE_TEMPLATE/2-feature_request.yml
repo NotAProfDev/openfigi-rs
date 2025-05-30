@@ -1,0 +1,62 @@
+name: ✨ Feature Request
+description: Suggest an idea for this project
+title: "[Feature] <short description>"
+labels: [enhancement, needs-triage]
+assignees: [NotAProfDev]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the feature you are requesting.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise description of the feature you are requesting.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Please explain why this feature would be useful.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution or Minimal Example
+      description: Describe the solution you'd like to see. If possible, include a minimal code example or mockup.
+      placeholder: |
+        (Optional) Paste a minimal code snippet or example here
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or features?
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the feature request here. You may also attach relevant logs, screenshots, or mockups if available.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/NotAProfDev/openfigi-rs/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

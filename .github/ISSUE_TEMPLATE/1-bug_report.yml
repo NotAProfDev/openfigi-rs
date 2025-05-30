@@ -1,0 +1,77 @@
+name: 🐛 Bug Report
+description: File a bug report to help us improve
+title: "[Bug] <short description>"
+labels: [bug, needs-triage]
+assignees: [NotAProfDev]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps or Minimal Reproducible Example
+      description: |
+        Please provide steps to reproduce the behavior. If possible, include a small code snippet or minimal example that reliably reproduces the bug.
+      placeholder: |
+        1. Go to '...'
+        2. Run '...'
+        3. See error
+        4. (Optional) Paste a minimal code snippet here
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide information about your environment (OS, Rust version, etc).
+      placeholder: |
+        - OS: [e.g. Linux, macOS, Windows]
+        - Rust version: [e.g. 1.70.0]
+        - openfigi-rs version: [e.g. 0.1.0]
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here. You may also attach relevant logs, screenshots, or crash dumps if available.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/NotAProfDev/openfigi-rs/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

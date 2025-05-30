@@ -1,0 +1,49 @@
+name: ❓Question
+description: Ask a question about using or developing openfigi-rs
+title: "[Question] <short description>"
+labels: [question, needs-triage]
+assignees: [NotAProfDev]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your question!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue or discussion for this?
+      description: Please search to see if your question has already been answered in issues or discussions.
+      options:
+        - label: I have searched the existing issues and discussions
+          required: true
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise summary of your question.
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details or Minimal Example
+      description: |
+        Please provide as much detail as possible about your question. If applicable, include a small code snippet or minimal example to illustrate your question.
+      placeholder: |
+        (Optional) Paste a minimal code snippet or example here
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Add any other context or background information that might help answer your question. You may also attach relevant logs, screenshots, or crash dumps if available.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/NotAProfDev/openfigi-rs/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
