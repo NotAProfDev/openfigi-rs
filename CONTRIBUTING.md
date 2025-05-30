@@ -1,6 +1,6 @@
-# Contributing to gleif-rs
+# Contributing to openfigi-rs
 
-Thank you for your interest in contributing to gleif-rs! ❤️ Your support and collaboration are greatly appreciated.
+Thank you for your interest in contributing to openfigi-rs! ❤️ Your support and collaboration are greatly appreciated.
 
 ## How to Contribute
 
@@ -28,4 +28,4 @@ We are committed to fostering a respectful, inclusive, and welcoming community. 
 
 ---
 
-Thank you for your contributions—your efforts help make gleif-rs even better! 🚀
+Thank you for your contributions—your efforts help make openfigi-rs even better! 🚀
