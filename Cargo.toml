@@ -1,6 +1,46 @@
 [package]
 name = "openfigi-rs"
-version = "0.1.0"
+description = "A Rust client for interacting with the OpenFIGI API and parsing financial data."
+version = "0.2.1"
 edition = "2024"
+license = "MIT"
+repository = "https://github.com/NotAProfDev/openfigi-rs"
+homepage = "https://github.com/NotAProfDev/openfigi-rs"
+documentation = "https://docs.rs/openfigi-rs"
+authors = ["NotAProfDev <84450364+NotAProfDev@users.noreply.github.com>"]
+readme = "README.md"
+categories = ["api-bindings", "data-structures", "finance"]
+keywords = ["openfigi", "symbology", "api", "client", "finance"]
 
 [dependencies]
+chrono = { version = "^0.4", features = ["serde"] }
+reqwest = { version = "^0.12", features = ["json"] }
+reqwest-middleware = { version = "^0.4", features = ["json"] }
+serde = { version = "^1.0", features = ["derive"] }
+serde_json = "^1.0"
+url = "^2.5"
+
+[dev-dependencies]
+reqwest-retry = "^0.7"
+tokio = { version = "^1.45", features = ["full"] }
+
+# https://doc.rust-lang.org/cargo/reference/profiles.html
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
+strip = true
+
+# https://doc.rust-lang.org/rustc/lints/listing/allowed-by-default.html#allowed-by-default-lints
+[lints.rust]
+missing_docs = "warn"
+non_ascii_idents = "warn"
+unsafe_code = "warn"
+unsafe_op_in_unsafe_fn = "warn"
+
+# https://rust-lang.github.io/rust-clippy/master/
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+undocumented_unsafe_blocks = "warn"
+multiple_unsafe_ops_per_block = "warn"
+allow_attributes = "warn"
