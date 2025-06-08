@@ -196,7 +196,6 @@ impl OpenFIGIClientBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     #[must_use]
-    #[inline]
     pub fn api_key(mut self, key: impl Into<Box<str>>) -> Self {
         self.api_key = Some(key.into());
         self
@@ -224,7 +223,6 @@ impl OpenFIGIClientBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     #[must_use]
-    #[inline]
     pub fn reqwest_client(mut self, client: ReqwestClient) -> Self {
         self.reqwest_client = Some(client);
         self
@@ -252,7 +250,6 @@ impl OpenFIGIClientBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     #[must_use]
-    #[inline]
     pub fn middleware_client(mut self, client: ClientWithMiddleware) -> Self {
         self.middleware_client = Some(client);
         self
@@ -279,7 +276,6 @@ impl OpenFIGIClientBuilder {
     ///     .build()?;
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    #[inline]
     pub fn build(self) -> Result<OpenFIGIClient> {
         // Determine the client to use (middleware_client takes precedence)
         let client = match (self.middleware_client, self.reqwest_client) {

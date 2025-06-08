@@ -120,7 +120,6 @@ impl fmt::Display for OpenFIGIError {
 }
 
 impl error::Error for OpenFIGIError {
-    #[inline]
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Self::ReqwestError(e) => Some(e),
@@ -325,7 +324,6 @@ impl OpenFIGIError {
     }
 
     /// Creates a new `ResponseError` with the given parameters.
-    #[inline]
     pub(crate) fn response_error(
         status: reqwest::StatusCode,
         content: impl Into<Box<str>>,
@@ -339,7 +337,6 @@ impl OpenFIGIError {
     }
 
     /// Creates a new `OtherError` with the given kind and message.
-    #[inline]
     pub(crate) fn other_error(kind: OtherErrorKind, message: impl Into<Box<str>>) -> Self {
         Self::OtherError {
             kind,

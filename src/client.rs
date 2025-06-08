@@ -255,7 +255,6 @@ impl OpenFIGIClient {
     }
 
     /// Extract rate limit information from response headers.
-    #[inline]
     fn extract_rate_limit_info(headers: &reqwest::header::HeaderMap) -> Option<String> {
         let remaining = headers
             .get("X-RateLimit-Remaining")
@@ -273,7 +272,6 @@ impl OpenFIGIClient {
     }
 
     /// Format error message based on status code and context.
-    #[inline]
     fn format_error_message(
         status: reqwest::StatusCode,
         url: &Url,
