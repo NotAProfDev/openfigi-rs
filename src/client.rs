@@ -27,13 +27,14 @@
 //! use openfigi_rs::client::OpenFIGIClient;
 //! use reqwest::Client;
 //! use reqwest_middleware::ClientWithMiddleware;
+//! use url::Url;
 //!
 //! // Example custom HTTP client with middleware
 //! let http_client = ClientWithMiddleware::default();
 //!
 //! let client = OpenFIGIClient::new_with_components(http_client,
 //!     Url::parse("https://api.openfigi.com/v3/").expect("Invalid URL"),
-//!     "api_key"
+//!     Some("api_key".into())
 //! );
 //! ```
 //!

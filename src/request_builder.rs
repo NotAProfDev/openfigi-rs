@@ -18,13 +18,16 @@
 //! # use reqwest::Method;
 //! # use serde_json::json;
 //! #
+//! # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! let client = OpenFIGIClient::new();
 //!
 //! // POST with JSON body
-//! let result: serde_json::Value = OpenFIGIRequestBuilder::new(client, Method::POST, "mapping")
+//! let result: serde_json::Value = OpenFIGIRequestBuilder::new(client, Method::POST, "/mapping")
 //!     .body(&json!({"idType": "ID_ISIN", "idValue": "US4592001014"}))
 //!     .send_json()
 //!     .await?;
+//! # Ok(())
+//! # }
 //! ```
 
 use crate::client::OpenFIGIClient;
@@ -49,9 +52,9 @@ use serde::Serialize;
 /// # use openfigi_rs::client::OpenFIGIClient;
 /// # use reqwest::Method;
 /// # use serde_json::json;
-///
+/// #
 /// let client = OpenFIGIClient::new();
-/// let builder = OpenFIGIRequestBuilder::new(client, Method::POST, "mapping")
+/// let builder = OpenFIGIRequestBuilder::new(client, Method::POST, "/mapping")
 ///     .body(&json!({"idType": "ID_ISIN", "idValue": "US4592001014"}));
 /// ```
 pub struct OpenFIGIRequestBuilder {
@@ -88,10 +91,15 @@ impl OpenFIGIRequestBuilder {
     /// # Example
     ///
     /// ```rust
+    /// # use openfigi_rs::request_builder::OpenFIGIRequestBuilder;
+    /// # use openfigi_rs::client::OpenFIGIClient;
+    /// # use reqwest::Method;
     /// # use serde_json::json;
-    /// # // Placeholder for actual usage
+    /// #
     /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// let builder = request_builder.try_body(&json!({"key": "value"}))?;
+    /// let client = OpenFIGIClient::new();
+    /// let builder = OpenFIGIRequestBuilder::new(client, Method::POST, "/mapping")
+    ///     .try_body(&json!({"key": "value"}))?;
     /// # Ok(())
     /// # }
     /// ```
@@ -109,9 +117,14 @@ impl OpenFIGIRequestBuilder {
     /// # Example
     ///
     /// ```rust
+    /// # use openfigi_rs::request_builder::OpenFIGIRequestBuilder;
+    /// # use openfigi_rs::client::OpenFIGIClient;
+    /// # use reqwest::Method;
     /// # use serde_json::json;
-    /// # // Placeholder for actual usage
-    /// let builder = request_builder.body(&json!({"key": "value"}));
+    /// #
+    /// let client = OpenFIGIClient::new();
+    /// let builder = OpenFIGIRequestBuilder::new(client, Method::POST, "/mapping")
+    ///     .body(&json!({"key": "value"}));
     /// ```
     #[must_use]
     pub fn body<T: Serialize>(mut self, body: &T) -> Self {
@@ -126,10 +139,15 @@ impl OpenFIGIRequestBuilder {
     /// # Example
     ///
     /// ```rust
+    /// # use openfigi_rs::request_builder::OpenFIGIRequestBuilder;
+    /// # use openfigi_rs::client::OpenFIGIClient;
+    /// # use reqwest::Method;
     /// # use serde_json::json;
-    /// # // Placeholder for actual usage
+    /// #
+    /// let client = OpenFIGIClient::new();
     /// let json_value = json!({"key": "value"});
-    /// let builder = request_builder.json_body(json_value);
+    /// let builder = OpenFIGIRequestBuilder::new(client, Method::POST, "/mapping")
+    ///     .json_body(json_value);
     /// ```
     #[must_use]
     pub fn json_body(mut self, body: serde_json::Value) -> Self {
@@ -148,9 +166,17 @@ impl OpenFIGIRequestBuilder {
     /// # Example
     ///
     /// ```rust
-    /// # // Placeholder for actual usage
-    /// let response = request_builder.send().await?;
+    /// # use openfigi_rs::request_builder::OpenFIGIRequestBuilder;
+    /// # use openfigi_rs::client::OpenFIGIClient;
+    /// # use reqwest::Method;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = OpenFIGIClient::new();
+    /// let response = OpenFIGIRequestBuilder::new(client, Method::GET, "/mapping")
+    ///     .send().await?;
     /// println!("Status: {}", response.status());
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn send(self) -> Result<reqwest::Response> {
         // Construct the full URL - this is fallible
@@ -189,9 +215,17 @@ impl OpenFIGIRequestBuilder {
     /// # Example
     ///
     /// ```rust
+    /// # use openfigi_rs::request_builder::OpenFIGIRequestBuilder;
+    /// # use openfigi_rs::client::OpenFIGIClient;
+    /// # use reqwest::Method;
     /// # use serde_json::Value;
-    /// # // Placeholder for actual usage
-    /// let data: Value = request_builder.send_json().await?;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = OpenFIGIClient::new();
+    /// let data: Value = OpenFIGIRequestBuilder::new(client, Method::GET, "/mapping")
+    ///     .send_json().await?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn send_json<T: serde::de::DeserializeOwned>(self) -> Result<T> {
         let client = self.client.clone();

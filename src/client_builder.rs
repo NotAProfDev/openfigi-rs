@@ -77,7 +77,7 @@
 //! // Build OpenFIGI client
 //! let client = OpenFIGIClientBuilder::new()
 //!     .base_url("https://api.openfigi.com/v3")
-//!     .api_key(std::env::var("OPENFIGI_API_KEY")?)
+//!     .api_key("your-api-key")
 //!     .middleware_client(middleware_client)
 //!     .build()?;
 //! # Ok::<(), Box<dyn std::error::Error>>(())
