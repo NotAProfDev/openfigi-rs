@@ -114,7 +114,7 @@ pub struct FilterData {
     /// This count represents the complete result set size, not just the
     /// number of results in the current page. Useful for implementing
     /// pagination controls and progress indicators.
-    pub total: usize,
+    pub total: Option<usize>,
 }
 
 impl FigiData for FilterData {
@@ -140,7 +140,7 @@ impl FigiData for FilterData {
     /// The filter endpoint always provides the total count, so this method always
     /// returns `Some(total)` rather than `None`.
     fn total_results(&self) -> Option<usize> {
-        Some(self.total)
+        self.total
     }
 }
 

@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/NotAProfDev/openfigi-rs/workflows/CI/badge.svg)](https://github.com/NotAProfDev/openfigi-rs/actions)
 
+> **ℹ️ API Notice:** The API is subject to change in the future and is not yet stable.
+
 A high-performance Rust client library for the [OpenFIGI API](https://www.openfigi.com/api), providing type-safe access to financial instrument identification and mapping services.
 
 OpenFIGI is Bloomberg's open symbology initiative that provides standardized identification for financial instruments across asset classes and markets worldwide.
