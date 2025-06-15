@@ -70,24 +70,6 @@ impl OpenFIGIRequestBuilder {
         }
     }
 
-    /// Sets the request body using fallible JSON serialization.
-    ///
-    /// This method attempts to serialize the provided data to JSON and returns an error
-    /// if serialization fails. Use this when you need to handle serialization errors
-    /// explicitly, especially with complex data structures that might fail to serialize.
-    ///
-    /// # Arguments
-    ///
-    /// * `body` - The data to serialize as the request body
-    ///
-    /// # Errors
-    ///
-    /// Returns [`OpenFIGIError::SerdeError`] if JSON serialization fails.
-    pub(crate) fn try_body<T: Serialize>(mut self, body: &T) -> Result<Self> {
-        self.body = Some(serde_json::to_value(body)?);
-        Ok(self)
-    }
-
     /// Sets the request body using JSON serialization.
     ///
     /// This is a convenience method that serializes the provided data to JSON.
@@ -104,20 +86,6 @@ impl OpenFIGIRequestBuilder {
     /// for error handling instead of panicking.
     pub(crate) fn body<T: Serialize>(mut self, body: &T) -> Self {
         self.body = Some(serde_json::to_value(body).expect("Failed to serialize body"));
-        self
-    }
-
-    /// Sets the request body from a pre-serialized JSON value.
-    ///
-    /// This method accepts a `serde_json::Value` directly, avoiding the serialization
-    /// step. It's more efficient than [`body()`](Self::body) when you already have
-    /// a JSON value, such as when building dynamic JSON structures.
-    ///
-    /// # Arguments
-    ///
-    /// * `body` - A pre-serialized JSON value to use as the request body
-    pub(crate) fn json_body(mut self, body: serde_json::Value) -> Self {
-        self.body = Some(body);
         self
     }
 
@@ -168,66 +136,6 @@ impl OpenFIGIRequestBuilder {
         // Execute the request with proper error conversion
         request_builder.send().await.map_err(OpenFIGIError::from)
     }
-
-    /// Executes the HTTP request and parses the response as JSON.
-    ///
-    /// This is a convenience method that combines [`send()`](Self::send) with automatic
-    /// JSON parsing and comprehensive error handling. It handles HTTP status codes,
-    /// provides detailed error context, and deserializes successful responses.
-    ///
-    /// # Process
-    ///
-    /// 1. Executes the HTTP request via [`send()`](Self::send)
-    /// 2. Checks the HTTP status code and handles errors
-    /// 3. Parses response body as JSON into the specified type
-    /// 4. Provides detailed error context for failures
-    ///
-    /// # Type Parameter
-    ///
-    /// * `T` - The type to deserialize the JSON response into. Must implement `DeserializeOwned`.
-    ///
-    /// # Errors
-    ///
-    /// Returns errors for:
-    /// - All errors from [`send()`](Self::send) (network, URL construction, etc.)
-    /// - HTTP status errors (4xx, 5xx) with OpenFIGI-specific context
-    /// - JSON parsing failures when response body is malformed
-    /// - Response body reading errors
-    pub(crate) async fn send_json<T: serde::de::DeserializeOwned>(self) -> Result<T> {
-        let client = self.client.clone();
-        let response = self.send().await?;
-        client.parse_response(response).await
-    }
-
-    /// Returns a reference to the underlying OpenFIGI client.
-    ///
-    /// Provides access to the client instance used for configuration and execution.
-    /// Useful for accessing client configuration or for advanced usage scenarios.
-    pub(crate) fn client(&self) -> &OpenFIGIClient {
-        &self.client
-    }
-
-    /// Returns the HTTP method configured for this request.
-    #[must_use]
-    pub(crate) fn method(&self) -> &Method {
-        &self.method
-    }
-
-    /// Returns the API endpoint path for this request.
-    ///
-    /// This is the path relative to the base URL that will be used for the request.
-    #[must_use]
-    pub(crate) fn path(&self) -> &str {
-        &self.path
-    }
-
-    /// Returns `true` if a request body has been configured.
-    ///
-    /// This method can be used to check whether a body was set via [`body()`](Self::body),
-    /// [`try_body()`](Self::try_body), or [`json_body()`](Self::json_body).
-    pub(crate) fn has_body(&self) -> bool {
-        self.body.is_some()
-    }
 }
 
 #[cfg(test)]
@@ -236,6 +144,27 @@ mod tests {
     use crate::client::OpenFIGIClient;
     use reqwest::Method;
     use serde_json::json;
+
+    impl OpenFIGIRequestBuilder {
+        /// Returns the HTTP method configured for this request.
+        fn method(&self) -> &Method {
+            &self.method
+        }
+
+        /// Returns the API endpoint path for this request.
+        ///
+        /// This is the path relative to the base URL that will be used for the request.
+        fn path(&self) -> &str {
+            &self.path
+        }
+
+        /// Returns `true` if a request body has been configured.
+        ///
+        /// This method can be used to check whether a body was set.
+        fn has_body(&self) -> bool {
+            self.body.is_some()
+        }
+    }
 
     fn create_test_client() -> OpenFIGIClient {
         OpenFIGIClient::new()
@@ -262,35 +191,12 @@ mod tests {
     }
 
     #[test]
-    fn test_request_builder_try_body_success() {
-        let client = create_test_client();
-        let test_data = json!({"key": "value"});
-
-        let result = OpenFIGIRequestBuilder::new(client, Method::POST, "test").try_body(&test_data);
-
-        assert!(result.is_ok());
-        assert!(result.unwrap().has_body());
-    }
-
-    #[test]
-    fn test_request_builder_json_body() {
-        let client = create_test_client();
-        let test_data = json!({"key": "value"});
-
-        let builder =
-            OpenFIGIRequestBuilder::new(client, Method::POST, "test").json_body(test_data);
-
-        assert!(builder.has_body());
-    }
-
-    #[test]
     fn test_request_builder_getters() {
         let client = create_test_client();
         let builder = OpenFIGIRequestBuilder::new(client.clone(), Method::PUT, "api/test");
 
         assert_eq!(builder.method(), &Method::PUT);
         assert_eq!(builder.path(), "api/test");
-        assert_eq!(builder.client().base_url(), client.base_url());
     }
 
     #[test]
