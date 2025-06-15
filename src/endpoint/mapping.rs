@@ -369,16 +369,15 @@ impl OpenFIGIClient {
     /// ```rust
     /// use openfigi_rs::client::OpenFIGIClient;
     /// use openfigi_rs::model::enums::IdType;
-    /// use serde_json::json;
     ///
     /// let client = OpenFIGIClient::new();
-    /// let builder = client.mapping(IdType::IdIsin, json!("US4592001014"));
+    /// let builder = client.mapping(IdType::IdIsin, "US4592001014");
     /// ```
     #[must_use]
-    pub fn mapping(
+    pub fn mapping<T: Into<serde_json::Value>>(
         &self,
         id_type: IdType,
-        id_value: serde_json::Value,
+        id_value: T,
     ) -> SingleMappingRequestBuilder {
         SingleMappingRequestBuilder {
             client: self.clone(),
@@ -419,7 +418,7 @@ mod tests {
 
     fn create_test_client_with_api_key() -> OpenFIGIClient {
         OpenFIGIClient::builder()
-            .api_key("test_api_key")
+            .api_key("test_key")
             .build()
             .expect("Failed to create test client")
     }

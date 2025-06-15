@@ -247,11 +247,11 @@ impl OpenFIGIClient {
     /// use openfigi_rs::client::OpenFIGIClient;
     ///
     /// let client = OpenFIGIClient::builder()
-    ///     .api_key("test-key")
+    ///     .api_key("your-api-key")
     ///     .build()
     ///     .unwrap();
     ///     
-    /// assert_eq!(client.api_key(), Some("test-key"));
+    /// assert_eq!(client.api_key(), Some("your-api-key"));
     /// ```
     #[must_use]
     pub fn api_key(&self) -> Option<&str> {
