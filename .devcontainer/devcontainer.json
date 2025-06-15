@@ -51,7 +51,8 @@
 				"vadimcn.vscode-lldb",
 				"foxundermoon.shell-format",
 				"davidanson.vscode-markdownlint",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"mikestead.dotenv"
 			]
 		}
 	}

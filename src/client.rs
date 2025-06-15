@@ -1,14 +1,17 @@
-//! # `OpenFIGI` API Client
+//! HTTP client for interacting with the OpenFIGI API.
 //!
-//! Main HTTP client for interacting with the [OpenFIGI API](https://www.openfigi.com/api).
-//! Provides simple instantiation with sensible defaults or flexible configuration via builder pattern.
+//! This module provides the main [`OpenFIGIClient`] for making requests to the
+//! [OpenFIGI API](https://www.openfigi.com/api). The client is designed for both
+//! simple usage with sensible defaults and advanced configuration through the builder pattern.
 //!
 //! ## Key Features
 //!
-//! - Automatic rate limit detection and error context
-//! - Connection pooling and efficient resource management  
-//! - Middleware support for retries, logging, and observability
-//! - Thread-safe and optimized for sharing across async tasks
+//! - **Simple instantiation** with automatic environment variable detection
+//! - **Rate limit handling** with automatic detection and error context
+//! - **Connection pooling** and efficient resource management  
+//! - **Middleware support** for retries, logging, and observability
+//! - **Thread-safe** and optimized for sharing across async tasks
+//! - **Comprehensive error handling** with OpenFIGI-specific error messages
 //!
 //! ## Examples
 //!
@@ -55,25 +58,39 @@ use reqwest_middleware::ClientWithMiddleware;
 use serde::de::DeserializeOwned;
 use url::Url;
 
-/// HTTP client for the `OpenFIGI` API.
+/// HTTP client for making requests to the OpenFIGI API.
 ///
-/// Provides a high-level interface for making requests to the `OpenFIGI` service.
-/// Optimized for performance with connection pooling, cheap cloning, and middleware support.
+/// This client provides a high-level interface for interacting with the OpenFIGI service,
+/// featuring automatic authentication, error handling, and connection management. The client
+/// is designed to be cheaply cloneable and thread-safe for use across async tasks.
 ///
-/// ## Memory Efficiency
+/// ## Authentication
 ///
-/// Uses `Box<str>` for string storage to minimize heap allocations and improve
-/// memory efficiency compared to `String`.
+/// The client supports API key authentication, which sets higher rate limits. API keys can be
+/// provided explicitly or read from the `OPENFIGI_API_KEY` environment variable.
+///
+/// ## Performance
+///
+/// - **Connection Pooling**: Reuses HTTP connections for efficiency
+/// - **Cheap Cloning**: Uses `Arc` internally, making clones very lightweight
+/// - **Middleware Support**: Configurable retry policies, logging, and observability
+///
+/// ## Error Handling
+///
+/// The client provides comprehensive error handling with OpenFIGI-specific context:
+/// - Rate limit detection with retry recommendations
+/// - Detailed HTTP status code explanations
+/// - Request validation errors with suggestions
 ///
 /// # Examples
 ///
 /// ```rust
 /// use openfigi_rs::client::OpenFIGIClient;
 ///
-/// // Simple usage
+/// // Simple usage with defaults
 /// let client = OpenFIGIClient::new();
 ///
-/// // Custom configuration
+/// // Custom configuration via builder
 /// let client = OpenFIGIClient::builder()
 ///     .api_key("your-api-key")
 ///     .build()
@@ -83,7 +100,7 @@ use url::Url;
 pub struct OpenFIGIClient {
     client: ClientWithMiddleware,
     base_url: Url,
-    api_key: Option<Box<str>>,
+    api_key: Option<String>,
 }
 
 impl Default for OpenFIGIClient {
@@ -95,7 +112,7 @@ impl Default for OpenFIGIClient {
     /// Uses a default `ClientWithMiddleware` and attempts to read the API key
     /// from the `OPENFIGI_API_KEY` environment variable.
     fn default() -> Self {
-        let api_key = API_KEY.as_ref().cloned();
+        let api_key = API_KEY.as_ref().map(std::string::ToString::to_string);
         Self {
             client: ClientWithMiddleware::default(),
             base_url: DEFAULT_BASE_URL.clone(),
@@ -107,8 +124,11 @@ impl Default for OpenFIGIClient {
 impl OpenFIGIClient {
     /// Create a new [`OpenFIGIClient`] with default configuration.
     ///
-    /// Uses the official `OpenFIGI` API URL and reads the API key from the
-    /// `OPENFIGI_API_KEY` environment variable if available.
+    /// Uses the official OpenFIGI API base URL (`https://api.openfigi.com/v3/`) and
+    /// attempts to read the API key from the `OPENFIGI_API_KEY` environment variable.
+    /// If no environment variable is set, the client operates without authentication.
+    ///
+    /// This is the simplest way to create a client and is suitable for most use cases.
     ///
     /// # Examples
     ///
@@ -130,7 +150,7 @@ impl OpenFIGIClient {
     /// # Arguments
     ///
     /// * `client` - HTTP client for making requests
-    /// * `base_url` - Base URL for the `OpenFIGI` API
+    /// * `base_url` - Base URL for the OpenFIGI API
     /// * `api_key` - Optional API key for authentication
     ///
     /// # Examples
@@ -155,7 +175,7 @@ impl OpenFIGIClient {
         Self {
             client,
             base_url,
-            api_key: api_key.map(Into::into),
+            api_key,
         }
     }
 
@@ -182,49 +202,134 @@ impl OpenFIGIClient {
 
     /// Returns a reference to the underlying HTTP client.
     ///
-    /// Provides access to the underlying HTTP client for advanced usage scenarios.
+    /// Provides access to the wrapped `ClientWithMiddleware` for advanced usage
+    /// scenarios where direct HTTP client access is needed. Most users should
+    /// prefer the high-level API methods instead.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use openfigi_rs::client::OpenFIGIClient;
+    ///
+    /// let client = OpenFIGIClient::new();
+    /// let http_client = client.client();
+    /// // Use http_client for advanced HTTP operations
+    /// ```
     #[must_use]
     pub fn client(&self) -> &ClientWithMiddleware {
         &self.client
     }
 
-    /// Returns the base URL for the API.
+    /// Returns the base URL configured for this client.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use openfigi_rs::client::OpenFIGIClient;
+    ///
+    /// let client = OpenFIGIClient::new();
+    /// println!("Base URL: {}", client.base_url());
+    /// ```
     #[must_use]
     pub fn base_url(&self) -> &Url {
         &self.base_url
     }
 
     /// Returns the API key if one is configured.
+    ///
+    /// Returns `Some(key)` if an API key was provided during client creation,
+    /// either explicitly or via the `OPENFIGI_API_KEY` environment variable.
+    /// Returns `None` if no API key is configured.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use openfigi_rs::client::OpenFIGIClient;
+    ///
+    /// let client = OpenFIGIClient::builder()
+    ///     .api_key("test-key")
+    ///     .build()
+    ///     .unwrap();
+    ///     
+    /// assert_eq!(client.api_key(), Some("test-key"));
+    /// ```
     #[must_use]
     pub fn api_key(&self) -> Option<&str> {
         self.api_key.as_deref()
     }
 
-    /// Returns whether an API key is set.
+    /// Returns whether an API key is configured for this client.
+    ///
+    /// This is a convenience method equivalent to `self.api_key().is_some()`.
+    /// Useful for checking authentication status before making requests.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use openfigi_rs::client::OpenFIGIClient;
+    ///
+    /// let client = OpenFIGIClient::new();
+    /// if client.has_api_key() {
+    ///     println!("Client is authenticated");
+    /// } else {
+    ///     println!("Client will use public rate limits");
+    /// }
+    /// ```
     #[must_use]
     pub fn has_api_key(&self) -> bool {
         self.api_key.is_some()
     }
 
-    /// Returns a request builder for the given endpoint path.
+    /// Creates a request builder for the specified endpoint path and HTTP method.
+    ///
+    /// This is an internal method used by the endpoint-specific request methods.
+    /// It handles URL construction, authentication header injection, and request
+    /// configuration setup.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - The API endpoint path (e.g., "mapping", "search")
+    /// * `method` - The HTTP method to use for the request
+    ///
+    /// # Returns
+    ///
+    /// Returns an [`OpenFIGIRequestBuilder`] configured for this client and endpoint.
     pub(crate) fn request(&self, path: &str, method: reqwest::Method) -> OpenFIGIRequestBuilder {
         OpenFIGIRequestBuilder::new(self.clone(), method, path)
     }
 
-    /// Parses an HTTP response into the expected type with comprehensive error handling.
+    /// Parses HTTP responses with comprehensive OpenFIGI-specific error handling.
     ///
-    /// Provides centralized response processing with OpenFIGI-specific error handling,
-    /// rate limit detection, and detailed error context.
+    /// This internal method processes HTTP responses from the OpenFIGI API, providing
+    /// detailed error context and automatic rate limit detection. It converts successful
+    /// responses to the expected type and transforms error responses into meaningful
+    /// [`OpenFIGIError`] instances.
     ///
-    /// ## OpenFIGI-Specific Error Handling
+    /// ## Error Handling by Status Code
     ///
-    /// - **400 Bad Request**: Check request format and required fields
-    /// - **401 Unauthorized**: Verify API key is correct  
-    /// - **429 Too Many Requests**: Implement exponential backoff
-    /// - **413 Payload Too Large**: Reduce mapping jobs (max 100 with API key, 5 without)
-    /// - **500+ Server Errors**: Retry with exponential backoff
+    /// - **200 OK**: Successfully deserializes response to type `T`
+    /// - **400 Bad Request**: Invalid request format or missing required fields
+    /// - **401 Unauthorized**: Missing or invalid API key
+    /// - **404 Not Found**: Requested resource not found
+    /// - **405 Method Not Allowed**: HTTP method not supported for endpoint
+    /// - **406 Not Acceptable**: Unsupported Accept header
+    /// - **413 Payload Too Large**: Too many requests in batch (max 100 with API key, 5 without)
+    /// - **429 Too Many Requests**: Rate limit exceeded, includes retry timing
+    /// - **500 Internal Server Error**: OpenFIGI service issues
+    /// - **503**: Service temporarily unavailable
     ///
-    /// Rate limit information is automatically parsed from response headers when available.
+    /// ## Rate Limiting
+    ///
+    /// When rate limit headers are present (`X-RateLimit-Remaining`, `X-RateLimit-Reset`),
+    /// they are automatically parsed and included in error messages to help with retry logic.
+    ///
+    /// # Arguments
+    ///
+    /// * `response` - The HTTP response from the OpenFIGI API
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(T)` for successful responses or `Err(OpenFIGIError)` with detailed context.
     pub(crate) async fn parse_response<T: DeserializeOwned>(
         &self,
         response: reqwest::Response,
@@ -255,7 +360,20 @@ impl OpenFIGIClient {
         ))
     }
 
-    /// Extract rate limit information from response headers.
+    /// Extracts rate limit information from HTTP response headers.
+    ///
+    /// Parses the `X-RateLimit-Remaining` and `X-RateLimit-Reset` headers commonly
+    /// used by the OpenFIGI API to communicate rate limiting status. This information
+    /// is used to provide helpful error messages when rate limits are exceeded.
+    ///
+    /// # Arguments
+    ///
+    /// * `headers` - HTTP response headers to parse
+    ///
+    /// # Returns
+    ///
+    /// Returns `Some(String)` with formatted rate limit information if both headers
+    /// are present and valid, `None` otherwise.
     fn extract_rate_limit_info(headers: &reqwest::header::HeaderMap) -> Option<String> {
         let remaining = headers
             .get("X-RateLimit-Remaining")
@@ -272,7 +390,22 @@ impl OpenFIGIClient {
         ))
     }
 
-    /// Format error message based on status code and context.
+    /// Formats comprehensive error messages based on HTTP status codes and context.
+    ///
+    /// Creates user-friendly error messages with specific guidance for different
+    /// types of failures. Includes rate limit information when available and provides
+    /// actionable suggestions for resolving common issues.
+    ///
+    /// # Arguments
+    ///
+    /// * `status` - HTTP status code from the response
+    /// * `url` - The URL that was requested
+    /// * `rate_limit_info` - Optional rate limit information from headers
+    /// * `resp_text` - Raw response body text
+    ///
+    /// # Returns
+    ///
+    /// Returns a formatted error message string with context and suggestions.
     fn format_error_message(
         status: reqwest::StatusCode,
         url: &Url,
@@ -296,7 +429,7 @@ impl OpenFIGIClient {
                 format!("Not acceptable request to {url}: Unsupported Accept header type.")
             }
             reqwest::StatusCode::PAYLOAD_TOO_LARGE => format!(
-                "Payload too large for {url}: Too many mapping jobs in request (max 100 with API key, 5 without)."
+                "Payload too large for {url}: Too many mapping requests in request (max 100 with API key, 5 without)."
             ),
             reqwest::StatusCode::TOO_MANY_REQUESTS => {
                 let rate_msg = rate_limit_info.unwrap_or_else(|| "Rate limit exceeded".to_string());

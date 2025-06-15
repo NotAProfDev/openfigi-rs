@@ -1,0 +1,2 @@
+# Allow specific identifiers in Rust documentation
+doc-valid-idents = ["OpenFIGI", ".."]

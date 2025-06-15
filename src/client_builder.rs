@@ -1,13 +1,14 @@
-//! # `OpenFIGI` Client Builder
+//! Builder pattern for configuring OpenFIGI API clients.
 //!
-//! Fluent builder for configuring [`crate::client::OpenFIGIClient`] with custom settings.
+//! This module provides [`OpenFIGIClientBuilder`] for creating customized [`crate::client::OpenFIGIClient`]
+//! instances with support for custom HTTP clients, middleware, authentication, and base URLs.
 //!
 //! ## Key Features
 //!
 //! - **Fluent API**: Chainable method calls for clean configuration
-//! - **HTTP Client Support**: Integrate custom `reqwest::Client` or middleware stacks
-//! - **Memory Efficient**: Uses `Box<str>` for optimal string storage
+//! - **HTTP Client Support**: Integrate custom `reqwest::Client` or middleware stacks  
 //! - **Smart Defaults**: Falls back to environment variables and sensible defaults
+//! - **Middleware Priority**: Control over HTTP client precedence and middleware composition
 //!
 //! ## Examples
 //!
@@ -101,11 +102,6 @@ use url::Url;
 /// 2. `reqwest_client` wrapped with default middleware (if set via [`Self::reqwest_client`])
 /// 3. Default `reqwest::Client` with default middleware
 ///
-/// ## Memory Efficiency
-///
-/// Uses `Box<str>` for string storage to minimize heap allocations and improve
-/// memory efficiency compared to `String`.
-///
 /// # Examples
 ///
 /// ```rust
@@ -121,8 +117,8 @@ use url::Url;
 pub struct OpenFIGIClientBuilder {
     reqwest_client: Option<ReqwestClient>,
     middleware_client: Option<ClientWithMiddleware>,
-    base_url: Option<Box<str>>,
-    api_key: Option<Box<str>>,
+    base_url: Option<String>,
+    api_key: Option<String>,
 }
 
 impl Default for OpenFIGIClientBuilder {
@@ -159,9 +155,14 @@ impl OpenFIGIClientBuilder {
         }
     }
 
-    /// Set a custom base URL for the API.
+    /// Set a custom base URL for the OpenFIGI API.
     ///
-    /// Defaults to `https://api.openfigi.com/v3/` if not set.
+    /// Overrides the default URL (`https://api.openfigi.com/v3/`). Useful for testing
+    /// with sandbox environments or custom API deployments.
+    ///
+    /// # Arguments
+    ///
+    /// * `url` - The base URL string (must be a valid URL)
     ///
     /// # Examples
     ///
@@ -174,16 +175,20 @@ impl OpenFIGIClientBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     #[must_use]
-    pub fn base_url(mut self, url: impl Into<Box<str>>) -> Self {
+    pub fn base_url(mut self, url: impl Into<String>) -> Self {
         self.base_url = Some(url.into());
         self
     }
 
-    /// Set the API key for authentication.
+    /// Set the API key for authenticating requests.
     ///
-    /// If not explicitly set, the system defaults to the `OPENFIGI_API_KEY`
-    /// environment variable. If neither is specified, the client will operate
-    /// without authentication.
+    /// If not explicitly provided, the builder attempts to use the `OPENFIGI_API_KEY`
+    /// environment variable. Without an API key, the client operates with rate limits
+    /// but can still access public endpoints.
+    ///
+    /// # Arguments
+    ///
+    /// * `key` - The API key string obtained from OpenFIGI
     ///
     /// # Examples
     ///
@@ -191,20 +196,27 @@ impl OpenFIGIClientBuilder {
     /// use openfigi_rs::client_builder::OpenFIGIClientBuilder;
     ///
     /// let client = OpenFIGIClientBuilder::new()
-    ///     .api_key("your-api-key")
+    ///     .api_key("your-api-key-here")
     ///     .build()?;
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     #[must_use]
-    pub fn api_key(mut self, key: impl Into<Box<str>>) -> Self {
+    pub fn api_key(mut self, key: impl Into<String>) -> Self {
         self.api_key = Some(key.into());
         self
     }
 
     /// Use a custom reqwest client for HTTP operations.
     ///
-    /// The client will be wrapped with default middleware.
-    /// Note: [`Self::middleware_client`] takes precedence if both are set.
+    /// The provided client will be automatically wrapped with default middleware.
+    /// Use this when you need specific HTTP configurations like custom timeouts,
+    /// proxies, or TLS settings.
+    ///
+    /// **Note**: [`Self::middleware_client`] takes precedence if both are set.
+    ///
+    /// # Arguments
+    ///
+    /// * `client` - A configured `reqwest::Client` instance
     ///
     /// # Examples
     ///
@@ -230,7 +242,13 @@ impl OpenFIGIClientBuilder {
 
     /// Use a pre-configured middleware client for HTTP operations.
     ///
-    /// Takes precedence over any reqwest client set via [`Self::reqwest_client`].
+    /// This allows full control over the HTTP middleware stack, including retry policies,
+    /// logging, authentication, and other custom middleware. Takes precedence over any
+    /// reqwest client set via [`Self::reqwest_client`].
+    ///
+    /// # Arguments
+    ///
+    /// * `client` - A `ClientWithMiddleware` instance with your desired middleware stack
     ///
     /// # Examples
     ///
@@ -257,22 +275,40 @@ impl OpenFIGIClientBuilder {
 
     /// Build the [`OpenFIGIClient`] with the configured settings.
     ///
-    /// Uses the following precedence for HTTP clients:
-    /// 1. `middleware_client` (if set)
-    /// 2. `reqwest_client` wrapped with default middleware (if set)
-    /// 3. Default reqwest client with default middleware
+    /// Creates the final client instance using the configured options. Missing settings
+    /// are populated with defaults or environment variables where applicable.
+    ///
+    /// ## HTTP Client Resolution
+    ///
+    /// The builder selects HTTP clients in this order:
+    /// 1. `middleware_client` (if provided via [`Self::middleware_client`])
+    /// 2. `reqwest_client` wrapped with default middleware (if provided via [`Self::reqwest_client`])
+    /// 3. Default `reqwest::Client` with default middleware
+    ///
+    /// ## Default Values
+    ///
+    /// - **Base URL**: `https://api.openfigi.com/v3/`
+    /// - **API Key**: Value from `OPENFIGI_API_KEY` environment variable (if set)
+    /// - **HTTP Client**: Default reqwest client with standard middleware
     ///
     /// # Errors
     ///
-    /// Returns an error if the base URL cannot be parsed.
+    /// Returns an error if:
+    /// - The base URL cannot be parsed as a valid URL
+    /// - The underlying HTTP client cannot be created
     ///
     /// # Examples
     ///
     /// ```rust
     /// use openfigi_rs::client_builder::OpenFIGIClientBuilder;
     ///
+    /// // Minimal configuration
+    /// let client = OpenFIGIClientBuilder::new().build()?;
+    ///
+    /// // With custom settings  
     /// let client = OpenFIGIClientBuilder::new()
-    ///     .api_key("test-key")
+    ///     .api_key("your-key")
+    ///     .base_url("https://api.openfigi.com/v3/")
     ///     .build()?;
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -291,10 +327,7 @@ impl OpenFIGIClientBuilder {
         };
 
         // Use provided API key or try environment variable (only if not set)
-        let api_key = self
-            .api_key
-            .map(|boxed| (*boxed).to_owned())
-            .or_else(|| API_KEY.as_ref().map(std::string::ToString::to_string));
+        let api_key = self.api_key.or(API_KEY.clone());
 
         Ok(OpenFIGIClient::new_with_components(
             client, base_url, api_key,
