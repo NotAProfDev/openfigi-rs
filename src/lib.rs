@@ -77,7 +77,7 @@
 //! ## Authentication & Rate Limits
 //!
 //! - **Without API key**: 25 requests per minute, max 5 requests per batch
-//! - **With API key**: 10,000 requests per minute, max 100 requests per batch
+//! - **With API key**: 25 requests per 6 seconds, max 100 requests per batch
 //! - **API key**: Set via `OPENFIGI_API_KEY` environment variable or explicit configuration
 //!
 //! ## API Endpoints
