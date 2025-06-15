@@ -1,6 +1,6 @@
 //! HTTP client for interacting with the OpenFIGI API.
 //!
-//! This module provides the main [`OpenFIGIClient`] for making requests to the
+//! This module provides the main [`crate::client::OpenFIGIClient`] for making requests to the
 //! [OpenFIGI API](https://www.openfigi.com/api). The client is designed for both
 //! simple usage with sensible defaults and advanced configuration through the builder pattern.
 //!
@@ -46,7 +46,7 @@
 //! The Fluent Builder API provides a flexible and structured approach to configuring the client.
 //! By leveraging the builder pattern, developers can fine-tune settings while maintaining clarity
 //! and scalability in their code. For a detailed breakdown of available configuration options,
-//! and examples refer to [`OpenFIGIClientBuilder`].
+//! and examples refer to [`crate::client_builder::OpenFIGIClientBuilder`].
 
 use crate::{
     API_KEY, DEFAULT_BASE_URL,
@@ -104,7 +104,7 @@ pub struct OpenFIGIClient {
 }
 
 impl Default for OpenFIGIClient {
-    /// Create a new [`OpenFIGIClient`] with default settings.
+    /// Create a new [`crate::client::OpenFIGIClient`] with default settings.
     ///
     /// This implementation constructs the client directly with known-good default values
     /// to ensure it's infallible and doesn't depend on the builder pattern.
@@ -122,7 +122,7 @@ impl Default for OpenFIGIClient {
 }
 
 impl OpenFIGIClient {
-    /// Create a new [`OpenFIGIClient`] with default configuration.
+    /// Create a new [`crate::client::OpenFIGIClient`] with default configuration.
     ///
     /// Uses the official OpenFIGI API base URL (`https://api.openfigi.com/v3/`) and
     /// attempts to read the API key from the `OPENFIGI_API_KEY` environment variable.
@@ -142,7 +142,7 @@ impl OpenFIGIClient {
         Self::default()
     }
 
-    /// Create a new [`OpenFIGIClient`] from individual components.
+    /// Create a new [`crate::client::OpenFIGIClient`] from individual components.
     ///
     /// Provides maximum control over client configuration. Primarily used
     /// internally by the builder pattern.
@@ -179,10 +179,10 @@ impl OpenFIGIClient {
         }
     }
 
-    /// Returns a builder for configuring an [`OpenFIGIClient`].
+    /// Returns a builder for configuring an [`crate::client::OpenFIGIClient`].
     ///
     /// Use the builder pattern when you need custom configuration beyond
-    /// the defaults provided by [`OpenFIGIClient::new`].
+    /// the defaults provided by [`crate::client::OpenFIGIClient::new`].
     ///
     /// # Examples
     ///
@@ -303,7 +303,7 @@ impl OpenFIGIClient {
     /// This internal method processes HTTP responses from the OpenFIGI API, providing
     /// detailed error context and automatic rate limit detection. It converts successful
     /// responses to the expected type and transforms error responses into meaningful
-    /// [`OpenFIGIError`] instances.
+    /// [`crate::error::OpenFIGIError`] instances.
     ///
     /// ## Error Handling by Status Code
     ///
@@ -315,7 +315,7 @@ impl OpenFIGIClient {
     /// - **406 Not Acceptable**: Unsupported Accept header
     /// - **413 Payload Too Large**: Too many requests in batch (max 100 with API key, 5 without)
     /// - **429 Too Many Requests**: Rate limit exceeded, includes retry timing
-    /// - **500 Internal Server Error**: OpenFIGI service issues
+    /// - **500 Internal Server Error**: Resend the request later with an exponential backoff strategy
     /// - **503**: Service temporarily unavailable
     ///
     /// ## Rate Limiting

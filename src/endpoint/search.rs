@@ -197,7 +197,7 @@ impl SingleSearchRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the search request is invalid or if the HTTP request fails.
+    /// Returns an [`crate::error::OpenFIGIError`] if the search request is invalid or if the HTTP request fails.
     pub async fn send_raw(self) -> Result<reqwest::Response> {
         let request = self.request_builder.build()?;
         self.client
@@ -211,7 +211,7 @@ impl SingleSearchRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the search request is invalid, if the HTTP request fails,
+    /// Returns an [`crate::error::OpenFIGIError`] if the search request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
     pub async fn send(self) -> Result<SearchResponse> {
         let client = self.client.clone();

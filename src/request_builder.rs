@@ -1,6 +1,6 @@
 //! HTTP request builder for OpenFIGI API operations.
 //!
-//! This module provides [`OpenFIGIRequestBuilder`] for constructing and executing HTTP requests
+//! This module provides [`crate::request_builder::OpenFIGIRequestBuilder`] for constructing and executing HTTP requests
 //! with a fluent interface. The builder handles authentication, JSON serialization, and error
 //! processing automatically while maintaining performance through minimal allocations.
 //!
@@ -29,9 +29,8 @@ use serde::Serialize;
 /// ## Design Philosophy
 ///
 /// The builder follows a fluent interface pattern where methods can be chained together
-/// to configure the request. Once configured, the request can be executed with either
-/// [`send()`](Self::send) for raw responses or [`send_json()`](Self::send_json) for
-/// automatic JSON deserialization.
+/// to configure the request. Once configured, the request can be executed with
+/// [`send()`](Self::send) for raw responses.
 ///
 /// ## Authentication
 ///
@@ -73,8 +72,6 @@ impl OpenFIGIRequestBuilder {
     /// Sets the request body using JSON serialization.
     ///
     /// This is a convenience method that serializes the provided data to JSON.
-    /// It's more ergonomic than [`try_body()`](Self::try_body) but will panic
-    /// if serialization fails.
     ///
     /// # Arguments
     ///
@@ -82,8 +79,7 @@ impl OpenFIGIRequestBuilder {
     ///
     /// # Panics
     ///
-    /// Panics if JSON serialization fails. Use [`try_body()`](Self::try_body)
-    /// for error handling instead of panicking.
+    /// Panics if JSON serialization fails.
     pub(crate) fn body<T: Serialize>(mut self, body: &T) -> Self {
         self.body = Some(serde_json::to_value(body).expect("Failed to serialize body"));
         self
@@ -100,7 +96,7 @@ impl OpenFIGIRequestBuilder {
     ///
     /// 1. Constructs the full URL from base URL and path
     /// 2. Builds the HTTP request with the specified method
-    /// 3. Adds JSON body if provided via [`body()`](Self::body) or [`json_body()`](Self::json_body)
+    /// 3. Adds JSON body if provided via [`body()`](Self::body)
     /// 4. Adds `X-OPENFIGI-APIKEY` header if API key is configured
     /// 5. Executes the request and returns the response
     ///

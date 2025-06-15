@@ -23,8 +23,8 @@
 //! # Common Patterns
 //!
 //! All response types follow consistent patterns:
-//! - Use the [`ResponseResult`](common::ResponseResult) enum to handle success/error cases
-//! - Implement the [`FigiData`](common::FigiData) trait for uniform data access
+//! - Use the `ResponseResult` enum to handle success/error cases
+//! - Implement the `FigiData` trait for uniform data access
 //! - Support serialization/deserialization with serde
 //! - Provide pagination support where applicable
 

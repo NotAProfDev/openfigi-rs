@@ -1,6 +1,6 @@
 //! Builder pattern for configuring OpenFIGI API clients.
 //!
-//! This module provides [`OpenFIGIClientBuilder`] for creating customized [`crate::client::OpenFIGIClient`]
+//! This module provides [`crate::client_builder::OpenFIGIClientBuilder`] for creating customized [`crate::client::OpenFIGIClient`]
 //! instances with support for custom HTTP clients, middleware, authentication, and base URLs.
 //!
 //! ## Key Features
@@ -89,7 +89,7 @@ use reqwest::Client as ReqwestClient;
 use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use url::Url;
 
-/// Builder for configuring [`OpenFIGIClient`] instances with custom settings.
+/// Builder for configuring [`crate::client::OpenFIGIClient`] instances with custom settings.
 ///
 /// Provides a fluent API for client configuration with memory-efficient string storage.
 /// Supports custom HTTP clients, middleware stacks, base URLs, and API keys with

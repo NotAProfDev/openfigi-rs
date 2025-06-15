@@ -231,7 +231,7 @@ impl SingleMappingRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the mapping request is invalid or if the HTTP request fails.
+    /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid or if the HTTP request fails.
     pub async fn send_raw(self) -> Result<reqwest::Response> {
         let request = self.request_builder.build()?;
         let requests = vec![request];
@@ -246,7 +246,7 @@ impl SingleMappingRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
+    /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
     pub async fn send(self) -> Result<MappingResponse> {
         let client = self.client.clone();
@@ -316,7 +316,7 @@ impl BulkMappingRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the bulk mapping request is invalid or if the HTTP request fails.
+    /// Returns an [`crate::error::OpenFIGIError`] if the bulk mapping request is invalid or if the HTTP request fails.
     pub async fn send_raw(self) -> Result<reqwest::Response> {
         if self.requests.is_empty() {
             return Err(OpenFIGIError::other_error(
@@ -346,7 +346,7 @@ impl BulkMappingRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
+    /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
     pub async fn send(self) -> Result<MappingResponse> {
         let client = self.client.clone();

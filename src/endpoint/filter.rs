@@ -50,7 +50,7 @@ use reqwest::Method;
 /// Builder for constructing single filter requests to the `/filter` endpoint.
 ///
 /// Provides a fluent API for configuring filter request parameters and executing requests.
-/// Created via [`OpenFIGIClient::filter`] with required query parameter.
+/// Created via [`crate::client::OpenFIGIClient::filter`] with required query parameter.
 ///
 /// # Examples
 ///
@@ -199,7 +199,7 @@ impl SingleFilterRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the filter request is invalid or if the HTTP request fails.
+    /// Returns an [`crate::error::OpenFIGIError`] if the filter request is invalid or if the HTTP request fails.
     pub async fn send_raw(self) -> Result<reqwest::Response> {
         let request = self.request_builder.build()?;
         self.client
@@ -213,7 +213,7 @@ impl SingleFilterRequestBuilder {
     ///
     /// # Errors
     ///
-    /// Returns an [`OpenFIGIError`] if the filter request is invalid, if the HTTP request fails,
+    /// Returns an [`crate::error::OpenFIGIError`] if the filter request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
     pub async fn send(self) -> Result<FilterResponse> {
         let client = self.client.clone();

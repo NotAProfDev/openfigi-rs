@@ -1,12 +1,12 @@
 //! Error handling types for OpenFIGI API operations.
 //!
 //! This module provides comprehensive error types and utilities for handling failures
-//! that can occur during OpenFIGI API interactions. The main error type [`OpenFIGIError`]
+//! that can occur during OpenFIGI API interactions. The main error type [`crate::error::OpenFIGIError`]
 //! unifies different error sources into a single, easy-to-handle enum.
 //!
 //! ## Error Categories
 //!
-//! [`OpenFIGIError`] covers all possible failure scenarios:
+//! [`crate::error::OpenFIGIError`] covers all possible failure scenarios:
 //!
 //! - **Network errors**: Connection failures, timeouts, DNS resolution issues
 //! - **HTTP errors**: Status codes (400, 401, 404, 429, 500, etc.) with detailed context

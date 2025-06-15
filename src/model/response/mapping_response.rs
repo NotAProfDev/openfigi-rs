@@ -66,7 +66,7 @@ use serde::{Deserialize, Serialize};
 /// # Result Types
 ///
 /// Each array element can be either:
-/// - **Success**: Contains [`MappingData`] with FIGI results for the identifier
+/// - **Success**: Contains `MappingData` with FIGI results for the identifier
 /// - **Error**: Contains error information when the identifier cannot be mapped
 ///
 /// # Batch Limits

@@ -87,7 +87,7 @@ pub struct SearchRequest {
     /// Additional filtering criteria applied to the mapping request.
     ///
     /// These filters are flattened into the JSON structure and provide
-    /// optional constraints to refine the mapping results see [`RequestFilters`].
+    /// optional constraints to refine the mapping results see `RequestFilters`.
     #[serde(flatten)]
     pub filters: RequestFilters,
 }

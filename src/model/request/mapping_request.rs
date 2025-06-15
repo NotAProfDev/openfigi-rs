@@ -61,7 +61,7 @@ use serde::{Deserialize, Serialize};
 /// # Validation Rules
 ///
 /// - `security_type2` is required when `id_type` is `BASE_TICKER` or `ID_EXCH_SYMBOL`
-/// - All filter validation rules apply (see common filters documentation [`RequestFilters::validate()`])
+/// - All filter validation rules apply (see common filters documentation `RequestFilters::validate()`)
 ///
 /// # Examples
 ///
@@ -91,7 +91,7 @@ pub struct MappingRequest {
     /// Additional filtering criteria applied to the mapping request.
     ///
     /// These filters are flattened into the JSON structure and provide
-    /// optional constraints to refine the mapping results see [`RequestFilters`].
+    /// optional constraints to refine the mapping results see `RequestFilters`.
     #[serde(flatten)]
     pub filters: RequestFilters,
 }

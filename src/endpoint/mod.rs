@@ -6,9 +6,9 @@
 //!
 //! ## Available Endpoints
 //!
-//! - [`filter`] - Filter endpoint for finding FIGIs using key words and other filters. The results are listed alphabetically by FIGI and include the number of results.
-//! - [`mapping`] - Mapping endpoint for converting third party identifiers to FIGIs
-//! - [`search`] - Search endpoint for finding FIGIs using key words and other filters.
+//! - [`crate::endpoint::filter`] - Filter endpoint for finding FIGIs using key words and other filters. The results are listed alphabetically by FIGI and include the number of results.
+//! - [`crate::endpoint::mapping`] - Mapping endpoint for converting third party identifiers to FIGIs
+//! - [`crate::endpoint::search`] - Search endpoint for finding FIGIs using key words and other filters.
 
 pub mod filter;
 pub mod mapping;
