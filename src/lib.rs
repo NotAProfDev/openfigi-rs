@@ -12,18 +12,23 @@
 //!
 //! ```rust,no_run
 //! use openfigi_rs::client::OpenFIGIClient;
-//! use openfigi_rs::model::request::MappingRequest;
 //! use openfigi_rs::model::enums::IdType;
+//! use serde_json::json;
 //!
 //! # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // Create a client (uses OPENFIGI_API_KEY env var if available)
 //! let client = OpenFIGIClient::new();
 //!
 //! // Map an ISIN to FIGI
-//! let request = MappingRequest::new(IdType::IdIsin, "US4592001014");
-//! let mapping_results = client.mapping(IdType::IdIsin, "US4592001014").send().await?;
+//! let mapping_results = client
+//!     .mapping(IdType::IdIsin, json!("US4592001014"))
+//!     .send()
+//!     .await?;
 //!
-//! println!("FIGI: {}", mapping_results[0].figi);
+//! // Access the FIGI from the first result
+//! if let Some(data) = mapping_results[0].data() {
+//!     println!("FIGI: {}", data[0].figi);
+//! }
 //! # Ok(())
 //! # }
 //! ```
