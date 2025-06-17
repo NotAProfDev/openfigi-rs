@@ -114,6 +114,7 @@ pub struct FilterData {
     /// This count represents the complete result set size, not just the
     /// number of results in the current page. Useful for implementing
     /// pagination controls and progress indicators.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub total: Option<usize>,
 }
 

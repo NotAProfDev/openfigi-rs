@@ -82,6 +82,7 @@ pub struct SearchRequest {
     /// When more results are available, the response contains a `next` property
     /// whose value should be sent in succeeding requests as the `start` value
     /// to retrieve the next "page" of results.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
 
     /// Additional filtering criteria applied to the mapping request.

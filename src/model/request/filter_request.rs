@@ -79,12 +79,14 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct FilterRequest {
     /// Filter keywords for finding FIGIs.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub query: Option<String>,
     /// Pagination token for retrieving subsequent result pages.
     ///
     /// When more results are available, the response contains a `next` property
     /// whose value should be sent in succeeding requests as the `start` value
     /// to retrieve the next "page" of results.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
 
     /// Additional filtering criteria applied to the mapping request.

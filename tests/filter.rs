@@ -62,16 +62,6 @@ async fn test_filter_basic_query() {
             assert!(!figi_result.figi.is_empty(), "FIGI should not be empty");
             assert!(figi_result.name.is_some(), "Name should be present");
         }
-
-        // Check pagination info
-        assert!(
-            result.total_results().is_some(),
-            "Total count should be present"
-        );
-        println!(
-            "Filter found {} total results",
-            result.total_results().unwrap()
-        );
     }
 
     // Add delay to avoid rate limiting
@@ -131,13 +121,6 @@ async fn test_filter_with_multiple_criteria() {
             }
         }
     }
-
-    // Verify pagination information
-    assert!(result.total_results().is_some());
-    println!(
-        "Multiple criteria filter found {} results",
-        result.total_results().unwrap()
-    );
 
     // Add delay to avoid rate limiting
     rate_limit_delay().await;

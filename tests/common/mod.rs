@@ -20,11 +20,10 @@ pub fn create_test_client() -> OpenFIGIClient {
 /// Adds a delay between API requests to respect rate limits
 ///
 /// OpenFIGI allows 25 requests per minute for unauthenticated requests,
-/// which equals approximately 1 request per 2.4 seconds. We use a 3-second
-/// delay to provide a safety margin and avoid hitting rate limits.
+/// which equals approximately 1 request per 2.4 seconds.
 ///
 /// This function should be called after each API request in integration tests
 /// to ensure compliance with OpenFIGI's rate limiting policies.
 pub async fn rate_limit_delay() {
-    sleep(Duration::from_millis(3000)).await;
+    sleep(Duration::from_millis(10000)).await;
 }
