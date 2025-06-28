@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 /// Enum for all supported exchange codes.
 #[expect(missing_docs)]
 #[non_exhaustive]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum ExchCode {
     #[serde(rename = "A0")]
     A0,

@@ -38,7 +38,7 @@
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
-use crate::model::response::common::{FigiData, FigiResult, ResponseResult};
+use crate::model::response::common::{FigiResult, ResponseResult};
 use serde::{Deserialize, Serialize};
 
 /// Response type for the OpenFIGI search endpoint (POST /v3/search).
@@ -138,13 +138,12 @@ pub struct SearchData {
     pub next: Option<String>,
 }
 
-impl FigiData for SearchData {
+impl SearchData {
     /// Returns a slice of the FIGI results contained in this search response.
     ///
     /// Provides access to the financial instrument data returned by the search endpoint.
-    /// This implements the [`FigiData`] trait to allow uniform access to FIGI data across
-    /// different response types.
-    fn figi_data(&self) -> &[FigiResult] {
+    #[must_use]
+    pub fn data(&self) -> &[FigiResult] {
         &self.data
     }
 
@@ -152,7 +151,8 @@ impl FigiData for SearchData {
     ///
     /// Returns `Some(token)` if more search results are available, `None` if this is the last page.
     /// The token can be used in subsequent search requests to continue pagination.
-    fn next_page(&self) -> Option<&str> {
+    #[must_use]
+    pub fn next_page(&self) -> Option<&str> {
         self.next.as_deref()
     }
 }
@@ -171,14 +171,15 @@ mod tests {
     #[test]
     fn test_deserialize_query_example() {
         let json_str = load_test_data("query_example.json");
-        let result: SearchResponse = serde_json::from_str(&json_str).unwrap();
+        let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(result.is_success());
-        let data = result.data().unwrap();
-        assert!(!data.is_empty());
+        assert!(search_response.is_success());
+        let search_data = search_response.success().unwrap();
+        let figi_result = search_data.data();
+        assert!(!figi_result.is_empty());
 
         // Check first IBM entry
-        let first_entry = &data[0];
+        let first_entry = &figi_result[0];
         assert_eq!(first_entry.figi, "BBG0002ZTPP5");
         assert_eq!(first_entry.ticker, Some("IBM 03/20/10 P130".to_string()));
         assert_eq!(first_entry.display_name(), "March 10 Puts on IBM US");
@@ -192,16 +193,16 @@ mod tests {
         assert_eq!(first_entry.share_class_figi, None);
 
         // Verify pagination exists
-        assert!(result.next_page().is_some());
+        assert!(search_data.next_page().is_some());
     }
 
     #[test]
     fn test_deserialize_no_data() {
         let json_str = load_test_data("no_data.json");
-        let result: SearchResponse = serde_json::from_str(&json_str).unwrap();
+        let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(result.is_success());
-        let data = result.data().unwrap();
-        assert!(data.is_empty());
+        assert!(search_response.is_success());
+        let figi_result = search_response.success().unwrap().data();
+        assert!(figi_result.is_empty());
     }
 }

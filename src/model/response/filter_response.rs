@@ -30,7 +30,7 @@
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
-use crate::model::response::common::{FigiData, FigiResult, ResponseResult};
+use crate::model::response::common::{FigiResult, ResponseResult};
 use serde::{Deserialize, Serialize};
 
 /// Response type for the OpenFIGI `/filter` endpoint (POST /v3/filter).
@@ -118,13 +118,12 @@ pub struct FilterData {
     pub total: Option<usize>,
 }
 
-impl FigiData for FilterData {
-    /// Returns a slice of the FIGI results contained in this filter response.
+impl FilterData {
+    /// Returns a slice of the FIGI results contained in this mapping response.
     ///
-    /// Provides access to the financial instrument data returned by the filter endpoint.
-    /// This implements the [`FigiData`] trait to allow uniform access to FIGI data across
-    /// different response types.
-    fn figi_data(&self) -> &[FigiResult] {
+    /// Provides access to the financial instrument data returned for the mapping request.
+    #[must_use]
+    pub fn data(&self) -> &[FigiResult] {
         &self.data
     }
 
@@ -132,21 +131,25 @@ impl FigiData for FilterData {
     ///
     /// Returns `Some(token)` if more results are available, `None` if this is the last page.
     /// The token can be used in subsequent search requests to continue pagination.
-    fn next_page(&self) -> Option<&str> {
+    #[must_use]
+    pub fn next_page(&self) -> Option<&str> {
         self.next.as_deref()
     }
 
     /// Returns the total number of results available across all pages.
     ///
-    /// The filter endpoint always provides the total count, so this method always
+    /// The filter endpoint almost always provides the total count, so this method
     /// returns `Some(total)` rather than `None`.
-    fn total_results(&self) -> Option<usize> {
-        self.total
+    #[must_use]
+    pub fn total_results(&self) -> Option<&usize> {
+        self.total.as_ref()
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::model::response::filter_response;
+
     use super::*;
     use std::fs;
 
@@ -159,14 +162,15 @@ mod tests {
     #[test]
     fn test_deserialize_simple_example() {
         let json_str = load_test_data("simple_example.json");
-        let result: FilterResponse = serde_json::from_str(&json_str).unwrap();
+        let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(result.is_success());
-        let data = result.data().unwrap();
-        assert!(!data.is_empty());
+        assert!(filter_response.is_success());
+        let filter_data = filter_response.success().unwrap();
+        let figi_result = filter_data.data();
+        assert!(!figi_result.is_empty());
 
         // Check first IBM entry
-        let first_entry = &data[0];
+        let first_entry = &figi_result[0];
         assert_eq!(first_entry.figi, "BBG0001RT9P0");
         assert_eq!(first_entry.ticker, Some("A 07/18/09 P12.5".to_string()));
         assert_eq!(first_entry.display_name(), "July 09 Puts on A US");
@@ -180,23 +184,24 @@ mod tests {
         assert_eq!(first_entry.share_class_figi, None);
 
         // Verify pagination exists
-        assert!(result.next_page().is_some());
+        assert!(filter_data.next_page().is_some());
         assert_eq!(
-            result.next_page().unwrap(),
+            filter_data.next_page().unwrap(),
             "QW9Fc1FrSkhNREF3TVZKVVJGY3ogMQ==.wAoXs2FMDgSubHmn4eCvQjx6pvAIM4KU8g7zWH5N0cw="
         );
-        assert_eq!(result.total_results(), Some(59_884_674));
+        assert_eq!(filter_data.total_results(), Some(59_884_674).as_ref());
     }
 
     #[test]
     fn test_deserialize_no_data() {
         let json_str = load_test_data("no_data.json");
-        let result: FilterResponse = serde_json::from_str(&json_str).unwrap();
+        let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(result.is_success());
-        let data = result.data().unwrap();
-        assert!(data.is_empty());
-        assert!(result.next_page().is_none());
-        assert_eq!(result.total_results(), Some(0));
+        assert!(filter_response.is_success());
+        let filter_data = filter_response.success().unwrap();
+        let figi_result = filter_data.data();
+        assert!(figi_result.is_empty());
+        assert!(filter_data.next_page().is_none());
+        assert_eq!(filter_data.total_results(), Some(0).as_ref());
     }
 }

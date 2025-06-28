@@ -73,7 +73,7 @@ use crate::{
             SecurityType2, StateCode,
         },
         request::{MappingRequest, MappingRequestBuilder},
-        response::MappingResponse,
+        response::MappingData,
     },
 };
 use chrono::NaiveDate;
@@ -248,11 +248,33 @@ impl SingleMappingRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<MappingResponse> {
+    #[expect(clippy::missing_panics_doc)]
+    pub async fn send(self) -> Result<MappingData> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_response(raw_response).await
+        let mut results = client.parse_list_response(raw_response).await?;
+
+        match results.len() {
+            1 => {
+                // `.pop` is safe here because we just checked the length
+                results
+                    .pop()
+                    .expect("Expected exactly one result for single mapping request")
+            }
+            0 => Err(OpenFIGIError::response_error(
+                // `reqwest::StatusCode::OK` is used here, otherwise we already would get an error
+                reqwest::StatusCode::OK,
+                "API returned an empty list for a single mapping request",
+                String::new(),
+            )),
+            n => Err(OpenFIGIError::response_error(
+                // `reqwest::StatusCode::OK` is used here, otherwise we already would get an error
+                reqwest::StatusCode::OK,
+                format!("API returned {n} results for a single mapping request (expected 1)"),
+                String::new(),
+            )),
+        }
     }
 }
 
@@ -348,11 +370,11 @@ impl BulkMappingRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<MappingResponse> {
+    pub async fn send(self) -> Result<Vec<Result<MappingData>>> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_response(raw_response).await
+        client.parse_list_response(raw_response).await
     }
 }
 

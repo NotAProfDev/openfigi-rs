@@ -41,7 +41,7 @@ use crate::{
             StateCode,
         },
         request::FilterRequestBuilder,
-        response::FilterResponse,
+        response::FilterData,
     },
 };
 use chrono::NaiveDate;
@@ -215,11 +215,11 @@ impl SingleFilterRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the filter request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<FilterResponse> {
+    pub async fn send(self) -> Result<FilterData> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_response(raw_response).await
+        client.parse_single_response(raw_response).await
     }
 }
 

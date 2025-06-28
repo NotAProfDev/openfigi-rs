@@ -40,7 +40,7 @@ use crate::{
             StateCode,
         },
         request::SearchRequestBuilder,
-        response::SearchResponse,
+        response::SearchData,
     },
 };
 use chrono::NaiveDate;
@@ -213,11 +213,11 @@ impl SingleSearchRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the search request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<SearchResponse> {
+    pub async fn send(self) -> Result<SearchData> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_response(raw_response).await
+        client.parse_single_response(raw_response).await
     }
 }
 

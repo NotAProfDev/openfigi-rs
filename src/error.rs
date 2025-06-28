@@ -160,7 +160,7 @@ pub struct ResponseContent {
     /// HTTP status code
     pub status: reqwest::StatusCode,
     /// Additional error context message
-    pub message: Option<String>,
+    pub message: String,
     /// Raw response body content
     pub content: String,
 }
@@ -502,13 +502,13 @@ impl OpenFIGIError {
     /// * `message` - Optional additional error context message
     pub(crate) fn response_error(
         status: reqwest::StatusCode,
+        message: impl Into<String>,
         content: impl Into<String>,
-        message: Option<impl Into<String>>,
     ) -> Self {
         Self::ResponseError(ResponseContent {
             status,
+            message: message.into(),
             content: content.into(),
-            message: message.map(Into::into),
         })
     }
 

@@ -84,7 +84,11 @@
 //! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 
-use crate::{API_KEY, DEFAULT_BASE_URL, client::OpenFIGIClient, error::Result};
+use crate::{
+    API_KEY, DEFAULT_BASE_URL,
+    client::OpenFIGIClient,
+    error::{OpenFIGIError, Result},
+};
 use reqwest::Client as ReqwestClient;
 use reqwest_middleware::{ClientBuilder, ClientWithMiddleware};
 use url::Url;
@@ -127,7 +131,12 @@ impl Default for OpenFIGIClientBuilder {
     /// Equivalent to [`Self::new`]. All configuration will use defaults
     /// or environment variables during [`Self::build`].
     fn default() -> Self {
-        Self::new()
+        Self {
+            reqwest_client: None,
+            middleware_client: None,
+            base_url: None,
+            api_key: None,
+        }
     }
 }
 
@@ -146,13 +155,8 @@ impl OpenFIGIClientBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     #[must_use]
-    pub const fn new() -> Self {
-        Self {
-            reqwest_client: None,
-            middleware_client: None,
-            base_url: None,
-            api_key: None,
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Set a custom base URL for the OpenFIGI API.
@@ -313,7 +317,7 @@ impl OpenFIGIClientBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn build(self) -> Result<OpenFIGIClient> {
-        // Determine the client to use (middleware_client takes precedence)
+        // Determine the HTTP client to use (middleware_client takes precedence)
         let client = match (self.middleware_client, self.reqwest_client) {
             (Some(middleware_client), _) => middleware_client,
             (None, Some(reqwest_client)) => ClientBuilder::new(reqwest_client).build(),
@@ -322,7 +326,7 @@ impl OpenFIGIClientBuilder {
 
         // Parse base URL or use default
         let base_url = match self.base_url {
-            Some(url_str) => Url::parse(&url_str)?,
+            Some(url_str) => Url::parse(&url_str).map_err(OpenFIGIError::from)?,
             None => DEFAULT_BASE_URL.clone(),
         };
 

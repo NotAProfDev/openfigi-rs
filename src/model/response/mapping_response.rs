@@ -46,7 +46,7 @@
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
-use crate::model::response::common::{FigiData, FigiResult, ResponseResult};
+use crate::model::response::common::{FigiResult, ResponseResult};
 use serde::{Deserialize, Serialize};
 
 /// Response array from the OpenFIGI mapping endpoint (POST /v3/mapping).
@@ -137,13 +137,12 @@ pub struct MappingData {
     pub data: Vec<FigiResult>,
 }
 
-impl FigiData for MappingData {
+impl MappingData {
     /// Returns a slice of the FIGI results contained in this mapping response.
     ///
     /// Provides access to the financial instrument data returned for the mapping request.
-    /// This implements the [`FigiData`] trait to allow uniform access to FIGI data across
-    /// different response types.
-    fn figi_data(&self) -> &[FigiResult] {
+    #[must_use]
+    pub fn data(&self) -> &[FigiResult] {
         &self.data
     }
 }
@@ -162,17 +161,17 @@ mod tests {
     #[test]
     fn test_deserialize_isin_example() {
         let json_str = load_test_data("isin_example.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 1);
-        let result = &results[0];
-        assert!(result.is_success());
+        assert_eq!(mapping_response.len(), 1);
+        let response_result = &mapping_response[0];
+        assert!(response_result.is_success());
 
-        let data = result.data().unwrap();
-        assert!(!data.is_empty());
+        let figi_result = response_result.success().unwrap().data();
+        assert!(!figi_result.is_empty());
 
         // Check first IBM entry
-        let first_entry = &data[0];
+        let first_entry = &figi_result[0];
         assert_eq!(first_entry.figi, "BBG000BLNNH6");
         assert_eq!(first_entry.ticker, Some("IBM".to_string()));
         assert_eq!(first_entry.display_name(), "INTL BUSINESS MACHINES CORP");
@@ -192,110 +191,109 @@ mod tests {
     #[test]
     fn test_deserialize_invalid_identifier() {
         let json_str = load_test_data("invalid_identifier.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 1);
-        let result = &results[0];
-        assert!(result.is_error());
-        assert_eq!(result.error(), Some("Invalid idValue format."));
-        assert!(result.data().is_none());
+        assert_eq!(mapping_response.len(), 1);
+        let response_result = &mapping_response[0];
+        assert!(response_result.is_error());
+        assert_eq!(response_result.error(), Some("Invalid idValue format."));
     }
 
     #[test]
     fn test_deserialize_bulk_request() {
         let json_str = load_test_data("bulk_request.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 2);
+        assert_eq!(mapping_response.len(), 2);
 
         // First result should be IBM success
-        let ibm_result = &results[0];
-        assert!(ibm_result.is_success());
-        let ibm_data = ibm_result.data().unwrap();
-        assert!(!ibm_data.is_empty());
-        assert_eq!(ibm_data[0].ticker, Some("IBM".to_string()));
+        let ibm_response_result = &mapping_response[0];
+        assert!(ibm_response_result.is_success());
+        let ibm_figi_result = ibm_response_result.success().unwrap().data();
+        assert!(!ibm_figi_result.is_empty());
+        assert_eq!(ibm_figi_result[0].ticker, Some("IBM".to_string()));
 
         // Second result should be AAPL success
-        let aapl_result = &results[1];
-        assert!(aapl_result.is_success());
-        let aapl_data = aapl_result.data().unwrap();
-        assert!(!aapl_data.is_empty());
-        assert_eq!(aapl_data[0].ticker, Some("AAPL".to_string()));
+        let aapl_response_result = &mapping_response[1];
+        assert!(aapl_response_result.is_success());
+        let aapl_figi_result = aapl_response_result.success().unwrap().data();
+        assert!(!aapl_figi_result.is_empty());
+        assert_eq!(aapl_figi_result[0].ticker, Some("AAPL".to_string()));
     }
 
     #[test]
     fn test_deserialize_cusip_with_exchange() {
         let json_str = load_test_data("cusip_with_exchange.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 1);
-        let result = &results[0];
-        assert!(result.is_success());
+        assert_eq!(mapping_response.len(), 1);
+        let response_result = &mapping_response[0];
+        assert!(response_result.is_success());
 
-        let data = result.data().unwrap();
-        assert!(!data.is_empty());
+        let figi_result = response_result.success().unwrap().data();
+        assert!(!figi_result.is_empty());
 
         // Verify we get valid FIGI results
-        for figi_result in data {
-            assert!(!figi_result.figi.is_empty());
-            assert!(figi_result.ticker.is_some());
+        for data in figi_result {
+            assert!(!data.figi.is_empty());
+            assert!(data.ticker.is_some());
         }
     }
 
     #[test]
     fn test_deserialize_ticker_with_security_type() {
         let json_str = load_test_data("ticker_with_security_type.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 1);
-        let result = &results[0];
-        assert!(result.is_success());
+        assert_eq!(mapping_response.len(), 1);
+        let response_result = &mapping_response[0];
+        assert!(response_result.is_success());
 
-        let data = result.data().unwrap();
-        assert!(!data.is_empty());
+        let figi_result = response_result.success().unwrap().data();
+        assert!(!figi_result.is_empty());
 
         // Verify security type is properly parsed
-        for figi_result in data {
-            assert!(figi_result.security_type.is_some());
-            assert!(figi_result.market_sector.is_some());
+        for data in figi_result {
+            assert!(data.security_type.is_some());
+            assert!(data.market_sector.is_some());
         }
     }
 
     #[test]
     fn test_deserialize_option_example() {
         let json_str = load_test_data("option_example.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 1);
-        let result = &results[0];
+        assert_eq!(mapping_response.len(), 1);
+        let response_result = &mapping_response[0];
 
         // This could be either success or error depending on the option data
-        if result.is_success() {
-            let data = result.data().unwrap();
-            for figi_result in data {
-                assert!(!figi_result.figi.is_empty());
+        if response_result.is_success() {
+            let figi_result = response_result.success().unwrap().data();
+            for data in figi_result {
+                assert!(!data.figi.is_empty());
             }
         } else {
-            assert!(result.error().is_some());
+            assert!(response_result.error().is_some());
         }
     }
 
     #[test]
     fn test_deserialize_currency_mic_example() {
         let json_str = load_test_data("currency_mic_example.json");
-        let results: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert_eq!(results.len(), 1);
-        let result = &results[0];
+        assert_eq!(mapping_response.len(), 1);
+        let response_result = &mapping_response[0];
 
         // This could be either success or error depending on the currency data
-        if result.is_success() {
-            let data = result.data().unwrap();
-            for figi_result in data {
-                assert!(!figi_result.figi.is_empty());
+        if response_result.is_success() {
+            let figi_result = response_result.success().unwrap().data();
+            for data in figi_result {
+                assert!(!data.figi.is_empty());
             }
         } else {
-            assert!(result.error().is_some());
+            assert!(response_result.error().is_some());
         }
     }
 

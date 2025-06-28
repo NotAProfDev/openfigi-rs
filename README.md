@@ -245,6 +245,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [OpenFIGI](https://www.openfigi.com/) for providing the API and documentation
 - [Bloomberg](https://www.bloomberg.com/) for the OpenFIGI initiative
+- [OMG](https://www.omg.org/spec/FIGI) for providing documentation
 - The Rust community for excellent HTTP and async libraries
 
 ## 📞 Support
