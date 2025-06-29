@@ -26,9 +26,10 @@
 //!     .await?;
 //!
 //! // Access the FIGI from the first result
-//! if let Some(data) = mapping_results[0].data() {
-//!     println!("FIGI: {}", data[0].figi);
-//! }
+//! let data = mapping_results.data();
+//! println!("FIGI: {}", data[0].figi);
+//! println!("Name: {}", data[0].display_name());
+//!
 //! # Ok(())
 //! # }
 //! ```

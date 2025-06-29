@@ -8,10 +8,13 @@
 //!
 //! # Response Structure
 //!
-//! The mapping endpoint returns a [`MappingResponse`] which is an array of results, where
-//! each element corresponds to one mapping request in the original batch:
-//! - [`MappingData`] containing successful FIGI results for valid identifiers
-//! - Error information when mapping fails for invalid or unrecognized identifiers
+//! The mapping endpoint returns:
+//! - For a single request either:
+//!   - [`MappingData`] containing successful results with FIGI data
+//!   - [`OpenFIGIError`] when the mapping request fails
+//! - For a batch request:
+//!   - [`MappingResponses`], which wraps a vector of results (successes and errors) corresponding
+//!     to each mapping request in the batch
 //!
 //! # Batch Processing
 //!
@@ -22,90 +25,83 @@
 //! # Examples
 //!
 //! ```rust
-//! use openfigi_rs::model::response::MappingResponse;
+//! use openfigi_rs::model::response::MappingData;
 //! use serde_json;
 //!
 //! // Single successful mapping result
 //! let json = r#"[{
 //!     "data": [{"figi": "BBG000BLNNH6", "ticker": "IBM", "name": "INTL BUSINESS MACHINES CORP"}]
 //! }]"#;
-//! let response: MappingResponse = serde_json::from_str(json).unwrap();
-//! assert_eq!(response.len(), 1);
-//! assert!(response[0].is_success());
-//!
-//! // Batch request with mixed success/error results
-//! let batch_json = r#"[
-//!     {"data": [{"figi": "BBG000BLNNH6", "ticker": "IBM"}]},
-//!     {"error": "Invalid ticker symbol"}
-//! ]"#;
-//! let batch_response: MappingResponse = serde_json::from_str(batch_json).unwrap();
-//! assert_eq!(batch_response.len(), 2);
-//! assert!(batch_response[0].is_success());
-//! assert!(batch_response[1].is_error());
+//! let response: Vec<MappingData> = serde_json::from_str(json).unwrap();
+//! assert_eq!(response[0].data().len(), 1);
 //! ```
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
-use crate::model::response::common::{FigiResult, ResponseResult};
+use crate::error::{OpenFIGIError, Result};
+use crate::model::response::common::FigiResult;
 use serde::{Deserialize, Serialize};
 
-/// Response array from the OpenFIGI mapping endpoint (POST /v3/mapping).
+/// Ergonomic wrapper for batch responses from the OpenFIGI mapping endpoint (POST /v3/mapping).
 ///
 /// This type represents the complete response from the mapping endpoint, which returns
 /// an array of results corresponding to each mapping request submitted in the batch.
-/// The mapping endpoint allows converting third-party identifiers (tickers, ISINs, CUSIPs, etc.)
-/// into FIGI identifiers.
+/// Each mapping request in the batch gets its own result in the response array, which is
+/// either a successful [`MappingData`] or an [`OpenFIGIError`] describing why the mapping failed.
 ///
-/// # Array Structure
+/// # Usage
 ///
-/// Each element in the array corresponds to one mapping request from the original batch:
-/// - Index 0 contains the result for the first mapping request
-/// - Index 1 contains the result for the second mapping request  
-/// - And so on...
-///
-/// # Result Types
-///
-/// Each array element can be either:
-/// - **Success**: Contains `MappingData` with FIGI results for the identifier
-/// - **Error**: Contains error information when the identifier cannot be mapped
-///
-/// # Batch Limits
-///
-/// The OpenFIGI API supports up to 100 mapping requests per batch call (only with an API key).
-///
-/// # Examples
-///
-/// ```rust
-/// use openfigi_rs::model::response::MappingResponse;
-/// use serde_json;
-///
-/// // Single mapping request result
-/// let single_json = r#"[{
-///     "data": [
-///         {
-///             "figi": "BBG000BLNNH6",
-///             "ticker": "IBM",
-///             "name": "INTL BUSINESS MACHINES CORP"
-///         }
-///     ]
-/// }]"#;
-/// let response: MappingResponse = serde_json::from_str(single_json).unwrap();
-/// assert_eq!(response.len(), 1);
-/// assert!(response[0].is_success());
-///
-/// // Multiple mapping requests with mixed results
-/// let batch_json = r#"[
-///     {"data": [{"figi": "BBG000BLNNH6", "ticker": "IBM"}]},
-///     {"error": "Invalid ticker symbol"},
-///     {"data": [{"figi": "BBG000B9XRY4", "ticker": "AAPL"}]}
-/// ]"#;
-/// let batch_response: MappingResponse = serde_json::from_str(batch_json).unwrap();
-/// assert_eq!(batch_response.len(), 3);
-/// assert!(batch_response[0].is_success());
-/// assert!(batch_response[1].is_error());
-/// assert!(batch_response[2].is_success());
-/// ```
-pub type MappingResponse = Vec<ResponseResult<MappingData>>;
+/// - Use [`MappingResponses::successes()`] to iterate over all successful mapping results.
+/// - Use [`MappingResponses::failures()`] to iterate over all errors that occurred for individual requests.
+/// - Use [`MappingResponses::len()`] and [`MappingResponses::is_empty()`] for batch size checks.
+#[derive(Debug)]
+pub struct MappingResponses(Vec<Result<MappingData>>);
+
+impl MappingResponses {
+    /// Creates a new `MappingResponses` from a vector of results.
+    /// This constructor is primarily for internal use
+    /// and testing purposes.
+    pub(crate) fn new(results: Vec<Result<MappingData>>) -> Self {
+        Self(results)
+    }
+
+    /// Returns an iterator over all successful mapping results in the batch, with their indices.
+    ///
+    /// Each item is a tuple `(index, &MappingData)` for a request that was successfully mapped.
+    pub fn successes(&self) -> impl Iterator<Item = (usize, &MappingData)> {
+        self.0
+            .iter()
+            .enumerate()
+            .filter_map(|(i, r)| r.as_ref().ok().map(|data| (i, data)))
+    }
+
+    /// Returns an iterator over all errors for failed mapping requests in the batch, with their indices.
+    ///
+    /// Each item is a tuple `(index, &OpenFIGIError)` for a request that failed to map.
+    pub fn failures(&self) -> impl Iterator<Item = (usize, &OpenFIGIError)> {
+        self.0
+            .iter()
+            .enumerate()
+            .filter_map(|(i, r)| r.as_ref().err().map(|err| (i, err)))
+    }
+
+    /// Returns the total number of mapping results (successes + failures) in the batch.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    /// Returns true if there are no mapping results in the batch.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    /// Returns a reference to the underlying vector of results, preserving order and index.
+    pub fn as_slice(&self) -> &[Result<MappingData>] {
+        &self.0
+    }
+}
 
 /// Successful mapping result containing FIGI data for a single mapping request.
 ///
@@ -150,6 +146,7 @@ impl MappingData {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::model::response::common::ResponseResult;
     use std::fs;
 
     /// Helper function to load test data from the tests/data/mapping directory
@@ -158,142 +155,192 @@ mod tests {
         fs::read_to_string(&path).unwrap_or_else(|e| panic!("Failed to read test file {path}: {e}"))
     }
 
+    /// Helper function to convert raw response results into a `MappingResponses` instance
+    fn from_response_results(raw: Vec<ResponseResult<MappingData>>) -> MappingResponses {
+        MappingResponses::new(
+            raw.into_iter()
+                .map(|res| match res {
+                    ResponseResult::Success(data) => Ok(data),
+                    ResponseResult::Error(err) => Err(OpenFIGIError::response_error(
+                        reqwest::StatusCode::OK,
+                        err.error,
+                        String::new(),
+                    )),
+                })
+                .collect(),
+        )
+    }
+
     #[test]
     fn test_deserialize_isin_example() {
         let json_str = load_test_data("isin_example.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
-        let response_result = &mapping_response[0];
-        assert!(response_result.is_success());
+        let response_result = &mapping_response.as_slice()[0];
+        match response_result {
+            Ok(mapping_data) => {
+                let figi_result = mapping_data.data();
+                assert!(!figi_result.is_empty());
 
-        let figi_result = response_result.success().unwrap().data();
-        assert!(!figi_result.is_empty());
+                // Check first IBM entry
+                let first_entry = &figi_result[0];
+                assert_eq!(first_entry.figi, "BBG000BLNNH6");
+                assert_eq!(first_entry.ticker, Some("IBM".to_string()));
+                assert_eq!(first_entry.display_name(), "INTL BUSINESS MACHINES CORP");
 
-        // Check first IBM entry
-        let first_entry = &figi_result[0];
-        assert_eq!(first_entry.figi, "BBG000BLNNH6");
-        assert_eq!(first_entry.ticker, Some("IBM".to_string()));
-        assert_eq!(first_entry.display_name(), "INTL BUSINESS MACHINES CORP");
+                // Check if composite_figi and share_class_figi exists
+                assert!(first_entry.has_composite_figi());
+                assert!(first_entry.has_share_class_figi());
 
-        // Check if composite_figi and share_class_figi exists
-        assert!(first_entry.has_composite_figi());
-        assert!(first_entry.has_share_class_figi());
-
-        // Verify actual field values from real data
-        assert_eq!(first_entry.composite_figi, Some("BBG000BLNNH6".to_string()));
-        assert_eq!(
-            first_entry.share_class_figi,
-            Some("BBG001S5S399".to_string())
-        );
+                // Verify actual field values from real data
+                assert_eq!(first_entry.composite_figi, Some("BBG000BLNNH6".to_string()));
+                assert_eq!(
+                    first_entry.share_class_figi,
+                    Some("BBG001S5S399".to_string())
+                );
+            }
+            Err(e) => panic!("Expected success, got error: {e}"),
+        }
     }
 
     #[test]
     fn test_deserialize_invalid_identifier() {
         let json_str = load_test_data("invalid_identifier.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
-        let response_result = &mapping_response[0];
-        assert!(response_result.is_error());
-        assert_eq!(response_result.error(), Some("Invalid idValue format."));
+        let response_result = &mapping_response.as_slice()[0];
+        match response_result {
+            Ok(_) => panic!("Expected error, got success"),
+            Err(OpenFIGIError::ResponseError(resp)) => {
+                assert!(resp.message.contains("Invalid idValue format."));
+            }
+            Err(e) => panic!("Unexpected error variant: {e}"),
+        }
     }
 
     #[test]
     fn test_deserialize_bulk_request() {
         let json_str = load_test_data("bulk_request.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 2);
 
         // First result should be IBM success
-        let ibm_response_result = &mapping_response[0];
-        assert!(ibm_response_result.is_success());
-        let ibm_figi_result = ibm_response_result.success().unwrap().data();
-        assert!(!ibm_figi_result.is_empty());
-        assert_eq!(ibm_figi_result[0].ticker, Some("IBM".to_string()));
+        let ibm_response_result = &mapping_response.as_slice()[0];
+        match ibm_response_result {
+            Ok(mapping_data) => {
+                let ibm_figi_result = mapping_data.data();
+                assert!(!ibm_figi_result.is_empty());
+                assert_eq!(ibm_figi_result[0].ticker, Some("IBM".to_string()));
+            }
+            Err(e) => panic!("Expected IBM success, got error: {e}"),
+        }
 
         // Second result should be AAPL success
-        let aapl_response_result = &mapping_response[1];
-        assert!(aapl_response_result.is_success());
-        let aapl_figi_result = aapl_response_result.success().unwrap().data();
-        assert!(!aapl_figi_result.is_empty());
-        assert_eq!(aapl_figi_result[0].ticker, Some("AAPL".to_string()));
+        let aapl_response_result = &mapping_response.as_slice()[1];
+        match aapl_response_result {
+            Ok(mapping_data) => {
+                let aapl_figi_result = mapping_data.data();
+                assert!(!aapl_figi_result.is_empty());
+                assert_eq!(aapl_figi_result[0].ticker, Some("AAPL".to_string()));
+            }
+            Err(e) => panic!("Expected AAPL success, got error: {e}"),
+        }
     }
 
     #[test]
     fn test_deserialize_cusip_with_exchange() {
         let json_str = load_test_data("cusip_with_exchange.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
-        let response_result = &mapping_response[0];
-        assert!(response_result.is_success());
+        let response_result = &mapping_response.as_slice()[0];
+        match response_result {
+            Ok(mapping_data) => {
+                let figi_result = mapping_data.data();
+                assert!(!figi_result.is_empty());
 
-        let figi_result = response_result.success().unwrap().data();
-        assert!(!figi_result.is_empty());
-
-        // Verify we get valid FIGI results
-        for data in figi_result {
-            assert!(!data.figi.is_empty());
-            assert!(data.ticker.is_some());
+                // Verify we get valid FIGI results
+                for data in figi_result {
+                    assert!(!data.figi.is_empty());
+                    assert!(data.ticker.is_some());
+                }
+            }
+            Err(e) => panic!("Expected success, got error: {e}"),
         }
     }
 
     #[test]
     fn test_deserialize_ticker_with_security_type() {
         let json_str = load_test_data("ticker_with_security_type.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
-        let response_result = &mapping_response[0];
-        assert!(response_result.is_success());
+        let response_result = &mapping_response.as_slice()[0];
+        match response_result {
+            Ok(mapping_data) => {
+                let figi_result = mapping_data.data();
+                assert!(!figi_result.is_empty());
 
-        let figi_result = response_result.success().unwrap().data();
-        assert!(!figi_result.is_empty());
-
-        // Verify security type is properly parsed
-        for data in figi_result {
-            assert!(data.security_type.is_some());
-            assert!(data.market_sector.is_some());
+                // Verify security type is properly parsed
+                for data in figi_result {
+                    assert!(data.security_type.is_some());
+                    assert!(data.market_sector.is_some());
+                }
+            }
+            Err(e) => panic!("Expected success, got error: {e}"),
         }
     }
 
     #[test]
     fn test_deserialize_option_example() {
         let json_str = load_test_data("option_example.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
-        let response_result = &mapping_response[0];
-
-        // This could be either success or error depending on the option data
-        if response_result.is_success() {
-            let figi_result = response_result.success().unwrap().data();
-            for data in figi_result {
-                assert!(!data.figi.is_empty());
+        let response_result = &mapping_response.as_slice()[0];
+        match response_result {
+            Ok(mapping_data) => {
+                let figi_result = mapping_data.data();
+                for data in figi_result {
+                    assert!(!data.figi.is_empty());
+                }
             }
-        } else {
-            assert!(response_result.error().is_some());
+            Err(e) => {
+                // This could be either success or error depending on the option data
+                assert!(!e.to_string().is_empty());
+            }
         }
     }
 
     #[test]
     fn test_deserialize_currency_mic_example() {
         let json_str = load_test_data("currency_mic_example.json");
-        let mapping_response: MappingResponse = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
-        let response_result = &mapping_response[0];
-
-        // This could be either success or error depending on the currency data
-        if response_result.is_success() {
-            let figi_result = response_result.success().unwrap().data();
-            for data in figi_result {
-                assert!(!data.figi.is_empty());
+        let response_result = &mapping_response.as_slice()[0];
+        match response_result {
+            Ok(mapping_data) => {
+                let figi_result = mapping_data.data();
+                for data in figi_result {
+                    assert!(!data.figi.is_empty());
+                }
             }
-        } else {
-            assert!(response_result.error().is_some());
+            Err(e) => {
+                // This could be either success or error depending on the currency data
+                assert!(!e.to_string().is_empty());
+            }
         }
     }
 

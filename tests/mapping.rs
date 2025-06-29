@@ -105,73 +105,79 @@ async fn test_mapping_with_filters() {
     rate_limit_delay().await;
 }
 
-// / Tests bulk mapping functionality with multiple identifiers
-// /
-// / Validates that multiple mapping requests can be processed in a single
-// / bulk API call, testing with:
-// / - ISIN identifier
-// / - Multiple ticker symbols
-// /
-// / Ensures that the response contains exactly one result per request
-// / and that each result has either data or an error message.
-// #[tokio::test]
-// #[serial]
-// async fn test_mapping_bulk_request() {
-//     let client = create_test_client();
-//     let requests = vec![
-//         MappingRequest::new(IdType::IdIsin, json!("US4592001014")),
-//         MappingRequest::new(IdType::Ticker, json!("AAPL")),
-//         MappingRequest::new(IdType::Ticker, json!("MSFT")),
-//     ];
+/// Tests bulk mapping functionality with multiple identifiers
+///
+/// Validates that multiple mapping requests can be processed in a single
+/// bulk API call, testing with:
+/// - ISIN identifier
+/// - Multiple ticker symbols
+///
+/// Ensures that the response contains exactly one result per request
+/// and that each result has either data or an error message.
+#[tokio::test]
+#[serial]
+async fn test_mapping_bulk_request() {
+    let client = create_test_client();
+    let requests = vec![
+        MappingRequest::new(IdType::IdIsin, json!("US4592001014")),
+        MappingRequest::new(IdType::Ticker, json!("AAPL")),
+        MappingRequest::new(IdType::Ticker, json!("MSFT")),
+    ];
 
-//     // Test mapping with multiple requests in a single bulk call
-//     let mapping_data = client
-//         .bulk_mapping()
-//         .add_requests(requests)
-//         .send()
-//         .await
-//         .expect("Bulk mapping should succeed");
+    // Test mapping with multiple requests in a single bulk call
+    let mapping_responses = client
+        .bulk_mapping()
+        .add_requests(requests)
+        .send()
+        .await
+        .expect("Bulk mapping should succeed");
 
-//     // Should have one result for each request
-//     assert_eq!(mapping_data.len(), 3);
-//     for result in &mapping_data {
-//         // Each result should either have data or an error, but not both
-//         assert!(
-//             result.data().is_some() || result.error().is_some(),
-//             "Each result should have either data or an error"
-//         );
-//     }
+    // Should have one result for each request
+    assert_eq!(mapping_responses.len(), 3);
+    for (i, result) in mapping_responses.as_slice().iter().enumerate() {
+        match result {
+            Ok(data) => {
+                // Success: data present
+                assert!(
+                    !data.data().is_empty(),
+                    "Expected non-empty data for index {i}"
+                );
+            }
+            Err(e) => {
+                panic!("Expected successful mapping for index {i}, but got error: {e}");
+            }
+        }
+    }
 
-//     // Add delay to avoid rate limiting
-//     rate_limit_delay().await;
-// }
+    // Add delay to avoid rate limiting
+    rate_limit_delay().await;
+}
 
-// /// Tests error handling for invalid identifiers
-// ///
-// /// Validates that the API properly handles invalid input by:
-// /// - Returning appropriate error messages
-// /// - Not returning data for invalid requests
-// /// - Maintaining proper response structure even with errors
-// #[tokio::test]
-// #[serial]
-// async fn test_mapping_invalid_identifier() {
-//     let client = create_test_client();
+/// Tests error handling for invalid identifiers
+///
+/// Validates that the API properly handles invalid input by:
+/// - Returning appropriate error messages
+/// - Not returning data for invalid requests
+/// - Maintaining proper response structure even with errors
+#[tokio::test]
+#[serial]
+async fn test_mapping_invalid_identifier() {
+    let client = create_test_client();
 
-//     let results = client
-//         .mapping(IdType::IdIsin, json!("INVALID_ISIN"))
-//         .send()
-//         .await
-//         .expect("API call should succeed");
+    let mapping_data = client
+        .mapping(IdType::IdIsin, json!("INVALID_ISIN"))
+        .send()
+        .await;
 
-//     // Length should be 1 for an invalid request
-//     assert_eq!(results.len(), 1);
+    // The response should be an error, not MappingData, so match on the result
+    match mapping_data {
+        Ok(_) => panic!("Expected error, got MappingData for invalid identifier"),
+        Err(e) => {
+            // Check that the error message is as expected
+            assert!(e.to_string().contains("Invalid idValue format."));
+        }
+    }
 
-//     // The response should contain an error
-//     let data = &results[0];
-//     assert!(data.is_error());
-//     assert_eq!(data.error(), Some("Invalid idValue format."));
-//     assert!(data.data().is_none());
-
-//     // Add delay to avoid rate limiting
-//     rate_limit_delay().await;
-// }
+    // Add delay to avoid rate limiting
+    rate_limit_delay().await;
+}

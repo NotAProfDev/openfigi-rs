@@ -12,9 +12,14 @@
 //! and total count information.
 //!
 //! ## [`MappingData`]
-//! Response from the `/v3/mapping` endpoint for converting third-party identifiers
+//! Response from the `/v3/mapping` endpoint for single request converting third-party identifiers
 //! (tickers, ISINs, CUSIPs) into FIGI identifiers. Returns an array of results
 //! corresponding to each mapping request in the batch.
+//!
+//! ## [`MappingResponses`]
+//! Ergonomic batch response wrapper for the `/v3/mapping` endpoint. Provides indexed access
+//! to successes and errors, preserving the order of requests and allowing users to determine
+//! which mapping requests succeeded or failed.
 //!
 //! ## [`SearchData`]
 //! Response from the `/v3/search` endpoint for text-based searches of financial
@@ -32,6 +37,7 @@ pub(crate) use self::common::ResponseResult;
 
 mod mapping_response;
 pub use self::mapping_response::MappingData;
+pub use self::mapping_response::MappingResponses;
 
 mod search_response;
 pub use self::search_response::SearchData;

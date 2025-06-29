@@ -7,14 +7,14 @@
 //!
 //! # Response Structure
 //!
-//! The filter endpoint returns a [`FilterResponse`] which wraps either:
+//! The filter endpoint returns either:
 //! - [`FilterData`] containing successful results with FIGI data and pagination metadata
-//! - Error information when the filter request fails
+//! - [`crate::error::OpenFIGIError`] when the filter request fails
 //!
 //! # Examples
 //!
 //! ```rust
-//! use openfigi_rs::model::response::FilterResponse;
+//! use openfigi_rs::model::response::FilterData;
 //! use serde_json;
 //!
 //! // Parsing a successful filter response
@@ -23,57 +23,15 @@
 //!     "total": 1,
 //!     "next": null
 //! }"#;
-//! let response: FilterResponse = serde_json::from_str(json).unwrap();
-//! assert!(response.is_success());
-//! assert_eq!(response.data().unwrap().len(), 1);
+//! let response: FilterData = serde_json::from_str(json).unwrap();
+//! assert_eq!(response.data().len(), 1);
+//! assert!(response.next_page().is_none());
 //! ```
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
-use crate::model::response::common::{FigiResult, ResponseResult};
+use crate::model::response::common::FigiResult;
 use serde::{Deserialize, Serialize};
-
-/// Response type for the OpenFIGI `/filter` endpoint (POST /v3/filter).
-///
-/// This type alias represents the complete response from the filter endpoint, which can
-/// contain either successful filter results or error information. The filter endpoint
-/// supports pagination and provides comprehensive metadata about the search results.
-///
-/// # Response Format
-///
-/// Results are generally sorted alphabetically by FIGI.
-///
-/// Successful responses contain:
-/// - An array of FIGI results matching the filter criteria
-/// - Total count of available results
-/// - Optional pagination token for retrieving additional results
-///
-/// Error responses contain:
-/// - A descriptive error message explaining why the filter request failed
-///
-/// # Examples
-///
-/// ```rust
-/// use openfigi_rs::model::response::FilterResponse;
-/// use serde_json;
-///
-/// // Successful response with results
-/// let success_json = r#"{
-///     "data": [
-///         {"figi": "BBG000BLNNH6", "ticker": "AAPL", "name": "Apple Inc"}
-///     ],
-///     "total": 1
-/// }"#;
-/// let response: FilterResponse = serde_json::from_str(success_json).unwrap();
-/// assert!(response.is_success());
-/// assert_eq!(response.total_results(), Some(1));
-///
-/// // Error response
-/// let error_json = r#"{"error": "Invalid filter criteria"}"#;
-/// let error_response: FilterResponse = serde_json::from_str(error_json).unwrap();
-/// assert!(error_response.is_error());
-/// ```
-pub type FilterResponse = ResponseResult<FilterData>;
 
 /// Successful filter result data containing FIGI results and pagination metadata.
 ///
@@ -148,10 +106,11 @@ impl FilterData {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::response::filter_response;
-
     use super::*;
+    use crate::model::response::common::ResponseResult;
     use std::fs;
+
+    type FilterResponse = ResponseResult<FilterData>;
 
     /// Helper function to load test data from the tests/data/filter directory
     fn load_test_data(filename: &str) -> String {
@@ -164,8 +123,10 @@ mod tests {
         let json_str = load_test_data("simple_example.json");
         let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(filter_response.is_success());
-        let filter_data = filter_response.success().unwrap();
+        let filter_data = match filter_response {
+            ResponseResult::Success(ref data) => data,
+            ResponseResult::Error(ref err) => panic!("Expected success, got error: {err:?}"),
+        };
         let figi_result = filter_data.data();
         assert!(!figi_result.is_empty());
 
@@ -197,8 +158,10 @@ mod tests {
         let json_str = load_test_data("no_data.json");
         let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(filter_response.is_success());
-        let filter_data = filter_response.success().unwrap();
+        let filter_data = match filter_response {
+            ResponseResult::Success(ref data) => data,
+            ResponseResult::Error(ref err) => panic!("Expected success, got error: {err:?}"),
+        };
         let figi_result = filter_data.data();
         assert!(figi_result.is_empty());
         assert!(filter_data.next_page().is_none());

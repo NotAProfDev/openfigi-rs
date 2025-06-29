@@ -27,41 +27,6 @@ pub enum ResponseResult<T> {
     Error(ResponseError),
 }
 
-impl<T> ResponseResult<T> {
-    /// Returns `true` if this result represents a successful response.
-    #[must_use]
-    pub fn is_success(&self) -> bool {
-        matches!(self, ResponseResult::Success(_))
-    }
-
-    /// Returns `true` if this result represents an error response.
-    #[must_use]
-    pub fn is_error(&self) -> bool {
-        matches!(self, ResponseResult::Error(_))
-    }
-
-    /// Returns a reference to the successful response data, if this is a successful response.
-    ///
-    /// Returns `None` if this is an error response.
-    pub fn success(&self) -> Option<&T> {
-        match self {
-            ResponseResult::Success(success) => Some(success),
-            ResponseResult::Error(_) => None,
-        }
-    }
-
-    /// Returns the error message if this result represents an error response.
-    ///
-    /// Returns `None` if this is a successful response.
-    #[must_use]
-    pub fn error(&self) -> Option<&str> {
-        match self {
-            ResponseResult::Success(_) => None,
-            ResponseResult::Error(error) => Some(&error.error),
-        }
-    }
-}
-
 /// Error information returned by the OpenFIGI API when a request fails.
 ///
 /// This structure represents the standard error format used across all OpenFIGI API

@@ -188,9 +188,24 @@ impl fmt::Display for OpenFIGIError {
         match self {
             // Most common errors first for better branch prediction
             Self::ReqwestError(e) => write!(f, "error in reqwest: {e}"),
-            Self::ResponseError(e) => {
-                write!(f, "error in response: status code {}", e.status)
-            }
+            Self::ResponseError(e) => match (e.message.is_empty(), e.content.is_empty()) {
+                (false, false) => write!(
+                    f,
+                    "error in response: status code {}: {} | content: {}",
+                    e.status, e.message, e.content
+                ),
+                (false, true) => write!(
+                    f,
+                    "error in response: status code {}: {}",
+                    e.status, e.message
+                ),
+                (true, false) => write!(
+                    f,
+                    "error in response: status code {} | content: {}",
+                    e.status, e.content
+                ),
+                (true, true) => write!(f, "error in response: status code {}", e.status),
+            },
             Self::SerdeError(e) => write!(f, "error in serde: {e}"),
             Self::ReqwestMiddlewareError(e) => {
                 write!(f, "error in reqwest-middleware: {e}")

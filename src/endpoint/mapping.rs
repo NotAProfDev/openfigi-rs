@@ -73,7 +73,7 @@ use crate::{
             SecurityType2, StateCode,
         },
         request::{MappingRequest, MappingRequestBuilder},
-        response::MappingData,
+        response::{MappingData, MappingResponses},
     },
 };
 use chrono::NaiveDate;
@@ -370,11 +370,13 @@ impl BulkMappingRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<Vec<Result<MappingData>>> {
+    pub async fn send(self) -> Result<MappingResponses> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_list_response(raw_response).await
+        let results = client.parse_list_response(raw_response).await?;
+
+        Ok(MappingResponses::new(results))
     }
 }
 
