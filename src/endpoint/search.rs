@@ -34,6 +34,7 @@ use crate::{
     DEFAULT_ENDPOINT_SEARCH,
     client::OpenFIGIClient,
     error::Result,
+    impl_filterable_builder,
     model::{
         enums::{
             Currency, ExchCode, MarketSecDesc, MicCode, OptionType, SecurityType, SecurityType2,
@@ -88,107 +89,8 @@ impl SingleSearchRequestBuilder {
         self
     }
 
-    /// Sets the optional exchange code for the search request.
-    #[must_use]
-    pub fn exch_code(mut self, exch_code: ExchCode) -> Self {
-        self.request_builder = self.request_builder.exch_code(exch_code);
-        self
-    }
-
-    /// Sets the optional MIC code for the search request.
-    #[must_use]
-    pub fn mic_code(mut self, mic_code: MicCode) -> Self {
-        self.request_builder = self.request_builder.mic_code(mic_code);
-        self
-    }
-
-    /// Sets the optional currency for the search request.
-    #[must_use]
-    pub fn currency(mut self, currency: Currency) -> Self {
-        self.request_builder = self.request_builder.currency(currency);
-        self
-    }
-
-    /// Sets the optional market sector description for the search request.
-    ///
-    /// Specifies the market sector or asset class for the financial instrument.
-    #[must_use]
-    pub fn market_sec_des(mut self, market_sec_des: MarketSecDesc) -> Self {
-        self.request_builder = self.request_builder.market_sec_des(market_sec_des);
-        self
-    }
-
-    /// Sets the optional security type for the search request.
-    ///
-    /// Specifies the primary security type classification for the instrument.
-    #[must_use]
-    pub fn security_type(mut self, security_type: SecurityType) -> Self {
-        self.request_builder = self.request_builder.security_type(security_type);
-        self
-    }
-
-    /// Sets the optional secondary security type for the search request.
-    #[must_use]
-    pub fn security_type2(mut self, security_type2: SecurityType2) -> Self {
-        self.request_builder = self.request_builder.security_type2(security_type2);
-        self
-    }
-
-    /// Sets the optional flag to include unlisted equities for the search request.
-    #[must_use]
-    pub fn include_unlisted_equities(mut self, val: bool) -> Self {
-        self.request_builder = self.request_builder.include_unlisted_equities(val);
-        self
-    }
-
-    /// Sets the optional option type for the search request.
-    #[must_use]
-    pub fn option_type(mut self, option_type: OptionType) -> Self {
-        self.request_builder = self.request_builder.option_type(option_type);
-        self
-    }
-
-    /// Sets the optional strike price range for the search request.
-    #[must_use]
-    pub fn strike(mut self, strike: [Option<f64>; 2]) -> Self {
-        self.request_builder = self.request_builder.strike(strike);
-        self
-    }
-
-    /// Sets the optional contract size range for the search request.
-    #[must_use]
-    pub fn contract_size(mut self, contract_size: [Option<f64>; 2]) -> Self {
-        self.request_builder = self.request_builder.contract_size(contract_size);
-        self
-    }
-
-    /// Sets the optional coupon range for the search request.
-    #[must_use]
-    pub fn coupon(mut self, coupon: [Option<f64>; 2]) -> Self {
-        self.request_builder = self.request_builder.coupon(coupon);
-        self
-    }
-
-    /// Sets the optional expiration date range for the search request.
-    #[must_use]
-    pub fn expiration(mut self, expiration: [Option<NaiveDate>; 2]) -> Self {
-        self.request_builder = self.request_builder.expiration(expiration);
-        self
-    }
-
-    /// Sets the optional maturity date range for the search request.
-    #[must_use]
-    pub fn maturity(mut self, maturity: [Option<NaiveDate>; 2]) -> Self {
-        self.request_builder = self.request_builder.maturity(maturity);
-        self
-    }
-
-    /// Sets the optional state code for the search request.
-    #[must_use]
-    pub fn state_code(mut self, state_code: StateCode) -> Self {
-        self.request_builder = self.request_builder.state_code(state_code);
-        self
-    }
+    // Bring in common builder methods for filtering logic
+    impl_filterable_builder!();
 
     /// Sends the search request to `/search` endpoint and returns the raw HTTP response.
     ///
