@@ -113,6 +113,10 @@ pub(crate) mod macros;
 pub mod model;
 /// Internal HTTP request builder utilities (not intended for direct use)
 pub(crate) mod request_builder;
+/// Test utilities for OpenFIGI client
+#[cfg(test)]
+#[macro_use]
+mod test_utils;
 
 use std::sync::LazyLock;
 use url::Url;

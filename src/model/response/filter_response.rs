@@ -107,20 +107,13 @@ impl FilterData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::response::common::ResponseResult;
-    use std::fs;
+    use crate::{model::response::common::ResponseResult, test_utils::load_test_data};
 
     type FilterResponse = ResponseResult<FilterData>;
 
-    /// Helper function to load test data from the tests/data/filter directory
-    fn load_test_data(filename: &str) -> String {
-        let path = format!("tests/data/filter/{filename}");
-        fs::read_to_string(&path).unwrap_or_else(|e| panic!("Failed to read test file {path}: {e}"))
-    }
-
     #[test]
     fn test_deserialize_simple_example() {
-        let json_str = load_test_data("simple_example.json");
+        let json_str = load_test_data("filter", "simple_example.json");
         let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
 
         let filter_data = match filter_response {
@@ -155,7 +148,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_no_data() {
-        let json_str = load_test_data("no_data.json");
+        let json_str = load_test_data("filter", "no_data.json");
         let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
 
         let filter_data = match filter_response {

@@ -92,21 +92,14 @@ impl SearchData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::response::ResponseResult;
-    use std::fs;
+    use crate::{model::response::ResponseResult, test_utils::load_test_data};
 
     /// Type alias for the search response used in tests
     pub type SearchResponse = ResponseResult<SearchData>;
 
-    /// Helper function to load test data from the tests/data/search directory
-    fn load_test_data(filename: &str) -> String {
-        let path = format!("tests/data/search/{filename}");
-        fs::read_to_string(&path).unwrap_or_else(|e| panic!("Failed to read test file {path}: {e}"))
-    }
-
     #[test]
     fn test_deserialize_query_example() {
-        let json_str = load_test_data("query_example.json");
+        let json_str = load_test_data("search", "query_example.json");
         let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
 
         let search_data = match search_response {
@@ -136,7 +129,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_no_data() {
-        let json_str = load_test_data("no_data.json");
+        let json_str = load_test_data("search", "no_data.json");
         let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
 
         let figi_result = match search_response {

@@ -2116,33 +2116,13 @@ pub enum ExchCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_frankfurt() {
-        let code = ExchCode::FRANKFURT;
-        let serialized = serde_json::to_string(&code).unwrap();
-        assert_eq!(serialized, "\"FRANKFURT\"");
-    }
-
-    #[test]
-    fn test_deserialize_frankfurt() {
-        let json = "\"FRANKFURT\"";
-        let deserialized: ExchCode = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, ExchCode::FRANKFURT);
-    }
-
-    #[test]
-    fn test_serialize_case_sensitive() {
-        let code = ExchCode::Bbox;
-        let serialized = serde_json::to_string(&code).unwrap();
-        assert_eq!(serialized, "\"bbox\"");
-    }
-
-    #[test]
-    fn test_deserialize_case_sensitive() {
-        let json = "\"bbox\"";
-        let deserialized: ExchCode = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, ExchCode::Bbox);
-    }
+    test_enum_serialization!(
+        test_serialize_frankfurt,
+        ExchCode,
+        FRANKFURT,
+        "\"FRANKFURT\""
+    );
+    test_enum_serialization!(test_serialize_bbox, ExchCode, Bbox, "\"bbox\"");
 }

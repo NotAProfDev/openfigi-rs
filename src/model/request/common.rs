@@ -113,26 +113,20 @@ impl RequestFilters {
         Ok(())
     }
 
-    /// Validates all filter parameters and their combinations.
-    ///
-    /// Ensures that:
-    /// - Mutually exclusive fields are not both set
-    /// - Numeric ranges have valid start/end values
-    /// - Date ranges are valid and within acceptable limits
-    /// - Required fields are present for specific security types
-    ///
-    /// # Errors
-    ///
-    /// Returns [`OpenFIGIError`] with [`OtherErrorKind::Validation`] if validation fails.
-    pub fn validate(&self) -> Result<()> {
-        // MicCode and ExchCode cannot be used together
+    /// Validates that mutually exclusive fields are not used together.
+    fn validate_mutual_exclusions(&self) -> Result<()> {
         if self.exch_code.is_some() && self.mic_code.is_some() {
             return Err(OpenFIGIError::other_error(
                 OtherErrorKind::Validation,
                 "Cannot set both exchCode and micCode",
             ));
         }
+        // Add any other mutual exclusion rules here in the future.
+        Ok(())
+    }
 
+    /// Validates that all numeric and date ranges are ordered correctly.
+    fn validate_ranges(&self) -> Result<()> {
         // Validate strike, contract_size, coupon
         Self::validate_number_range(self.strike.as_ref(), "strike")?;
         Self::validate_number_range(self.contract_size.as_ref(), "contract_size")?;
@@ -141,7 +135,11 @@ impl RequestFilters {
         // Validate expiration and maturity dates
         Self::validate_date_range(self.expiration.as_ref(), "expiration")?;
         Self::validate_date_range(self.maturity.as_ref(), "maturity")?;
+        Ok(())
+    }
 
+    /// Validates fields that are required only under certain conditions.
+    fn validate_conditional_requirements(&self) -> Result<()> {
         // expiration is required if securityType is Option or Warrant
         if (self.security_type2 == Some(SecurityType2::Option)
             || self.security_type2 == Some(SecurityType2::Warrant))
@@ -160,6 +158,25 @@ impl RequestFilters {
                 "maturity is required for Pool security types",
             ));
         }
+        Ok(())
+    }
+
+    /// Validates all filter parameters and their combinations.
+    ///
+    /// Ensures that:
+    /// - Mutually exclusive fields are not both set
+    /// - Numeric ranges have valid start/end values
+    /// - Date ranges are valid and within acceptable limits
+    /// - Required fields are present for specific security types
+    ///
+    /// # Errors
+    ///
+    /// Returns [`OpenFIGIError`] with [`OtherErrorKind::Validation`] if validation fails.
+    pub fn validate(&self) -> Result<()> {
+        self.validate_mutual_exclusions()?;
+        self.validate_ranges()?;
+        self.validate_conditional_requirements()?;
+
         Ok(())
     }
 

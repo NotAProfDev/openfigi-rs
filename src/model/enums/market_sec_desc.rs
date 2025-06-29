@@ -42,33 +42,8 @@ pub enum MarketSecDesc {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_equity() {
-        let val = MarketSecDesc::Equity;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"Equity\"");
-    }
-
-    #[test]
-    fn test_deserialize_equity() {
-        let json = "\"Equity\"";
-        let deserialized: MarketSecDesc = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, MarketSecDesc::Equity);
-    }
-
-    #[test]
-    fn test_serialize_mmkt() {
-        let val = MarketSecDesc::MMkt;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"M-Mkt\"");
-    }
-
-    #[test]
-    fn test_deserialize_mmkt() {
-        let json = "\"M-Mkt\"";
-        let deserialized: MarketSecDesc = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, MarketSecDesc::MMkt);
-    }
+    test_enum_serialization!(test_serialize_equity, MarketSecDesc, Equity, "\"Equity\"");
+    test_enum_serialization!(test_serialize_mmkt, MarketSecDesc, MMkt, "\"M-Mkt\"");
 }

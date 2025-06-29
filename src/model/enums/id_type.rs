@@ -100,33 +100,13 @@ pub enum IdType {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_id_isin() {
-        let id = IdType::IdIsin;
-        let serialized = serde_json::to_string(&id).unwrap();
-        assert_eq!(serialized, "\"ID_ISIN\"");
-    }
-
-    #[test]
-    fn test_deserialize_id_isin() {
-        let json = "\"ID_ISIN\"";
-        let deserialized: IdType = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, IdType::IdIsin);
-    }
-
-    #[test]
-    fn test_serialize_vendor_index_code() {
-        let id = IdType::VendorIndexCode;
-        let serialized = serde_json::to_string(&id).unwrap();
-        assert_eq!(serialized, "\"VENDOR_INDEX_CODE\"");
-    }
-
-    #[test]
-    fn test_deserialize_vendor_index_code() {
-        let json = "\"VENDOR_INDEX_CODE\"";
-        let deserialized: IdType = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, IdType::VendorIndexCode);
-    }
+    test_enum_serialization!(test_serialize_id_isin, IdType, IdIsin, "\"ID_ISIN\"");
+    test_enum_serialization!(
+        test_serialize_vendor_index_code,
+        IdType,
+        VendorIndexCode,
+        "\"VENDOR_INDEX_CODE\""
+    );
 }

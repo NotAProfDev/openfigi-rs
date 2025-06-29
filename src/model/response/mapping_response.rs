@@ -146,14 +146,7 @@ impl MappingData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::response::common::ResponseResult;
-    use std::fs;
-
-    /// Helper function to load test data from the tests/data/mapping directory
-    fn load_test_data(filename: &str) -> String {
-        let path = format!("tests/data/mapping/{filename}");
-        fs::read_to_string(&path).unwrap_or_else(|e| panic!("Failed to read test file {path}: {e}"))
-    }
+    use crate::{model::response::common::ResponseResult, test_utils::load_test_data};
 
     /// Helper function to convert raw response results into a `MappingResponses` instance
     fn from_response_results(raw: Vec<ResponseResult<MappingData>>) -> MappingResponses {
@@ -173,7 +166,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_isin_example() {
-        let json_str = load_test_data("isin_example.json");
+        let json_str = load_test_data("mapping", "isin_example.json");
 
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
@@ -208,7 +201,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_invalid_identifier() {
-        let json_str = load_test_data("invalid_identifier.json");
+        let json_str = load_test_data("mapping", "invalid_identifier.json");
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
 
@@ -225,7 +218,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_bulk_request() {
-        let json_str = load_test_data("bulk_request.json");
+        let json_str = load_test_data("mapping", "bulk_request.json");
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
 
@@ -256,7 +249,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_cusip_with_exchange() {
-        let json_str = load_test_data("cusip_with_exchange.json");
+        let json_str = load_test_data("mapping", "cusip_with_exchange.json");
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
 
@@ -279,7 +272,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_ticker_with_security_type() {
-        let json_str = load_test_data("ticker_with_security_type.json");
+        let json_str = load_test_data("mapping", "ticker_with_security_type.json");
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
 
@@ -302,7 +295,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_option_example() {
-        let json_str = load_test_data("option_example.json");
+        let json_str = load_test_data("mapping", "option_example.json");
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
 
@@ -324,7 +317,7 @@ mod tests {
 
     #[test]
     fn test_deserialize_currency_mic_example() {
-        let json_str = load_test_data("currency_mic_example.json");
+        let json_str = load_test_data("mapping", "currency_mic_example.json");
         let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
         let mapping_response = from_response_results(raw);
 
