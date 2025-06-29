@@ -1,3 +1,23 @@
+//! # Test Utilities
+//!
+//! Shared testing utilities and macros for the OpenFIGI Rust SDK.
+//!
+//! This module provides common functionality used across test modules to reduce
+//! code duplication and ensure consistent testing patterns throughout the codebase.
+//!
+//! ## Features
+//!
+//! - **Test Data Loading**: Functions to load test data files from the `tests/data/` directory
+//! - **Enum Serialization Testing**: Macros to test serde serialization/deserialization of enum variants
+//! - **Validation Testing**: Macros for testing request validation logic (future enhancement)
+//!
+//! ## Design Principles
+//!
+//! - **DRY (Don't Repeat Yourself)**: Eliminate repetitive test code through reusable utilities
+//! - **Consistency**: Ensure all tests follow the same patterns and conventions
+//! - **Maintainability**: Centralize common testing logic for easier updates
+//! - **Type Safety**: Provide compile-time guarantees for test correctness
+
 use std::fs;
 
 /// Utility functions to load test data from files
