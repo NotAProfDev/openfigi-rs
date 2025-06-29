@@ -10,7 +10,7 @@
 //! - [`SearchRequest`] - For `/search` endpoint requests
 
 mod common;
-mod macros;
+pub(crate) use self::common::RequestFilters;
 
 mod mapping_request;
 pub use self::mapping_request::{MappingRequest, MappingRequestBuilder};

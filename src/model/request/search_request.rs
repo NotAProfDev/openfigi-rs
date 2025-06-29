@@ -31,7 +31,7 @@
 
 use crate::{
     error::{OpenFIGIError, OtherErrorKind, Result},
-    impl_filter_request_builder,
+    impl_filter_builder,
     model::{
         enums::{
             Currency, ExchCode, MarketSecDesc, MicCode, OptionType, SecurityType, SecurityType2,
@@ -250,8 +250,13 @@ impl SearchRequestBuilder {
         self
     }
 
+    /// Mutable access to the request filters.
+    pub fn filters_mut(&mut self) -> &mut RequestFilters {
+        &mut self.filters
+    }
+
     // Bring in common builder methods for filtering logic
-    impl_filter_request_builder!();
+    impl_filter_builder!();
 
     /// Builds and validates the `SearchRequest`.
     ///

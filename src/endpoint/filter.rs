@@ -35,13 +35,13 @@ use crate::{
     DEFAULT_ENDPOINT_FILTER,
     client::OpenFIGIClient,
     error::Result,
-    impl_filterable_builder,
+    impl_filter_builder,
     model::{
         enums::{
             Currency, ExchCode, MarketSecDesc, MicCode, OptionType, SecurityType, SecurityType2,
             StateCode,
         },
-        request::FilterRequestBuilder,
+        request::{FilterRequestBuilder, RequestFilters},
         response::FilterData,
     },
 };
@@ -91,8 +91,13 @@ impl SingleFilterRequestBuilder {
         self
     }
 
+    /// Mutable access to the request filters, delegating to the inner `FilterRequestBuilder`.
+    pub fn filters_mut(&mut self) -> &mut RequestFilters {
+        self.request_builder.filters_mut()
+    }
+
     // Bring in common builder methods for filtering logic
-    impl_filterable_builder!();
+    impl_filter_builder!();
 
     /// Sends the filter request to `/filter` endpoint and returns the raw HTTP response.
     ///

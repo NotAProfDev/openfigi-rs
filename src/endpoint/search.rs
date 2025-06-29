@@ -34,13 +34,13 @@ use crate::{
     DEFAULT_ENDPOINT_SEARCH,
     client::OpenFIGIClient,
     error::Result,
-    impl_filterable_builder,
+    impl_filter_builder,
     model::{
         enums::{
             Currency, ExchCode, MarketSecDesc, MicCode, OptionType, SecurityType, SecurityType2,
             StateCode,
         },
-        request::SearchRequestBuilder,
+        request::{RequestFilters, SearchRequestBuilder},
         response::SearchData,
     },
 };
@@ -89,8 +89,13 @@ impl SingleSearchRequestBuilder {
         self
     }
 
+    /// Mutable access to the request filters, delegating to the inner `SearchRequestBuilder`.
+    pub fn filters_mut(&mut self) -> &mut RequestFilters {
+        self.request_builder.filters_mut()
+    }
+
     // Bring in common builder methods for filtering logic
-    impl_filterable_builder!();
+    impl_filter_builder!();
 
     /// Sends the search request to `/search` endpoint and returns the raw HTTP response.
     ///

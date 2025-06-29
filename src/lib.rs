@@ -107,6 +107,8 @@ pub mod client_builder;
 pub mod endpoint;
 /// Comprehensive error types with OpenFIGI-specific context and inspection methods
 pub mod error;
+/// Common utilities and macros for OpenFIGI client
+pub(crate) mod macros;
 /// Strongly typed request and response data models for all API operations
 pub mod model;
 /// Internal HTTP request builder utilities (not intended for direct use)

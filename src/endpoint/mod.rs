@@ -10,6 +10,5 @@
 //! - [`crate::endpoint::mapping`] - Mapping endpoint for converting third party identifiers to FIGIs
 //! - [`crate::endpoint::search`] - Search endpoint for finding FIGIs using key words and other filters.
 pub mod filter;
-mod macros;
 pub mod mapping;
 pub mod search;
