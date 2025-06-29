@@ -10,6 +10,7 @@
 //! - [`SearchRequest`] - For `/search` endpoint requests
 
 mod common;
+mod macros;
 
 mod mapping_request;
 pub use self::mapping_request::{MappingRequest, MappingRequestBuilder};
