@@ -4,6 +4,18 @@ All notable changes to the openfigi-rs library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/NotAProfDev/openfigi-rs/compare/v0.1.1...v0.2.0) - 2025-07-03
+
+### Other
+
+- enhance documentation for test utilities module
+- consolidate test utilities and improve enum serialization tests
+- replace impl_filterable_builder macro with impl_filter_builder for consistency across request builders
+- introduce macro for standard filter builder methods across request types
+- implement filterable builder macros for endpoint request builders
+- improve response handling and error reporting in OpenFIGI API
+- response types and error handling in OpenFIGI API
+
 ## [0.1.1](https://github.com/NotAProfDev/openfigi-rs/compare/v0.1.0...v0.1.1) - 2025-06-17
 
 ### Fixed
