@@ -381,33 +381,18 @@ pub enum SecurityType2 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_basis_swap() {
-        let val = SecurityType2::BASISSWAP;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"BASIS SWAP\"");
-    }
-
-    #[test]
-    fn test_deserialize_basis_swap() {
-        let json = "\"BASIS SWAP\"";
-        let deserialized: SecurityType2 = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, SecurityType2::BASISSWAP);
-    }
-
-    #[test]
-    fn test_serialize_unit_investment_trust() {
-        let val = SecurityType2::UnitInvestmentTrust;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"Unit Investment Trust\"");
-    }
-
-    #[test]
-    fn test_deserialize_unit_investment_trust() {
-        let json = "\"Unit Investment Trust\"";
-        let deserialized: SecurityType2 = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, SecurityType2::UnitInvestmentTrust);
-    }
+    test_enum_serialization!(
+        test_serialize_basis_swap,
+        SecurityType2,
+        BASISSWAP,
+        "\"BASIS SWAP\""
+    );
+    test_enum_serialization!(
+        test_serialize_unit_investment_trust,
+        SecurityType2,
+        UnitInvestmentTrust,
+        "\"Unit Investment Trust\""
+    );
 }

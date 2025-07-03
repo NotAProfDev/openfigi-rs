@@ -968,33 +968,8 @@ pub enum MicCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_xcme() {
-        let mic = MicCode::XCME;
-        let serialized = serde_json::to_string(&mic).unwrap();
-        assert_eq!(serialized, "\"XCME\"");
-    }
-
-    #[test]
-    fn test_deserialize_xcme() {
-        let json = "\"XCME\"";
-        let deserialized: MicCode = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, MicCode::XCME);
-    }
-
-    #[test]
-    fn test_serialize_yldx() {
-        let mic = MicCode::YLDX;
-        let serialized = serde_json::to_string(&mic).unwrap();
-        assert_eq!(serialized, "\"YLDX\"");
-    }
-
-    #[test]
-    fn test_deserialize_yldx() {
-        let json = "\"YLDX\"";
-        let deserialized: MicCode = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, MicCode::YLDX);
-    }
+    test_enum_serialization!(test_serialize_xcme, MicCode, XCME, "\"XCME\"");
+    test_enum_serialization!(test_serialize_yldx, MicCode, YLDX, "\"YLDX\"");
 }

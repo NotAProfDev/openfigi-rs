@@ -6,17 +6,22 @@
 //!
 //! # Available Response Types
 //!
-//! ## [`FilterResponse`]
+//! ## [`FilterData`]
 //! Response from the `/v3/filter` endpoint for structured filtering of financial
 //! instruments using specific criteria. Returns FIGI results with optional pagination
 //! and total count information.
 //!
-//! ## [`MappingResponse`]
-//! Response from the `/v3/mapping` endpoint for converting third-party identifiers
+//! ## [`MappingData`]
+//! Response from the `/v3/mapping` endpoint for single request converting third-party identifiers
 //! (tickers, ISINs, CUSIPs) into FIGI identifiers. Returns an array of results
 //! corresponding to each mapping request in the batch.
 //!
-//! ## [`SearchResponse`]
+//! ## [`MappingResponses`]
+//! Ergonomic batch response wrapper for the `/v3/mapping` endpoint. Provides indexed access
+//! to successes and errors, preserving the order of requests and allowing users to determine
+//! which mapping requests succeeded or failed.
+//!
+//! ## [`SearchData`]
 //! Response from the `/v3/search` endpoint for text-based searches of financial
 //! instruments. Returns FIGI results ordered by relevance with optional pagination.
 //!
@@ -24,17 +29,18 @@
 //!
 //! All response types follow consistent patterns:
 //! - Use the `ResponseResult` enum to handle success/error cases
-//! - Implement the `FigiData` trait for uniform data access
 //! - Support serialization/deserialization with serde
 //! - Provide pagination support where applicable
 
 mod common;
+pub(crate) use self::common::ResponseResult;
 
 mod mapping_response;
-pub use self::mapping_response::MappingResponse;
+pub use self::mapping_response::MappingData;
+pub use self::mapping_response::MappingResponses;
 
 mod search_response;
-pub use self::search_response::SearchResponse;
+pub use self::search_response::SearchData;
 
 mod filter_response;
-pub use self::filter_response::FilterResponse;
+pub use self::filter_response::FilterData;

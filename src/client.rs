@@ -52,6 +52,7 @@ use crate::{
     API_KEY, DEFAULT_BASE_URL,
     client_builder::OpenFIGIClientBuilder,
     error::{OpenFIGIError, Result},
+    model::response::ResponseResult,
     request_builder::OpenFIGIRequestBuilder,
 };
 use reqwest_middleware::ClientWithMiddleware;
@@ -298,7 +299,7 @@ impl OpenFIGIClient {
         OpenFIGIRequestBuilder::new(self.clone(), method, path)
     }
 
-    /// Parses HTTP responses with comprehensive OpenFIGI-specific error handling.
+    /// Parses single HTTP responses with comprehensive OpenFIGI-specific error handling.
     ///
     /// This internal method processes HTTP responses from the OpenFIGI API, providing
     /// detailed error context and automatic rate limit detection. It converts successful
@@ -330,34 +331,105 @@ impl OpenFIGIClient {
     /// # Returns
     ///
     /// Returns `Ok(T)` for successful responses or `Err(OpenFIGIError)` with detailed context.
-    pub(crate) async fn parse_response<T: DeserializeOwned>(
+    pub(crate) async fn parse_single_response<T: DeserializeOwned>(
         &self,
         response: reqwest::Response,
     ) -> Result<T> {
         let status = response.status();
 
         // Early return for success case to optimize the common path
-        if status == reqwest::StatusCode::OK {
-            return response.json::<T>().await.map_err(OpenFIGIError::from);
+        if status.is_success() {
+            // Deserialize the response body into the expected type `T`
+            let parsed_response: ResponseResult<T> =
+                response.json().await.map_err(OpenFIGIError::from)?;
+
+            // Check if the response contains an error
+            match parsed_response {
+                ResponseResult::Success(data) => return Ok(data),
+                ResponseResult::Error(err) => {
+                    // If the response contains an error, convert it to OpenFIGIError
+                    return Err(OpenFIGIError::response_error(
+                        status,
+                        format!("OpenFIGI API error: {}", err.error),
+                        String::new(),
+                    ));
+                }
+            }
         }
 
-        // For error cases, we need the URL
+        return Err(self.handle_error_response(response).await);
+    }
+
+    /// Parses a list of HTTP responses from the OpenFIGI API, handling both successes and errors for batch mapping requests.
+    ///
+    /// This internal method processes HTTP responses that return a list of results (such as batch mapping requests).
+    /// Each item in the returned vector is a `Result<T, OpenFIGIError>`, where:
+    /// - `Ok(T)` contains a successfully parsed mapping result
+    /// - `Err(OpenFIGIError)` contains a detailed error for a failed mapping request
+    ///
+    /// # Arguments
+    ///
+    /// * `response` - The HTTP response from the OpenFIGI API
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(Vec<Result<T, OpenFIGIError>>)` for successful HTTP responses, where each item is either a success or error for the corresponding batch request.
+    /// Returns `Err(OpenFIGIError)` if the HTTP response itself is an error (e.g., network failure, invalid status code).
+    ///
+    /// # Error Handling
+    ///
+    /// - Each batch item is parsed and mapped to either a success or error variant.
+    /// - If the HTTP response is not successful, a single `OpenFIGIError` is returned for the entire batch.
+    pub(crate) async fn parse_list_response<T: DeserializeOwned>(
+        &self,
+        response: reqwest::Response,
+    ) -> Result<Vec<Result<T>>> {
+        let status = response.status();
+
+        // Early return for success case to optimize the common path
+        if response.status().is_success() {
+            // Deserialize the response body into the expected type `T`
+            let parsed_list: Vec<ResponseResult<T>> =
+                response.json().await.map_err(OpenFIGIError::from)?;
+
+            // Transform the parsed list into a `Result<T, OpenFIGIError>`.
+            let results: Vec<Result<T>> = parsed_list
+                .into_iter()
+                .map(|item| match item {
+                    ResponseResult::Success(data) => Ok(data),
+                    ResponseResult::Error(err) => Err(OpenFIGIError::response_error(
+                        status,
+                        format!("OpenFIGI API error: {}", err.error),
+                        String::new(),
+                    )),
+                })
+                .collect();
+
+            return Ok(results);
+        }
+
+        return Err(self.handle_error_response(response).await);
+    }
+
+    /// Handles non-successful HTTP responses by creating a detailed `OpenFIGIError`.
+    async fn handle_error_response(&self, response: reqwest::Response) -> OpenFIGIError {
+        let status = response.status();
         let url = response.url().clone();
 
-        // Extract rate limiting info more efficiently (only for error cases)
-        let rate_limit_info = Self::extract_rate_limit_info(response.headers());
-
-        // Get response text for error cases
-        let resp_text = response.text().await.map_err(OpenFIGIError::from)?;
+        // Rate-Limit-Info nur bei 429 extrahieren
+        let rate_limit_info = if status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+            Self::extract_rate_limit_info(response.headers())
+        } else {
+            None
+        };
 
         // Handle different HTTP status codes with OpenFIGI-specific context
-        let error_message = Self::format_error_message(status, &url, rate_limit_info, &resp_text);
+        let error_message = Self::format_error_message(status, &url, rate_limit_info);
 
-        Err(OpenFIGIError::response_error(
-            status,
-            resp_text,
-            Some(error_message),
-        ))
+        // Use `unwrap_or_default` to avoid panics if text cannot be read
+        let resp_text = response.text().await.unwrap_or_default();
+
+        OpenFIGIError::response_error(status, error_message, resp_text)
     }
 
     /// Extracts rate limit information from HTTP response headers.
@@ -377,17 +449,18 @@ impl OpenFIGIClient {
     fn extract_rate_limit_info(headers: &reqwest::header::HeaderMap) -> Option<String> {
         let remaining = headers
             .get("X-RateLimit-Remaining")
-            .and_then(|v| v.to_str().ok())
-            .and_then(|s| s.parse::<u32>().ok())?;
+            .and_then(|v| v.to_str().ok());
 
         let reset = headers
             .get("X-RateLimit-Reset")
-            .and_then(|v| v.to_str().ok())
-            .and_then(|s| s.parse::<u64>().ok())?;
+            .and_then(|v| v.to_str().ok());
 
-        Some(format!(
-            "Rate limit: {remaining} requests remaining, resets at {reset}"
-        ))
+        match (remaining, reset) {
+            (Some(remaining), Some(reset)) => Some(format!(
+                "Rate limit: {remaining} requests remaining, resets at {reset} seconds"
+            )),
+            _ => None,
+        }
     }
 
     /// Formats comprehensive error messages based on HTTP status codes and context.
@@ -410,7 +483,6 @@ impl OpenFIGIClient {
         status: reqwest::StatusCode,
         url: &Url,
         rate_limit_info: Option<String>,
-        resp_text: &str,
     ) -> String {
         match status {
             reqwest::StatusCode::BAD_REQUEST => {
@@ -443,10 +515,7 @@ impl OpenFIGIClient {
             | reqwest::StatusCode::GATEWAY_TIMEOUT => format!(
                 "Service unavailable from {url}: OpenFIGI service is temporarily unavailable. Please retry later."
             ),
-            _ => format!(
-                "Unexpected HTTP status {} from {url}: {resp_text}",
-                status.as_u16()
-            ),
+            _ => format!("Unexpected HTTP status {} from {url}", status.as_u16()),
         }
     }
 }

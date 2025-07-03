@@ -50,10 +50,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     // Access the FIGI from the first result
-    if let Some(data) = mapping_results[0].data() {
-        println!("FIGI: {}", data[0].figi);
-        println!("Name: {}", data[0].display_name());
-    }
+    let data = mapping_results.data();
+    println!("FIGI: {}", data[0].figi);
+    println!("Name: {}", data[0].display_name());
 
     Ok(())
 }
@@ -245,6 +244,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [OpenFIGI](https://www.openfigi.com/) for providing the API and documentation
 - [Bloomberg](https://www.bloomberg.com/) for the OpenFIGI initiative
+- [OMG](https://www.omg.org/spec/FIGI) for providing documentation
 - The Rust community for excellent HTTP and async libraries
 
 ## 📞 Support

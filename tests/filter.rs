@@ -35,7 +35,7 @@ use common::{create_test_client, rate_limit_delay};
 async fn test_filter_basic_query() {
     let client = create_test_client();
 
-    let result = client
+    let filter_data = client
         .filter()
         .query("technology")
         .send()
@@ -44,24 +44,26 @@ async fn test_filter_basic_query() {
 
     // Check pagination info is present
     assert!(
-        result.next_page().is_some(),
+        filter_data.next_page().is_some(),
         "Pagination information should be present"
     );
 
     // Check total results count
     assert!(
-        result.total_results().is_some(),
+        filter_data.total_results().is_some(),
         "Total results count should be present"
     );
 
-    if let Some(data) = result.data() {
-        assert!(!data.is_empty(), "Filter results should not be empty");
+    let figi_result = filter_data.data();
+    assert!(
+        !figi_result.is_empty(),
+        "Filter results should not be empty"
+    );
 
-        // Validate filter results structure
-        for figi_result in data {
-            assert!(!figi_result.figi.is_empty(), "FIGI should not be empty");
-            assert!(figi_result.name.is_some(), "Name should be present");
-        }
+    // Validate filter results structure
+    for data in figi_result {
+        assert!(!data.figi.is_empty(), "FIGI should not be empty");
+        assert!(data.name.is_some(), "Name should be present");
     }
 
     // Add delay to avoid rate limiting
@@ -84,7 +86,7 @@ async fn test_filter_basic_query() {
 #[serial]
 async fn test_filter_with_multiple_criteria() {
     let client = create_test_client();
-    let result = client
+    let filter_data = client
         .filter()
         .query("energy")
         .currency(Currency::USD)
@@ -97,28 +99,28 @@ async fn test_filter_with_multiple_criteria() {
 
     // Check pagination info is present
     assert!(
-        result.next_page().is_some(),
+        filter_data.next_page().is_some(),
         "Pagination information should be present"
     );
 
     // Check total results count
     assert!(
-        result.total_results().is_some(),
+        filter_data.total_results().is_some(),
         "Total results count should be present"
     );
 
-    if let Some(data) = result.data() {
-        for figi_result in data {
-            // Verify all filters are applied when data is available
-            if let Some(exch_code) = &figi_result.exch_code {
-                assert_eq!(exch_code, &ExchCode::US);
-            }
-            if let Some(market_sector) = &figi_result.market_sector {
-                assert_eq!(market_sector, &MarketSecDesc::Equity);
-            }
-            if let Some(security_type) = &figi_result.security_type {
-                assert_eq!(security_type, &SecurityType::CommonStock);
-            }
+    let figi_result = filter_data.data();
+
+    for data in figi_result {
+        // Verify all filters are applied when data is available
+        if let Some(exch_code) = &data.exch_code {
+            assert_eq!(exch_code, &ExchCode::US);
+        }
+        if let Some(market_sector) = &data.market_sector {
+            assert_eq!(market_sector, &MarketSecDesc::Equity);
+        }
+        if let Some(security_type) = &data.security_type {
+            assert_eq!(security_type, &SecurityType::CommonStock);
         }
     }
 
@@ -139,17 +141,19 @@ async fn test_filter_empty_results() {
     let client = create_test_client();
 
     // Search for something very unlikely to exist
-    let result = client
+    let filter_data = client
         .filter()
         .query("xyzneverexistingsecurityname123456")
         .send()
         .await
         .expect("Empty filter request should succeed");
 
-    // The response should contain an error
-    assert!(result.is_success());
-    let data = result.data().unwrap();
-    assert!(data.is_empty());
+    // The response should be successful and contain an empty result set
+    let figi_result = filter_data.data();
+    assert!(
+        figi_result.is_empty(),
+        "Filter results should be empty for non-existent query"
+    );
 
     // Add delay to avoid rate limiting
     rate_limit_delay().await;

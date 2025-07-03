@@ -678,33 +678,8 @@ pub enum Currency {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_usd() {
-        let usd = Currency::USD;
-        let serialized = serde_json::to_string(&usd).unwrap();
-        assert_eq!(serialized, "\"USD\"");
-    }
-
-    #[test]
-    fn test_deserialize_usd() {
-        let json = "\"USD\"";
-        let deserialized: Currency = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, Currency::USD);
-    }
-
-    #[test]
-    fn test_serialize_nonstandard() {
-        let val = Currency::AUd;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"AUd\"");
-    }
-
-    #[test]
-    fn test_deserialize_nonstandard() {
-        let json = "\"AUd\"";
-        let deserialized: Currency = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, Currency::AUd);
-    }
+    test_enum_serialization!(test_serialize_usd, Currency, USD, "\"USD\"");
+    test_enum_serialization!(test_serialize_aud, Currency, AUd, "\"AUd\"");
 }

@@ -26,9 +26,10 @@
 //!     .await?;
 //!
 //! // Access the FIGI from the first result
-//! if let Some(data) = mapping_results[0].data() {
-//!     println!("FIGI: {}", data[0].figi);
-//! }
+//! let data = mapping_results.data();
+//! println!("FIGI: {}", data[0].figi);
+//! println!("Name: {}", data[0].display_name());
+//!
 //! # Ok(())
 //! # }
 //! ```
@@ -106,10 +107,16 @@ pub mod client_builder;
 pub mod endpoint;
 /// Comprehensive error types with OpenFIGI-specific context and inspection methods
 pub mod error;
+/// Common utilities and macros for OpenFIGI client
+pub(crate) mod macros;
 /// Strongly typed request and response data models for all API operations
 pub mod model;
 /// Internal HTTP request builder utilities (not intended for direct use)
 pub(crate) mod request_builder;
+/// Test utilities for OpenFIGI client
+#[cfg(test)]
+#[macro_use]
+mod test_utils;
 
 use std::sync::LazyLock;
 use url::Url;

@@ -7,14 +7,14 @@
 //!
 //! # Response Structure
 //!
-//! The search endpoint returns a [`SearchResponse`] which wraps either:
-//! - [`SearchData`] containing successful FIGI results with optional pagination support
-//! - Error information when the search query fails or produces no results
+//! The search endpoint returns either:
+//! - [`SearchData`] containing successful FIGI results with optional pagination metadata
+//! - [`crate::error::OpenFIGIError`] when the filter request fails
 //!
 //! # Examples
 //!
 //! ```rust
-//! use openfigi_rs::model::response::SearchResponse;
+//! use openfigi_rs::model::response::SearchData;
 //! use serde_json;
 //!
 //! // Successful search response with results
@@ -25,83 +25,15 @@
 //!     ],
 //!     "next": "pagination_token_here"
 //! }"#;
-//! let response: SearchResponse = serde_json::from_str(json).unwrap();
-//! assert!(response.is_success());
-//! assert_eq!(response.data().unwrap().len(), 2);
+//! let response: SearchData = serde_json::from_str(json).unwrap();
+//! assert_eq!(response.data().len(), 2);
 //! assert!(response.next_page().is_some());
-//!
-//! // Error response when search fails
-//! let error_json = r#"{"error": "Invalid search query"}"#;
-//! let error_response: SearchResponse = serde_json::from_str(error_json).unwrap();
-//! assert!(error_response.is_error());
 //! ```
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
-use crate::model::response::common::{FigiData, FigiResult, ResponseResult};
+use crate::model::response::common::FigiResult;
 use serde::{Deserialize, Serialize};
-
-/// Response type for the OpenFIGI search endpoint (POST /v3/search).
-///
-/// This type alias represents the complete response from the search endpoint, which can
-/// contain either successful search results or error information. The search endpoint
-/// allows finding financial instruments using free-text queries and supports pagination
-/// for large result sets.
-///
-/// # Response Format
-///
-/// Results are generally sorted by relevance to the search query.
-///
-/// Successful responses contain:
-/// - An array of FIGI results matching the search criteria
-/// - Optional pagination token for retrieving additional results
-///
-/// Error responses contain:
-/// - A descriptive error message explaining why the search request failed
-///
-/// # Examples
-///
-/// ```rust
-/// use openfigi_rs::model::response::SearchResponse;
-/// use serde_json;
-///
-/// // Successful search with multiple results
-/// let success_json = r#"{
-///     "data": [
-///         {
-///             "figi": "BBG000BLNNH6",
-///             "ticker": "AAPL",
-///             "name": "Apple Inc",
-///             "marketSector": "Equity"
-///         },
-///         {
-///             "figi": "BBG000BVPV84",
-///             "ticker": "AAPL",
-///             "name": "Apple Inc",
-///             "marketSector": "Equity"
-///         }
-///     ],
-///     "next": "eyJwYWdlIjoxfQ=="
-/// }"#;
-/// let response: SearchResponse = serde_json::from_str(success_json).unwrap();
-/// assert!(response.is_success());
-/// assert_eq!(response.data().unwrap().len(), 2);
-/// assert!(response.next_page().is_some());
-///
-/// // Empty search results
-/// let empty_json = r#"{"data": []}"#;
-/// let empty_response: SearchResponse = serde_json::from_str(empty_json).unwrap();
-/// assert!(empty_response.is_success());
-/// assert_eq!(empty_response.data().unwrap().len(), 0);
-/// assert!(empty_response.next_page().is_none());
-///
-/// // Search error response
-/// let error_json = r#"{"error": "Query too short"}"#;
-/// let error_response: SearchResponse = serde_json::from_str(error_json).unwrap();
-/// assert!(error_response.is_error());
-/// assert_eq!(error_response.error(), Some("Query too short"));
-/// ```
-pub type SearchResponse = ResponseResult<SearchData>;
 
 /// Successful search result containing FIGI data and optional pagination information.
 ///
@@ -138,13 +70,12 @@ pub struct SearchData {
     pub next: Option<String>,
 }
 
-impl FigiData for SearchData {
+impl SearchData {
     /// Returns a slice of the FIGI results contained in this search response.
     ///
     /// Provides access to the financial instrument data returned by the search endpoint.
-    /// This implements the [`FigiData`] trait to allow uniform access to FIGI data across
-    /// different response types.
-    fn figi_data(&self) -> &[FigiResult] {
+    #[must_use]
+    pub fn data(&self) -> &[FigiResult] {
         &self.data
     }
 
@@ -152,7 +83,8 @@ impl FigiData for SearchData {
     ///
     /// Returns `Some(token)` if more search results are available, `None` if this is the last page.
     /// The token can be used in subsequent search requests to continue pagination.
-    fn next_page(&self) -> Option<&str> {
+    #[must_use]
+    pub fn next_page(&self) -> Option<&str> {
         self.next.as_deref()
     }
 }
@@ -160,25 +92,25 @@ impl FigiData for SearchData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
+    use crate::{model::response::ResponseResult, test_utils::load_test_data};
 
-    /// Helper function to load test data from the tests/data/search directory
-    fn load_test_data(filename: &str) -> String {
-        let path = format!("tests/data/search/{filename}");
-        fs::read_to_string(&path).unwrap_or_else(|e| panic!("Failed to read test file {path}: {e}"))
-    }
+    /// Type alias for the search response used in tests
+    pub type SearchResponse = ResponseResult<SearchData>;
 
     #[test]
     fn test_deserialize_query_example() {
-        let json_str = load_test_data("query_example.json");
-        let result: SearchResponse = serde_json::from_str(&json_str).unwrap();
+        let json_str = load_test_data("search", "query_example.json");
+        let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(result.is_success());
-        let data = result.data().unwrap();
-        assert!(!data.is_empty());
+        let search_data = match search_response {
+            ResponseResult::Success(ref data) => data,
+            ResponseResult::Error(ref err) => panic!("Expected success, got error: {err:?}"),
+        };
+        let figi_result = search_data.data();
+        assert!(!figi_result.is_empty());
 
         // Check first IBM entry
-        let first_entry = &data[0];
+        let first_entry = &figi_result[0];
         assert_eq!(first_entry.figi, "BBG0002ZTPP5");
         assert_eq!(first_entry.ticker, Some("IBM 03/20/10 P130".to_string()));
         assert_eq!(first_entry.display_name(), "March 10 Puts on IBM US");
@@ -192,16 +124,18 @@ mod tests {
         assert_eq!(first_entry.share_class_figi, None);
 
         // Verify pagination exists
-        assert!(result.next_page().is_some());
+        assert!(search_data.next_page().is_some());
     }
 
     #[test]
     fn test_deserialize_no_data() {
-        let json_str = load_test_data("no_data.json");
-        let result: SearchResponse = serde_json::from_str(&json_str).unwrap();
+        let json_str = load_test_data("search", "no_data.json");
+        let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
 
-        assert!(result.is_success());
-        let data = result.data().unwrap();
-        assert!(data.is_empty());
+        let figi_result = match search_response {
+            ResponseResult::Success(ref data) => data.data(),
+            ResponseResult::Error(ref err) => panic!("Expected success, got error: {err:?}"),
+        };
+        assert!(figi_result.is_empty());
     }
 }

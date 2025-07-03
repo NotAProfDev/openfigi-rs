@@ -912,33 +912,18 @@ pub enum SecurityType {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_abs_card() {
-        let val = SecurityType::ABSCard;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"ABS Card\"");
-    }
-
-    #[test]
-    fn test_deserialize_abs_card() {
-        let json = "\"ABS Card\"";
-        let deserialized: SecurityType = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, SecurityType::ABSCard);
-    }
-
-    #[test]
-    fn test_serialize_zero_coupon_oid() {
-        let val = SecurityType::ZEROCOUPONOID;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"ZERO COUPON, OID\"");
-    }
-
-    #[test]
-    fn test_deserialize_zero_coupon_oid() {
-        let json = "\"ZERO COUPON, OID\"";
-        let deserialized: SecurityType = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, SecurityType::ZEROCOUPONOID);
-    }
+    test_enum_serialization!(
+        test_serialize_abs_card,
+        SecurityType,
+        ABSCard,
+        "\"ABS Card\""
+    );
+    test_enum_serialization!(
+        test_serialize_adjustable,
+        SecurityType,
+        ZEROCOUPONOID,
+        "\"ZERO COUPON, OID\""
+    );
 }

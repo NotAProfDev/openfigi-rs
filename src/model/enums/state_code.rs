@@ -306,33 +306,8 @@ pub enum StateCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json;
+    use crate::test_enum_serialization;
 
-    #[test]
-    fn test_serialize_ca() {
-        let val = StateCode::CA;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"CA\"");
-    }
-
-    #[test]
-    fn test_deserialize_ca() {
-        let json = "\"CA\"";
-        let deserialized: StateCode = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, StateCode::CA);
-    }
-
-    #[test]
-    fn test_serialize_ya() {
-        let val = StateCode::YA;
-        let serialized = serde_json::to_string(&val).unwrap();
-        assert_eq!(serialized, "\"YA\"");
-    }
-
-    #[test]
-    fn test_deserialize_ya() {
-        let json = "\"YA\"";
-        let deserialized: StateCode = serde_json::from_str(json).unwrap();
-        assert_eq!(deserialized, StateCode::YA);
-    }
+    test_enum_serialization!(test_serialize_ab, StateCode, CA, "\"CA\"");
+    test_enum_serialization!(test_serialize_ac, StateCode, YA, "\"YA\"");
 }

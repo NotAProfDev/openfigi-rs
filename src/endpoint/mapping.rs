@@ -67,13 +67,14 @@ use crate::{
     DEFAULT_ENDPOINT_MAPPING,
     client::OpenFIGIClient,
     error::{OpenFIGIError, OtherErrorKind, Result},
+    impl_filter_builder,
     model::{
         enums::{
             Currency, ExchCode, IdType, MarketSecDesc, MicCode, OptionType, SecurityType,
             SecurityType2, StateCode,
         },
-        request::{MappingRequest, MappingRequestBuilder},
-        response::MappingResponse,
+        request::{MappingRequest, MappingRequestBuilder, RequestFilters},
+        response::{MappingData, MappingResponses},
     },
 };
 use chrono::NaiveDate;
@@ -122,107 +123,13 @@ impl SingleMappingRequestBuilder {
         self
     }
 
-    /// Sets the optional exchange code for the mapping request.
-    #[must_use]
-    pub fn exch_code(mut self, exch_code: ExchCode) -> Self {
-        self.request_builder = self.request_builder.exch_code(exch_code);
-        self
+    /// Mutable access to the request filters, delegating to the inner `MappingRequestBuilder`.
+    pub fn filters_mut(&mut self) -> &mut RequestFilters {
+        self.request_builder.filters_mut()
     }
 
-    /// Sets the optional MIC code for the mapping request.
-    #[must_use]
-    pub fn mic_code(mut self, mic_code: MicCode) -> Self {
-        self.request_builder = self.request_builder.mic_code(mic_code);
-        self
-    }
-
-    /// Sets the optional currency for the mapping request.
-    #[must_use]
-    pub fn currency(mut self, currency: Currency) -> Self {
-        self.request_builder = self.request_builder.currency(currency);
-        self
-    }
-
-    /// Sets the optional market sector description for the mapping request.
-    ///
-    /// Specifies the market sector or asset class for the financial instrument.
-    #[must_use]
-    pub fn market_sec_des(mut self, market_sec_des: MarketSecDesc) -> Self {
-        self.request_builder = self.request_builder.market_sec_des(market_sec_des);
-        self
-    }
-
-    /// Sets the optional security type for the mapping request.
-    ///
-    /// Specifies the primary security type classification for the instrument.
-    #[must_use]
-    pub fn security_type(mut self, security_type: SecurityType) -> Self {
-        self.request_builder = self.request_builder.security_type(security_type);
-        self
-    }
-
-    /// Sets the optional secondary security type for the mapping request.
-    #[must_use]
-    pub fn security_type2(mut self, security_type2: SecurityType2) -> Self {
-        self.request_builder = self.request_builder.security_type2(security_type2);
-        self
-    }
-
-    /// Sets the optional flag to include unlisted equities for the mapping request.
-    #[must_use]
-    pub fn include_unlisted_equities(mut self, val: bool) -> Self {
-        self.request_builder = self.request_builder.include_unlisted_equities(val);
-        self
-    }
-
-    /// Sets the optional option type for the mapping request.
-    #[must_use]
-    pub fn option_type(mut self, option_type: OptionType) -> Self {
-        self.request_builder = self.request_builder.option_type(option_type);
-        self
-    }
-
-    /// Sets the optional strike price range for the mapping request.
-    #[must_use]
-    pub fn strike(mut self, strike: [Option<f64>; 2]) -> Self {
-        self.request_builder = self.request_builder.strike(strike);
-        self
-    }
-
-    /// Sets the optional contract size range for the mapping request.
-    #[must_use]
-    pub fn contract_size(mut self, contract_size: [Option<f64>; 2]) -> Self {
-        self.request_builder = self.request_builder.contract_size(contract_size);
-        self
-    }
-
-    /// Sets the optional coupon range for the mapping request.
-    #[must_use]
-    pub fn coupon(mut self, coupon: [Option<f64>; 2]) -> Self {
-        self.request_builder = self.request_builder.coupon(coupon);
-        self
-    }
-
-    /// Sets the optional expiration date range for the mapping request.
-    #[must_use]
-    pub fn expiration(mut self, expiration: [Option<NaiveDate>; 2]) -> Self {
-        self.request_builder = self.request_builder.expiration(expiration);
-        self
-    }
-
-    /// Sets the optional maturity date range for the mapping request.
-    #[must_use]
-    pub fn maturity(mut self, maturity: [Option<NaiveDate>; 2]) -> Self {
-        self.request_builder = self.request_builder.maturity(maturity);
-        self
-    }
-
-    /// Sets the optional state code for the mapping request.
-    #[must_use]
-    pub fn state_code(mut self, state_code: StateCode) -> Self {
-        self.request_builder = self.request_builder.state_code(state_code);
-        self
-    }
+    // Bring in common builder methods for filtering logic
+    impl_filter_builder!();
 
     /// Sends the mapping request to `/mapping` endpoint and returns the raw HTTP response.
     ///
@@ -248,11 +155,28 @@ impl SingleMappingRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<MappingResponse> {
+    #[expect(clippy::missing_panics_doc)]
+    pub async fn send(self) -> Result<MappingData> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_response(raw_response).await
+        let mut results = client.parse_list_response(raw_response).await?;
+
+        // Take the first element, ensuring the iterator is consumed and the Vec is empty.
+        if results.len() == 1 {
+            // The unwrap is safe due to the length check.
+            results.pop().unwrap()
+        } else {
+            Err(OpenFIGIError::response_error(
+                // We know the status was OK, otherwise parse_list_response would have failed.
+                reqwest::StatusCode::OK,
+                format!(
+                    "Expected 1 result for single mapping, but got {}",
+                    results.len()
+                ),
+                String::new(),
+            ))
+        }
     }
 }
 
@@ -309,6 +233,55 @@ impl BulkMappingRequestBuilder {
         self
     }
 
+    /// Adds a new, fully configured mapping job to the bulk request using a fluent builder.
+    ///
+    /// This method provides a closure that receives a `MappingRequestBuilder`,
+    /// allowing you to configure a single mapping job with any required filters before
+    /// it's added to the bulk request.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `OpenFIGIError` if the configured job fails validation (e.g.,
+    /// if `id_type` or `id_value` are missing).
+    ///
+    /// # Examples
+    ///
+    /// ```rust,no_run
+    /// # use openfigi_rs::client::OpenFIGIClient;
+    /// # use openfigi_rs::model::enums::{IdType, Currency, ExchCode};
+    /// # use serde_json::json;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let client = OpenFIGIClient::new();
+    /// let result = client
+    ///     .bulk_mapping()
+    ///     .job(|j| j.id_type(IdType::IdIsin).id_value("US4592001014"))? // Simple job
+    ///     .job(|j| { // Complex job with filters
+    ///         j.id_type(IdType::Ticker)
+    ///             .id_value("IBM")
+    ///             .currency(Currency::USD)
+    ///             .exch_code(ExchCode::US)
+    ///     })?
+    ///     .send()
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn job<F>(mut self, config: F) -> Result<Self>
+    where
+        F: FnOnce(MappingRequestBuilder) -> MappingRequestBuilder,
+    {
+        let builder = MappingRequest::builder();
+        let configured_builder = config(builder);
+
+        // Build the request and propagate any errors using the `?` operator.
+        let request = configured_builder.build()?;
+
+        // If building succeeds, add the request to our list.
+        self.requests.push(request);
+        Ok(self)
+    }
+
     /// Sends the bulk mapping request to `/mapping` endpoint and returns the raw HTTP response.
     ///
     /// This is useful when you need access to headers, status codes, or want to handle
@@ -348,11 +321,13 @@ impl BulkMappingRequestBuilder {
     ///
     /// Returns an [`crate::error::OpenFIGIError`] if the mapping request is invalid, if the HTTP request fails,
     /// or if the response cannot be parsed.
-    pub async fn send(self) -> Result<MappingResponse> {
+    pub async fn send(self) -> Result<MappingResponses> {
         let client = self.client.clone();
         let raw_response = self.send_raw().await?;
 
-        client.parse_response(raw_response).await
+        let results = client.parse_list_response(raw_response).await?;
+
+        Ok(MappingResponses::new(results))
     }
 }
 

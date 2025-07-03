@@ -2,43 +2,13 @@
 //!
 //! This module provides the core data structures and traits used across all OpenFIGI API
 //! response types. It includes the fundamental [`FigiResult`] struct that represents
-//! individual financial instrument data, the [`ResponseResult`] enum for handling
-//! success/error responses, and the [`FigiData`] trait for uniform access to FIGI data.
+//! individual financial instrument data, and the [`ResponseResult`] enum for handling
+//! success/error responses.
 //!
 //! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
 use crate::model::enums::{ExchCode, MarketSecDesc, SecurityType, SecurityType2};
 use serde::{Deserialize, Serialize};
-
-/// A trait for successful request results that contain FIGI data.
-///
-/// This trait provides a uniform interface for accessing FIGI results and pagination
-/// information across different types of OpenFIGI API responses. Types implementing
-/// this trait can be used with [`ResponseResult`] to provide consistent error handling
-/// and data access patterns.
-pub trait FigiData {
-    /// Returns a slice of the FIGI results contained in this response.
-    ///
-    /// This method provides access to the actual financial instrument data
-    /// returned by the OpenFIGI API.
-    fn figi_data(&self) -> &[FigiResult];
-
-    /// Returns the next page token if pagination is supported and more results are available.
-    ///
-    /// The default implementation returns `None`, indicating no pagination support.
-    /// Implementing types should override this if they support paginated responses.
-    fn next_page(&self) -> Option<&str> {
-        None
-    }
-
-    /// Returns the total number of results available, if the API provides this information.
-    ///
-    /// The default implementation returns `None`, indicating the total count is unknown.
-    /// Some API endpoints may provide this information for better pagination handling.
-    fn total_results(&self) -> Option<usize> {
-        None
-    }
-}
 
 /// Represents the result of an OpenFIGI API request, which can either succeed with data or fail with an error.
 ///
@@ -47,7 +17,7 @@ pub trait FigiData {
 ///
 /// # Type Parameters
 ///
-/// * `T` - The success response type, which must implement [`FigiData`]
+/// * `T` - The success response type
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ResponseResult<T> {
@@ -69,64 +39,6 @@ pub struct ResponseError {
     /// details about what went wrong with the request (e.g., invalid parameters,
     /// authentication issues, rate limiting, etc.).
     pub error: String,
-}
-
-impl<T: FigiData> ResponseResult<T> {
-    /// Returns `true` if this result represents a successful response.
-    #[must_use]
-    pub fn is_success(&self) -> bool {
-        matches!(self, ResponseResult::Success(_))
-    }
-
-    /// Returns `true` if this result represents an error response.
-    #[must_use]
-    pub fn is_error(&self) -> bool {
-        matches!(self, ResponseResult::Error(_))
-    }
-
-    /// Returns a reference to the FIGI data if this is a successful response.
-    ///
-    /// Returns `None` if this result represents an error.
-    #[must_use]
-    pub fn data(&self) -> Option<&[FigiResult]> {
-        match self {
-            ResponseResult::Success(success) => Some(success.figi_data()),
-            ResponseResult::Error(_) => None,
-        }
-    }
-
-    /// Returns the next page token for pagination if this is a successful response and pagination is supported.
-    ///
-    /// Returns `None` if this is an error response or if pagination is not available.
-    #[must_use]
-    pub fn next_page(&self) -> Option<&str> {
-        match self {
-            ResponseResult::Success(success) => success.next_page(),
-            ResponseResult::Error(_) => None,
-        }
-    }
-
-    /// Returns the total number of results if this is a successful response and the information is available.
-    ///
-    /// Returns `None` if this is an error response or if the total count is not provided by the API.
-    #[must_use]
-    pub fn total_results(&self) -> Option<usize> {
-        match self {
-            ResponseResult::Success(success) => success.total_results(),
-            ResponseResult::Error(_) => None,
-        }
-    }
-
-    /// Returns the error message if this result represents an error response.
-    ///
-    /// Returns `None` if this is a successful response.
-    #[must_use]
-    pub fn error(&self) -> Option<&str> {
-        match self {
-            ResponseResult::Success(_) => None,
-            ResponseResult::Error(error) => Some(&error.error),
-        }
-    }
 }
 
 /// Detailed information about a single financial instrument returned by the OpenFIGI API.
