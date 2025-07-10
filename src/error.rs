@@ -177,6 +177,11 @@ pub enum OtherErrorKind {
     /// Indicates that request parameters failed validation before
     /// being sent to the API.
     Validation,
+    /// Unexpected API response errors.
+    ///
+    /// Indicates that the API returned an unexpected response format,
+    /// such as multiple results when only one was expected.
+    UnexpectedApiResponse,
     /// Unclassified errors.
     ///
     /// Catch-all category for errors that don't fit other classifications.

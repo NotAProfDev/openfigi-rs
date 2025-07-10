@@ -167,14 +167,12 @@ impl SingleMappingRequestBuilder {
             // The unwrap is safe due to the length check.
             results.pop().unwrap()
         } else {
-            Err(OpenFIGIError::response_error(
-                // We know the status was OK, otherwise parse_list_response would have failed.
-                reqwest::StatusCode::OK,
+            Err(OpenFIGIError::other_error(
+                OtherErrorKind::UnexpectedApiResponse,
                 format!(
                     "Expected 1 result for single mapping, but got {}",
                     results.len()
                 ),
-                String::new(),
             ))
         }
     }
