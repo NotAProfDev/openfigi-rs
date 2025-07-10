@@ -510,6 +510,7 @@ impl OpenFIGIError {
         }
     }
 
+    #[doc(hidden)]
     /// Creates a new `ResponseError` with the given parameters.
     ///
     /// This is an internal constructor used by the client to create response errors
@@ -532,6 +533,7 @@ impl OpenFIGIError {
         })
     }
 
+    #[doc(hidden)]
     /// Creates a new `OtherError` with the given kind and message.
     ///
     /// This is an internal constructor for application-specific errors that

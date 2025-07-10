@@ -1,3 +1,4 @@
+#![doc(hidden)]
 //! HTTP request builder for OpenFIGI API operations.
 //!
 //! This module provides [`crate::request_builder::OpenFIGIRequestBuilder`] for constructing and executing HTTP requests

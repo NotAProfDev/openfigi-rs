@@ -281,6 +281,7 @@ impl OpenFIGIClient {
         self.api_key.is_some()
     }
 
+    #[doc(hidden)]
     /// Creates a request builder for the specified endpoint path and HTTP method.
     ///
     /// This is an internal method used by the endpoint-specific request methods.
@@ -299,6 +300,7 @@ impl OpenFIGIClient {
         OpenFIGIRequestBuilder::new(self.clone(), method, path)
     }
 
+    #[doc(hidden)]
     /// Parses single HTTP responses with comprehensive OpenFIGI-specific error handling.
     ///
     /// This internal method processes HTTP responses from the OpenFIGI API, providing
@@ -360,6 +362,7 @@ impl OpenFIGIClient {
         return Err(self.handle_error_response(response).await);
     }
 
+    #[doc(hidden)]
     /// Parses a list of HTTP responses from the OpenFIGI API, handling both successes and errors for batch mapping requests.
     ///
     /// This internal method processes HTTP responses that return a list of results (such as batch mapping requests).

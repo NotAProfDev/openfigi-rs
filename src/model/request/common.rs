@@ -1,3 +1,4 @@
+#![doc(hidden)]
 //! # Common Request Types
 //!
 //! Shared request components and filters used across multiple OpenFIGI API endpoints.

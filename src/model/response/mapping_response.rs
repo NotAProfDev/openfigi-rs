@@ -58,6 +58,7 @@ use serde::{Deserialize, Serialize};
 pub struct MappingResponses(Vec<Result<MappingData>>);
 
 impl MappingResponses {
+    #[doc(hidden)]
     /// Creates a new `MappingResponses` from a vector of results.
     /// This constructor is primarily for internal use
     /// and testing purposes.

@@ -1,9 +1,10 @@
+#![doc(hidden)]
 //! # Macros for OpenFIGI API
 //!
 //! This module provides macros to help reduce boilerplate code in the OpenFIGI API client.
 //! These macros are used to generate common methods and patterns for multiple structs within this crate.
 //!
-//! Note: These macros are not intended for direct use by consumers of the OpenFIGI API.
+//! Note: This module is not intended for direct use by consumers of the OpenFIGI API.
 
 /// Macro to implement standard filter builder methods for OpenFIGI API request builders.
 ///

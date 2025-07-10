@@ -1,3 +1,4 @@
+#![doc(hidden)]
 //! Common response types and utilities for OpenFIGI API responses.
 //!
 //! This module provides the core data structures and traits used across all OpenFIGI API

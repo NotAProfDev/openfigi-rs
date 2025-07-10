@@ -1,3 +1,4 @@
+#![doc(hidden)]
 //! # Test Utilities
 //!
 //! Shared testing utilities and macros for the OpenFIGI Rust SDK.
