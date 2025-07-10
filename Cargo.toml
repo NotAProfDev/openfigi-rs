@@ -24,6 +24,7 @@ url = "^2.5"
 serial_test = "^3.2"
 reqwest-retry = "^0.7"
 tokio = { version = "^1.46", features = ["full"] }
+anyhow = "^1.0"
 
 # https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.release]

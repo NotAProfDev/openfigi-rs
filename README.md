@@ -4,255 +4,313 @@
 [![Documentation](https://docs.rs/openfigi-rs/badge.svg)](https://docs.rs/openfigi-rs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/NotAProfDev/openfigi-rs/workflows/CI/badge.svg)](https://github.com/NotAProfDev/openfigi-rs/actions)
+[![Downloads](https://img.shields.io/crates/d/openfigi-rs.svg)](https://crates.io/crates/openfigi-rs)
 
-> **ℹ️ API Notice:** The API is subject to change in the future and is not yet stable.
-
-A high-performance Rust client library for the [OpenFIGI API](https://www.openfigi.com/api), providing type-safe access to financial instrument identification and mapping services.
+A high-performance asynchronous Rust client library for the [OpenFIGI API](https://www.openfigi.com/api), providing type-safe access to financial instrument identification and mapping services.
 
 OpenFIGI is Bloomberg's open symbology initiative that provides standardized identification for financial instruments across asset classes and markets worldwide.
 
+## 📖 Table of Contents
+
+- [Features](#-features)
+- [Getting Started](#-getting-started)
+- [Configuration](#️-configuration)
+- [API Usage Examples](#-api-usage-examples)
+- [Error Handling](#-error-handling)
+- [Documentation](#-documentation)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+- [Support](#-support)
+
 ## ✨ Features
 
-- **🔒 Type-safe API** - Strongly typed request/response models with compile-time validation
-- **⚡ Async/await support** - Built on `reqwest` with full async support and connection pooling
-- **🔧 Middleware support** - Extensible HTTP middleware for retries, logging, and observability
-- **📊 Comprehensive error handling** - Detailed error types with OpenFIGI-specific context
-- **🚀 Production ready** - Connection pooling, timeouts, and efficient resource management
-- **🔑 Environment integration** - Automatic API key detection from environment variables
-- **📈 Rate limit awareness** - Automatic rate limit detection and informative error messages
-- **🔄 Batch operations** - Support for bulk requests (up to 100 with API key, 5 without)
+This library is designed with a focus on ergonomics, correctness, and production readiness.
 
-## 🚀 Quick Start
+- **⚖️ Ergonomic:** Provide a simple, intuitive, and fluent builder API.
+- **🔒 Type-safe API:** Strongly-typed request and response models prevent invalid data.
+- **⚡ Fully Asynchronous:** Built on `tokio` and `reqwest` for high-concurrency applications.
+- **🔧 Extensible via Middleware:** Integrates with `reqwest-middleware` for custom logic like retries, logging, and tracing.
+- **📊 Ergonomic Error Handling:** Provides distinct error types for network issues, API errors, and invalid requests.
+- **🔑 Environment integration:** Automatically detects API keys from environment variables.
+- **📈 Built-in Rate Limit Handling:** The client is aware of API rate limits and provides informative errors when they are exceeded.
+- **🔄 Batch operations:** First-class support for bulk operations to minimize network round-trips (up to 100 with API key, 5 without).
 
-Add this to your `Cargo.toml`:
+## 🚀 Getting Started
 
-```toml
-[dependencies]
-openfigi-rs = "<latest-version>"
+First, add the crate to your project's dependencies:
+
+```bash
+cargo add openfigi-rs
 ```
 
 ### Basic Usage
 
-```rust
+```rust,no_run
 use openfigi_rs::client::OpenFIGIClient;
 use openfigi_rs::model::enums::IdType;
-use serde_json::json;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Create a client (uses OPENFIGI_API_KEY env var if available)
+async fn main() -> anyhow::Result<()> {
+    // Create a client. It will use the OPENFIGI_API_KEY env var if available.
     let client = OpenFIGIClient::new();
 
-    // Map an ISIN to FIGI
+    // Map an ISIN to its corresponding FIGI
     let mapping_results = client
-        .mapping(IdType::IdIsin, json!("US4592001014"))
+        .mapping(IdType::IdIsin, "US4592001014") // IBM
         .send()
         .await?;
 
-    // Access the FIGI from the first result
+    // The result is a vector of responses. Let's inspect the first one.
     let data = mapping_results.data();
     println!("FIGI: {}", data[0].figi);
     println!("Name: {}", data[0].display_name());
 
+    // You can also pretty-print the full debug output
+    // println!("{:#?}", mapping_results);
+
     Ok(())
 }
 ```
 
-### With Custom Configuration
+## 🛠️ Configuration
 
-```rust
+### API Key
+
+The client can be configured with an API key to access higher rate limits.
+
+#### 1. Environment Variable (Recommended)
+
+The client automatically detects the OPENFIGI_API_KEY environment variable.
+
+```bash
+export OPENFIGI_API_KEY="your-secret-key"
+```
+
+#### 2. Manual Configuration
+
+You can also provide the key explicitly using the builder pattern.
+
+```rust,no_run
+# use openfigi_rs::client::OpenFIGIClient;
+# #[tokio::main]
+# async fn main() -> anyhow::Result<()> {
+#    
+let client = OpenFIGIClient::builder()
+    .api_key("your-secret-key")
+    .build()?;
+# Ok(())
+# }
+```
+
+### Custom HTTP Client & Middleware
+
+For production environments, you'll want to configure timeouts and retry policies. This library is built on `reqwest` and `reqwest-middleware`, making customization easy.
+
+```rust,no_run
 use openfigi_rs::client::OpenFIGIClient;
 use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
+use reqwest_retry::{policies::ExponentialBackoff, RetryTransientMiddleware};
 use std::time::Duration;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Configure HTTP client with retry middleware
+async fn main() -> anyhow::Result<()> {
+
+    // 1. Create a base reqwest client with timeouts
     let http_client = reqwest::Client::builder()
-        .timeout(Duration::from_secs(30))
-        .build()?;
+    .timeout(Duration::from_secs(15))
+    .connect_timeout(Duration::from_secs(5))
+    .build()?;
 
+    // 2. Configure a retry policy
     let retry_policy = ExponentialBackoff::builder().build_with_max_retries(3);
-    let middleware_client = ClientBuilder::new(http_client)
-        .with(RetryTransientMiddleware::new_with_policy(retry_policy))
-        .build();
 
+    // 3. Build the middleware client
+    let middleware_client = ClientBuilder::new(http_client)
+    .with(RetryTransientMiddleware::new_with_policy(retry_policy))
+    .build();
+
+    // 4. Build the OpenFIGI client with the custom middleware client
     let client = OpenFIGIClient::builder()
-        .middleware_client(middleware_client)
-        .api_key("your-api-key")
-        .build()?;
+    .middleware_client(middleware_client)
+    .api_key("your-secret-key")
+    .build()?;
 
     Ok(())
 }
-```
-
-## 🔑 Authentication & Rate Limits
-
-### API Key Setup
-
-Set your API key as an environment variable:
-
-```bash
-export OPENFIGI_API_KEY="your-api-key"
-```
-
-Or configure it explicitly:
-
-```rust
-let client = OpenFIGIClient::builder()
-    .api_key("your-api-key")
-    .build()?;
 ```
 
 ### Rate Limits
 
-| Type of Limitation       | Without API Key | With API Key   |
-|--------------------------|----------------|---------------|
-| Max Amount of Requests  | 25 Per Minute   | 25 Per 6 Seconds |
-| Max Jobs Per Request    | 10 Jobs        | 100 Jobs      |
+| Limitation           | Without API Key | With API Key               |
+| -------------------- | --------------- | -------------------------- |
+| **Request Rate**     | 25 per minute   | 250 per minute (25 per 6s) |
+| **Jobs per Request** | 10 jobs         | 100 jobs                   |
 
-## 📚 API Endpoints
+## 📚 API Usage Examples
+
+The client supports all three OpenFIGI API v3 endpoints.
+
+| Endpoint       | Purpose                                         | Batch Support |
+| -------------- | ----------------------------------------------- | ------------- |
+| **/mapping** | Map third-party identifiers to FIGIs.           | **✓**         |
+| **/search**  | Perform a text-based search for instruments.    | ✗             |
+| **/filter**  | Search for instruments using specific criteria. | ✗             |
 
 ### Mapping Endpoint
 
 Convert third-party identifiers to FIGIs:
 
-```rust
+```rust,no_run
+use openfigi_rs::client::OpenFIGIClient;
 use openfigi_rs::model::enums::{IdType, Currency, ExchCode};
-
-// Single mapping request
-let result = client
-    .mapping(IdType::IdIsin, "US4592001014")
-    .currency(Currency::USD)
-    .exch_code(ExchCode::US)
-    .send()
-    .await?;
-
-// Bulk mapping request
 use openfigi_rs::model::request::MappingRequest;
 
-let requests = vec![
-    MappingRequest::new(IdType::IdIsin, json!("US4592001014")),
-    MappingRequest::new(IdType::Ticker, json!("AAPL")),
-];
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = OpenFIGIClient::new();
 
-let results = client
-    .bulk_mapping()
-    .add_requests(requests)
-    .send()
-    .await?;
+    // Single mapping request with optional parameters
+    let single_result = client
+        .mapping(IdType::IdIsin, "US4592001014")
+        .currency(Currency::USD)
+        .exch_code(ExchCode::US)
+        .send()
+        .await?;
+
+    // Bulk mapping request for multiple identifiers
+    let requests = vec![
+        MappingRequest::new(IdType::IdIsin, "US4592001014"),
+        MappingRequest::new(IdType::Ticker, "AAPL"),
+    ];
+
+    let bulk_results = client
+        .bulk_mapping()
+        .add_requests(requests)
+        .send()
+        .await?;
+
+    Ok(())
+}
 ```
 
 ### Search Endpoint
 
 Text-based instrument search:
 
-```rust
+```rust,no_run
+use openfigi_rs::client::OpenFIGIClient;
 use openfigi_rs::model::enums::Currency;
 
-let results = client
-    .search("apple")
-    .currency(Currency::USD)
-    .send()
-    .await?;
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = OpenFIGIClient::new();
+
+    let results = client
+        .search("apple")
+        .currency(Currency::USD)
+        .send()
+        .await?;
+
+    Ok(())
+}
 ```
 
 ### Filter Endpoint
 
 Filter instruments by criteria:
 
-```rust
+```rust,no_run
+use openfigi_rs::client::OpenFIGIClient;
 use openfigi_rs::model::enums::SecurityType;
 
-let results = client
-    .filter()
-    .query("technology")
-    .security_type(SecurityType::CommonStock)
-    .send()
-    .await?;
-```
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = OpenFIGIClient::new();
 
-## 🛠️ Advanced Usage
+    let results = client
+        .filter()
+        .query("technology")
+        .security_type(SecurityType::CommonStock)
+        .send()
+        .await?;
 
-### Error Handling
-
-```rust
-use openfigi_rs::error::OpenFIGIError;
-
-match client.mapping(IdType::IdIsin, json!("INVALID")).send().await {
-    Ok(results) => {
-        for result in &results {
-            match result.data() {
-                Some(data) => println!("Found {} FIGIs", data.len()),
-                None => println!("Error: {}", result.error().unwrap_or("Unknown")),
-            }
-        }
-    }
-    Err(OpenFIGIError::ReqwestError(e)) if e.is_timeout() => {
-        println!("Request timed out - consider retry");
-    }
-    Err(OpenFIGIError::ResponseError(e)) if e.status.as_u16() == 429 => {
-        println!("Rate limit exceeded - implement backoff");
-    }
-    Err(e) => println!("Other error: {}", e),
+    Ok(())
 }
 ```
 
-### Production Configuration
+## 🚨 Error Handling
 
-```rust
-use std::time::Duration;
-use reqwest_middleware::ClientBuilder;
-use reqwest_retry::{RetryTransientMiddleware, policies::ExponentialBackoff};
+The library provides a comprehensive `OpenFIGIError` enum. A common task is handling responses in a bulk request where some jobs may succeed and others may fail.
 
-let http_client = reqwest::Client::builder()
-    .timeout(Duration::from_secs(30))
-    .connect_timeout(Duration::from_secs(5))
-    .pool_idle_timeout(Duration::from_secs(90))
-    .pool_max_idle_per_host(10)
-    .build()?;
+The API returns a `200 OK` with a body containing either a `data` array or an `error` message for each job.
 
-let retry_policy = ExponentialBackoff::builder()
-    .retry_bounds(Duration::from_millis(100), Duration::from_secs(30))
-    .build_with_max_retries(3);
+```rust,no_run
+use openfigi_rs::client::OpenFIGIClient;
+use openfigi_rs::error::OpenFIGIError;
+use openfigi_rs::model::{enums::IdType, request::MappingRequest};
 
-let middleware_client = ClientBuilder::new(http_client)
-    .with(RetryTransientMiddleware::new_with_policy(retry_policy))
-    .build();
+async fn handle_mapping() -> anyhow::Result<()> {
+    let client = OpenFIGIClient::new();
 
-let client = OpenFIGIClient::builder()
-    .middleware_client(middleware_client)
-    .api_key(std::env::var("OPENFIGI_API_KEY")?)
-    .build()?;
+    let requests = vec![
+        MappingRequest::new(IdType::IdIsin, "US4592001014"), // Valid
+        MappingRequest::new(IdType::IdIsin, "INVALID_ISIN"), // Invalid
+    ];
+
+    match client.bulk_mapping().add_requests(requests).send().await {
+        Ok(mapping_results) => {
+            // Handle successful results
+            for (_index, data) in mapping_results.successes() {
+                println!("SUCCESS: Found {} instruments.", data.data().len());
+            }
+            
+            // Handle failed results
+            for (_index, error) in mapping_results.failures() {
+                println!("API ERROR: {}", error);
+            }
+        }
+        Err(OpenFIGIError::ResponseError(e)) if e.status == reqwest::StatusCode::TOO_MANY_REQUESTS => {
+            eprintln!("Rate limit exceeded. Please wait before sending more requests.");
+        }
+        Err(e) => {
+            // Handle network errors, timeouts, etc.
+            eprintln!("An unexpected network error occurred: {}", e);
+        }
+    }
+
+    Ok(())
+}
 ```
 
 ## 📖 Documentation
 
-- [API Documentation](https://docs.rs/openfigi-rs) - Complete API reference
-- [OpenFIGI API Documentation](https://www.openfigi.com/api/documentation) - Official API docs
+- [API Documentation](https://docs.rs/openfigi-rs) - Complete technical documentation for this crate.
+- [OpenFIGI API Documentation](https://www.openfigi.com/api/documentation) - The upstream API documentation from OpenFIGI.
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to submit patches, report issues, and suggest features.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- [OpenFIGI](https://www.openfigi.com/) for providing the API and documentation
-- [Bloomberg](https://www.bloomberg.com/) for the OpenFIGI initiative
-- [OMG](https://www.omg.org/spec/FIGI) for providing documentation
-- The Rust community for excellent HTTP and async libraries
+- [OpenFIGI](https://www.openfigi.com/) for providing the public API.
+- [Bloomberg](https://www.bloomberg.com/) for the OpenFIGI initiative.
+- [OMG](https://www.omg.org/spec/FIGI) for providing documentation.
+- The Rust community for creating amazing libraries like `reqwest`, `reqwest-middleware`, `serde`, and `tokio`.
 
 ## 📞 Support
 
-- 📚 [Documentation](https://docs.rs/openfigi-rs)
-- 🐛 [Issue Tracker](https://github.com/NotAProfDev/openfigi-rs/issues)
-- 💬 [Discussions](https://github.com/NotAProfDev/openfigi-rs/discussions)
+For help with this library, please use the following resources:
 
----
+- **📚 [Documentation](https://docs.rs/openfigi-rs):** Check the API reference for detailed information.
+- **🐛 Issues:** For bugs and feature requests, please use the [GitHub Issue Tracker](https://github.com/NotAProfDev/openfigi-rs/issues).
+- **💬 Discussions:** For questions and general discussion, please use the [GitHub Discussions](https://github.com/NotAProfDev/openfigi-rs/discussions).
 
-**Note**: This library is not officially affiliated with Bloomberg or OpenFIGI. It's an independent implementation of the OpenFIGI API client for Rust.
+----------------------------------------------------------------------------------------------------
+
+**Disclaimer**: This library is an independent project and is not officially affiliated with, endorsed by, or sponsored by Bloomberg L.P. or the OpenFIGI project.
