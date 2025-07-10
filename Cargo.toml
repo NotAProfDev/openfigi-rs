@@ -14,7 +14,6 @@ keywords = ["openfigi", "symbology", "api", "client", "finance"]
 
 [dependencies]
 chrono = { version = "^0.4", features = ["serde"] }
-reqwest-traits = "^0.2"
 reqwest = { version = "^0.12", features = ["json"] }
 reqwest-middleware = { version = "^0.4", features = ["json"] }
 serde = { version = "^1.0", features = ["derive"] }
@@ -24,7 +23,7 @@ url = "^2.5"
 [dev-dependencies]
 serial_test = "^3.2"
 reqwest-retry = "^0.7"
-tokio = { version = "^1.45", features = ["full"] }
+tokio = { version = "^1.46", features = ["full"] }
 
 # https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.release]
