@@ -81,7 +81,7 @@ The client can be configured with an API key to access higher rate limits.
 
 #### 1. Environment Variable (Recommended)
 
-The client automatically detects the OPENFIGI_API_KEY environment variable.
+The client automatically detects the `OPENFIGI_API_KEY` environment variable.
 
 ```bash
 export OPENFIGI_API_KEY="your-secret-key"
@@ -178,7 +178,7 @@ async fn main() -> anyhow::Result<()> {
         .send()
         .await?;
 
-    // Bulk mapping request for multiple identifiers
+    // Bulk mapping request for multiple identifiers using a prebuilt vector of requests
     let requests = vec![
         MappingRequest::new(IdType::IdIsin, "US4592001014"),
         MappingRequest::new(IdType::Ticker, "AAPL"),
@@ -189,6 +189,24 @@ async fn main() -> anyhow::Result<()> {
         .add_requests(requests)
         .send()
         .await?;
+
+    // Bulk mapping request with inline closures
+    let result = client
+        .bulk_mapping()
+        .add_request_with(|j| {
+            // Simple mapping request
+            j.id_type(IdType::IdIsin)
+                .id_value("US4592001014")
+        })?
+        .add_request_with(|j| { 
+            // Complex mapping request with filters
+            j.id_type(IdType::Ticker)
+                .id_value("IBM")
+                .currency(Currency::USD)
+                .exch_code(ExchCode::US)
+         })?
+         .send()
+         .await?;
 
     Ok(())
 }
@@ -270,11 +288,8 @@ async fn handle_mapping() -> anyhow::Result<()> {
                 println!("API ERROR: {}", error);
             }
         }
-        Err(OpenFIGIError::ResponseError(e)) if e.status == reqwest::StatusCode::TOO_MANY_REQUESTS => {
-            eprintln!("Rate limit exceeded. Please wait before sending more requests.");
-        }
+        // Handle network errors, timeouts, etc.
         Err(e) => {
-            // Handle network errors, timeouts, etc.
             eprintln!("An unexpected network error occurred: {}", e);
         }
     }

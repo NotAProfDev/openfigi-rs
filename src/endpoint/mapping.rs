@@ -231,15 +231,15 @@ impl BulkMappingRequestBuilder {
         self
     }
 
-    /// Adds a new, fully configured mapping job to the bulk request using a fluent builder.
+    /// Adds a new, fully configured mapping request to the bulk request using a fluent builder.
     ///
     /// This method provides a closure that receives a `MappingRequestBuilder`,
-    /// allowing you to configure a single mapping job with any required filters before
+    /// allowing you to configure a single mapping request with any required filters before
     /// it's added to the bulk request.
     ///
     /// # Errors
     ///
-    /// Returns an `OpenFIGIError` if the configured job fails validation (e.g.,
+    /// Returns an `OpenFIGIError` if the configured request fails validation (e.g.,
     /// if `id_type` or `id_value` are missing).
     ///
     /// # Examples
@@ -253,8 +253,8 @@ impl BulkMappingRequestBuilder {
     /// # let client = OpenFIGIClient::new();
     /// let result = client
     ///     .bulk_mapping()
-    ///     .job(|j| j.id_type(IdType::IdIsin).id_value("US4592001014"))? // Simple job
-    ///     .job(|j| { // Complex job with filters
+    ///     .add_request_with(|j| j.id_type(IdType::IdIsin).id_value("US4592001014"))? // Simple job
+    ///     .add_request_with(|j| { // Complex mapping request with filters
     ///         j.id_type(IdType::Ticker)
     ///             .id_value("IBM")
     ///             .currency(Currency::USD)
@@ -265,7 +265,7 @@ impl BulkMappingRequestBuilder {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn job<F>(mut self, config: F) -> Result<Self>
+    pub fn add_request_with<F>(mut self, config: F) -> Result<Self>
     where
         F: FnOnce(MappingRequestBuilder) -> MappingRequestBuilder,
     {
