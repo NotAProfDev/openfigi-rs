@@ -14,7 +14,7 @@ OpenFIGI is Bloomberg's open symbology initiative that provides standardized ide
 
 - [Features](#-features)
 - [Getting Started](#-getting-started)
-- [Configuration](#️-configuration)
+- [Configuration](#-configuration)
 - [API Usage Examples](#-api-usage-examples)
 - [Error Handling](#-error-handling)
 - [Documentation](#-documentation)
@@ -73,7 +73,7 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-## 🛠️ Configuration
+## 🔧 Configuration
 
 ### API Key
 
