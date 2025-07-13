@@ -924,7 +924,7 @@ pub enum SecurityType {
     /// A loan whereby interest may be capitalized and added to the principal amount of the loan, which is then compounded and the aggregated amount of which will be due to lenders at maturity. Once borrowed, cannot be re-borrowed.
     #[serde(rename = "PIK TERM")]
     PIKTERM,
-    /// Argentinian MMkt instrument
+    /// Argentinian Money-Mkt instrument
     #[serde(rename = "PLAZOS FIJOS")]
     PLAZOSFIJOS,
     /// Portugal Domestic Commercial Paper
