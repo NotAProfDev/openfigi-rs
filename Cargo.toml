@@ -26,6 +26,11 @@ reqwest-retry = "^0.7"
 tokio = { version = "^1.46", features = ["full"] }
 anyhow = "^1.0"
 
+[build-dependencies]
+reqwest = { version = "^0.12", features = ["blocking", "json"] }
+serde = { version = "^1.0", features = ["derive"] }
+serde_json = "^1.0"
+
 # https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.release]
 codegen-units = 1
