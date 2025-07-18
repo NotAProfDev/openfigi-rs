@@ -1,4 +1,4 @@
-value|description
+key|description
 ID_ISIN|ISIN - International Securities Identification Number. Example: `[{"idType":"ID_ISIN","idValue":"XX1234567890"}]`
 ID_BB_UNIQUE|Unique Bloomberg Identifier - A legacy, internal Bloomberg identifier. Example: `[{"idType":"ID_BB_UNIQUE","idValue":"EQ0010080100001000"}]`
 ID_SEDOL|Sedol Number - Stock Exchange Daily Official List. Example: `[{"idType":"ID_SEDOL","idValue":"1234567"}]`
