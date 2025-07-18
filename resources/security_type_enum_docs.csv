@@ -1,0 +1,366 @@
+value|description
+ABS Auto|Asset Backed Security (backed by AUTO loans)
+ABS Card|Asset Backed Security (backed by Other less common loans and receivables) i.e. Charge accounts, Reference Notes, etc.
+ABS Home|Asset Backed Security (backed by Other less common loans and receivables) i.e. Charge accounts, Reference Notes, etc.
+ABS Other|Asset Backed Security (backed by Home Equity loans)
+ACCEPT BANCARIA|Mexico Bankers Acceptances
+ADJ CONV. TO FIXED|These are bonds that had been adjustable, but were remarketed as Fixed interest rate bonds, and the coupon rate will no longer be subject to change.
+ADJ CONV. TO FIXED, OID|These are bonds that had been adjustable, but were remarketed as Fixed interest rate bonds, and the coupon rate will no longer be subject to change. The security is an Original Issue Discount.
+ADJUSTABLE|The rate changes throughout the life of the bond. This includes variables and step-coupons.
+ADJUSTABLE, OID|The rate changes throughout the life of the bond. The security is an Original Issue Discount.
+ADR|A negotiable certificate issued by a U.S. bank representing a specified number of shares (or one share) in a foreign stock that is traded on a U.S. exchange. ADRs are denominated in U.S. dollars, with the underlying security held by a U.S. financial institution overseas. ADRs help to reduce administration and duty costs that would otherwise be levied on each transaction.
+Agncy ABS Home|Asset Backed Loans issued by an Agency such as SBA
+Agncy ABS Other|Asset Backed Loans issued by an Agency such as SBA
+Agncy CMBS|Agency Commercial Mortgage security (ie GNR ticker)
+Agncy CMO FLT|Agency Floater
+Agncy CMO INV|Agency CMO Inverse Floating Rate security, Fannie Mae, Freddie Mac, Ginnie Mae
+Agncy CMO IO|Collateralized Mortgage Obligation (CMO). A security which pools together mortgages and separates them into short-, medium-, and long-term positions (called tranches). Tranches are set up to pay different rates of interest depending upon their maturity.
+Agncy CMO Other|Agency CMO Other(Less common type of security such as PAC or Sequential) Fannie Mae, Freddie Mac, Ginnie Mae
+Agncy CMO PO|Agency collateralized Mortgage Obligations - Principal only
+Agncy CMO Z|Agency CMO Z (Accrual Bond), Fannie Mae, Freddie Mac, Ginnie Mae
+Asset-Based|A financial security backed by a loan, lease or receivables against assets other than real estate and mortgage-backed securities.
+ASSET-BASED BRIDGE|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets.
+ASSET-BASED BRIDGE REV|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Once borrowed funds are repaid they can be borrowed again.
+ASSET-BASED DIP|Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Issued when a company is in bankruptcy
+ASSET-BASED DIP REV|Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Issued when a company is in bankruptcy. Once borrowed funds are repaid they can be borrowed again.
+ASSET-BASED DIP TERM|Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Issued when a company is in bankruptcy. Once borrowed, cannot be re-borrowed.
+ASSET-BASED LOC|Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Guaranteed by the lender(s) and used for purchase of goods, completion of construction projects, and/or general purposes.
+ASSET-BASED REV|Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Once borrowed funds are repaid they can be borrowed again.
+ASSET-BASED TERM|Fully secured by a specific pool of assets, with availability determined as a percentage of the current value of the collateral assets. Once borrowed, cannot be re-borrowed.
+AUSTRALIAN|Market issue type where the issue is an Australian issuer issuing in AUD into the Australian domestic mkt.
+AUSTRALIAN CD|Certificate of Deposit (CD). A debt instrument issued by a bank that will pay interest, periodically or at maturity (set by competitive forces in the marketplace), and principal when it reaches maturity. Maturities range from a few weeks to several years. It may have a fixed or floating rate of interest. Certificate of Deposit Rollover. An investment strategy used to defer taxes on income from a Certificate of Deposit. An individual who has purchased a certificate of deposit on margin expected to mature in the following year, can deduct the interest on the loan in the current year and move the income from the certificate to the up-coming year.
+AUSTRALIAN CP|Commercial Paper. An unsecured short-term promise to repay a fixed amount on a certain future date. Commercial paper usually matures from 2 to 270 days and is traded on a discount basis. This debt instrument, issued by banks, companies and other borrowers, use only their credit ratings to back the security. Commercial Paper House. A dealer who buys commercial paper at one price, then tries to sell it at another.
+Austrian Crt|Austrian Certificate: Depositary Receipt issued in Austria,
+BANK ACCEPT BILL|Banker's Acceptance. A draft drawn and accepted by banks that is based upon funds that will pay its face value at maturity. The security is traded at a discount. Because the accepting institution is obligated to pay for the bill, a banker's acceptance is considered less risky than commercial paper. Bloomberg abbreviates bankers acceptance as BA.
+BANK BILL|A bank bill is a short-term money market investment of which the acceptor and/or endorser is a bank.
+BANK NOTE|Banker's Acceptance. A draft drawn and accepted by banks that is based upon funds that will pay its face value at maturity. The security is traded at a discount. Because the accepting institution is obligated to pay for the bill, a banker's acceptance is considered less risky than commercial paper. Bloomberg abbreviates bankers acceptance as BA.
+BANKERS ACCEPT|Bankers Acceptances - a draft or bill of exchange drawn on a bank and accepted by it
+BANKERS ACCEPTANCE|A draft drawn and accepted by banks that is based upon funds that will pay its face value at maturity. The security is traded at a discount.
+BASIS SWAP|Exchange of different floating indices in the same currency
+Basket WRT|A warrant over a group of securities, often within a sector.
+BDR|Brazilian Depositary Receipt: These are certificates that represent the stocks from a foreign company and that are issued in Brazil by a local financial institution based on the amount of shares the institution holds.
+BEARER DEP NOTE|Bearer Security. A negotiable security owned by the holder who is not registered upon the issuers books. Title to bearer securities is transferred by delivery.
+Belgium Cert|Belgium Certificate: Depositary Receipts issued in Belgium.
+BELGIUM CP|Belgium Domestic Commercial Paper - An unsecured short-term promise to repay a fixed amount on a certain future date. Commercial paper usually matures from 2 to 270 days and is traded on a discount basis. This debt instrument, issued by banks, companies and other borrowers, use only their credit ratings to back the security. Commercial Paper House. A dealer who buys commercial paper at one price, then tries to sell it at another
+BILL OF EXCHANGE|Bill of Exchange. A short-term debt, the collateral for which is either a commodity or another product in the midst of transit. Papers that require the addressee to pay the bearer or anotherr person on demand.
+Bond|Bond. A long-term debt security, issued by a corporation or government, with a stated interest rate and fixed due dates when interest and principal must be paid. Specific features are written into each bond's indenture, including whether the interest and principal will be paid to the person in whose name the security is registered, or if it will be payable to anyone presenting its coupons, in which case it is considered a bearer bond. Bondholders have a promise of repayment from the issuer but hold no ownership privileges as stockholders do.
+BRAZILIAN CDI|Brazilian Mmkt instrument, interbank deposits or certificado de deposito interbanco (CDI)
+BRIDGE|A loan, often event-driven, intended to provide finance for a short period of time until longer-term, permanent financing can be obtained. Bridge loans often contain significant fee and/or interest rate step up provisions which kick in after a short period (i.e. 12 months or less)
+BRIDGE DELAY-DRAW|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date.
+BRIDGE DELAY-DRAW TERM|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date.
+BRIDGE GUARANTEE FAC|Short-term financing issued by a bank to ensure/guarantee that an underlying project is completed.
+BRIDGE ISLAMIC|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Interest cannot be charged, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements.
+BRIDGE ISLAMIC TERM|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Interest cannot be charged, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements. Once borrowed, cannot be re-borrowed.
+BRIDGE PIK|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Interest may be capitalized and added to the principal amount of the loan, which is then compounded and due to lenders at maturity.
+BRIDGE PIK REV|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Interest may be capitalized and added to the principal amount of the loan, which is then compounded and due to lenders at maturity. Once borrowed funds are repaid they can be borrowed again.
+BRIDGE PIK TERM|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Interest may be capitalized and added to the principal amount of the loan, which is then compounded and due to lenders at maturity. Once borrowed, cannot be re-borrowed.
+BRIDGE REV|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Once borrowed funds are repaid they can be borrowed again.
+BRIDGE REV GUARANTEE FAC|Short-term financing issued by a bank to ensure/guarantee that an underlying project is completed. Once funds are borrowed, they can be borrowed again.
+BRIDGE TERM|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Once borrowed, cannot be re-borrowed.
+BRIDGE VAT-TRNCH|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Given as temporary reimbursement for a VAT credit it has with the state.
+BULLDOG|Bulldog Securities. Foreign securities traded in the U.K. with face values and interest payments quoted in pounds sterling. As with Gilts, bulldogs follow an Actual/Actual day count convention.
+BUTTERFLY SWAP|Quoted in basis points, butterfly swaps take the spread between 3 different interest rate swaps.
+CAD INT BEAR CP|Canadian Interest Bearing Commercial Paper
+Calendar Spread Option|Option on a Calendar Spreads which consists of two futures contracts within the same instrument group and with different maturity months.
+CALL LOANS|Call Loan. A loan usually made to a broker or specialist by a commercial bank with securities as collateral. Brokers may then loan the money to customers to finance margin activities. Most such loans can be terminated by either party on 24-hours notice and hence are said to involve call money. Also called Brokers'Loan.
+CALLABLE CP|An unsecured short-term promise to repay a fixed amount on a certain future date. Commercial paper usually matures from 2 to 270 days and is traded on a discount basis. This debt instrument, issued by banks, companies and other borrowers, use only their credit ratings to back the security.
+CANADIAN|Market issue type where the issue is a Canadian issuer issuing in CAD into the Canadian domestic market.
+Canadian|Market issue type where the issue is a Canadian issuer issuing in CAD into the Canadian domestic market.
+CANADIAN CD|Canadian Certificate of Deposit - A debt instrument issued by a bank that will pay interest, periodically or at maturity (set by competitive forces in the marketplace), and principal when it reaches maturity. Maturities range from a few weeks to several years. It may have a fixed or floating rate of interest. Certificate of Deposit Rollover. An investment strategy used to defer taxes on income from a Certificate of Deposit. An individual who has purchased a certificate of deposit on margin expected to mature in the following year, can deduct the interest on the loan in the current year and move the income from the certificate to the up-coming year.
+CANADIAN CP|Canadian Commercial Paper
+Car Forward|Carry Forward. shares that show the accumulated and undivided profits of a corporation after provision has been made for dividends and reserves
+CASH|Legal tender or coins that can be used in exchange goods, debt, or services. Sometimes also including the value of assets that can be converted into cash immediately, as reported by a company.
+CBLO|A money market instrument that represents an obligation between a borrower and a lender as to the terms and conditions of the loan. Collateralized borrowing and lending obligations (CBLOs) are used by those who have been phased out of or heavily restricted in the interbank call money market.
+CD|Certificate of Deposit (CD). A debt instrument issued by a bank that will pay interest, periodically or at maturity (set by competitive forces in the marketplace), and principal when it reaches maturity. Maturities range from a few weeks to several years. It may have a fixed or floating rate of interest. Certificate of Deposit Rollover. An investment strategy used to defer taxes on income from a Certificate of Deposit. An individual who has purchased a certificate of deposit on margin expected to mature in the following year, can deduct the interest on the loan in the current year and move the income from the certificate to the up-coming year.
+CDI|Chess Depositary Interest
+CDR|Continental Depositary Receipt: Certificates issued by the Amsterdam Depository Company NV representing a specific number of shares of a security traded on an exchange of another country.
+CF|Cash Flow (Only for CDO,CLO,CBO securities)
+Closed-End Fund|A closed-end fund is a collective investment scheme with a limited number of shares. New shares are rarely issued after the fund is launched; shares are not normally redeemable for cash or securities until the fund liquidates. Typically an investor can acquire shares in a closed-end fund by buying shares on a secondary market from a broker, market maker, or other investor as opposed to an Open-end fund where all transactions eventually involve the fund company creating new shares on the fly (in exchange for either cash or securities) or redeeming shares (for cash or securities).
+CMBS|Commercial Mortgage Backed Security: a mortgage backed by commercial property.
+Cmdt Fut WRT|Commodity Future Warrant - Indicates that the underlying is a commodity future.
+Cmdt Idx WRT|Commodity Index Warrant - Indicates that the underlying is a commodity index
+COLLAT CALL NOTE|Collateralized Call Notes
+COMMERCIAL NOTE|Commercial Notes
+COMMERCIAL PAPER|An unsecured short-term promise to repay a fixed amount on a certain future date. Commercial paper usually matures from 2 to 270 days and is traded on a discount basis. This debt instrument, issued by banks, companies and other borrowers, use only their credit ratings to back the security.
+Common Stock|Common Stock. A unit of ownership in a public company for which the holder can vote on corporate matters and receive dividends fromthe company's growth. If the company is liquidated the claims of secured and unsecured creditors, bondholders and preferred stockholders take precedence over common stock holders. However, common stock has more potential for appreciation.
+CONTRACT FOR DIFFERENCE|Contract For Difference. An arrangement made in a futures contract whereby differences in settlement are made through cash payments, rather than the delivery of physical goods or securities.
+CONTRACT FRA|IMM FRAs, FRAs where the payment dates align with Eurodollar future contracts' expiration date
+Conv Bond|Convertible Bond. A bond containing a provision that permits conversion to the issuer's common stock at some fixed exchange ratio.
+Conv Prfd|Convertible Preferred Stock. Preferred stock that includes an option for the holder to convert the preferred shares into a fixed number of common shares, usually anytime after a predetermined date.
+Corp Bnd WRT|Corporate Bond Warrant - Indicates that the underlying is a corporate bond
+CP-LIKE EXT NOTE|Extendible Notes issues off of Commercial Paper program prospectus
+CPI LINKED|A special type of floating rate bond that is linked to the Consumer Price Index (CPI)
+CROSS|Cross-rate: Currency against any other currency except US Dollar, eg EURCAD
+Currency future.|Currency Futures. Futures contracts on major currencies (e.g., the British pound, the German mark and the U.S. dollar) that are held by companies doing worldwide business in an effort to reduce their risks by hedging the value of their home country's currency.
+Currency option.|Option. A contract that provides the right, but not the obligation, to buy or sell a specific amount of a specific security within a predetermined time period. A call option provides the right to buy 100 shares of the underlying security. A put option provides the right to sell 100 shares of the underlying security. The seller of the contracts is called the writer. Bloomberg abbreviates option as OPT.
+Currency spot.|A currency transaction where one leg is the USD
+Currency WRT|Currency Warrant - Indicates that the underlying is a currency
+DELAY-DRAW|Term loan where borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. While the loan is technically effective from the signing date, availability is often subject to the completion of specific construction landmarks and/or the closing of a specific acquisition (note that this should not be confused with the Signed but not Effective status).
+DELAY-DRAW ISLAMIC|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Interest cannot be charged, complying with Islamic/sharpie law.
+DELAY-DRAW ISLAMIC LOC|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Interest cannot be charged, complying with Islamic/sharpie law. Guaranteed by the lender(s) and used for purchase of goods, completion of construction projects, and/or general purposes.
+DELAY-DRAW ISLAMIC TERM|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Interest cannot be charged, complying with Islamic/sharpie law. Once borrowed, cannot be re-borrowed.
+DELAY-DRAW PIK TERM|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Interest may be capitalized and added to the principal amount of the loan, which is then compounded and due to lenders at maturity. Once borrowed, cannot be re-borrowed.
+DELAY-DRAW STANDBY TERM|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Issued on a stand-by basis and borrowed only if and when needed. Once borrowed, cannot be re-borrowed.
+DELAY-DRAW TERM|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Once borrowed, cannot be re-borrowed.
+DELAY-DRAW TERM VAT-TRNCH|Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Once borrowed, cannot be re-borrowed. Given as temporary reimbursement for a VAT credit it has with the state.
+DEPOSIT|The interest rate paid by financial institutions to deposit account holders
+DEPOSIT NOTE|Deposit Note. Deposit Notes are securities issued by a financial institution using the deposits of the institution as collateral. These securities carry the FDIC insurance.
+DIM SUM BRIDGE TERM|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Denominated in Renminbi (RMB) currency, the lending happens outside Mainland China. Once borrowed, cannot be re-borrowed.
+DIM SUM DELAY-DRAW TERM|Denominated in Renminbi (RMB) currency, the lending happens outside Mainland China. Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Once borrowed, cannot be re-borrowed.
+DIM SUM REV|Event-driven loan intended to provide finance for a short period of time until longer-term financing can be obtained. Denominated in Renminbi (RMB) currency, the lending happens outside Mainland China. Once borrowed, can be borrowed again.
+DIM SUM TERM|Denominated in Renminbi (RMB) currency, the lending happens outside Mainland China. Once borrowed, cannot be re-borrowed.
+DIP|Loans issued when a company is in bankruptcy. These have a ranking of Super Priority Secured unless stated otherwise.
+DIP DELAY-DRAW ISLAMIC TERM|Issued when a company is in bankruptcy. Once borrowed, cannot be re-borrowed. Interest cannot be charged, complying with Islamic/sharpie law.
+DIP DELAY-DRAW PIK TERM|Issued when a company is in bankruptcy. Interest may be capitalized and added to the principal amount of the loan, which is then compounded and due to lenders at maturity. Once borrowed, cannot be re-borrowed.
+DIP DELAY-DRAW TERM|Issued when a company is in bankruptcy. Borrower is allowed to draw down on the loan in one or more drawings within a specified time period after the signing date. Once borrowed, cannot be re-borrowed.
+DIP LOC|Issued when a company is in bankruptcy. Guaranteed by the lender(s) and used for purchase of goods, completion of construction projects, and/or general purposes.
+DIP PIK TERM|Issued when a company is in bankruptcy. Interest may be capitalized and added to the principal amount of the loan, which is then compounded and due to lenders at maturity. Once borrowed, cannot be re-borrowed.
+DIP REV|Issued when a company is in bankruptcy. Once borrowed funds are repaid they can be borrowed again.
+DIP SYNTH LOC|Issued when a company is in bankruptcy. A letter of credit facility which is fully cash collateralized with proceeds of a term loan which has been issued by the same borrower, usually with the same amount and terms.
+DIP TERM|Issued when a company is in bankruptcy. Once borrowed, cannot be re-borrowed.
+DISCOUNT FIXBIS|Bank of Intl Settlement Discount Notes / Discount Rate
+DISCOUNT NOTES|Discount Notes - Short-term issues with no fixed offering schedule which are sold in $100,000 denominations with maturities of 30 to 270 days. Such notes are sold without government guarantees.
+DIVIDEND NEUTRAL STOCK FUTURE|Dividend Neutral Stock Futures (DNSF) are derivative instruments that give investors exposure to price movements of an underlying financial instrument (shares). A DNSF is a basket of two futures contracts, constructed from a Single Stock Futures Contract and a Dividend Futures Contract.
+DOMESTC TIME DEP|Time Deposit. A deposit in an interest-paying account that requires the money to remain on account for a specific length of time. While withdrawals can generally be made from a passbook account at any time, other time deposits, such as certificates of deposit, are penalized for early withdrawal.
+DOMESTIC|A security issued into a country's domestic market
+DOMESTIC MTN|A medium term note issued into a country's domestic market.
+Dutch Cert|Certificaten Van Aandelen. Netherland securities in the form of bearer certificates, issued by an administration office against the underlying original, mostly registered shares. The office acts as a trustee for the holders of the certificate and exercises voting rights on the shares.
+DUTCH CP|Commercial Paper. An unsecured short-term promise to repay a fixed amount on a certain future date. Commercial paper usually matures from 2 to 270 days and is traded on a discount basis. This debt instrument, issued by banks, companies and other borrowers, use only their credit ratings to back the security. Commercial Paper House. A dealer who buys commercial paper at one price, then tries to sell it at another. - DUTCH GUILDER
+EDR|European Depository Receipt. A document issued in place of stock shares that represents ownership of the shares, thus making it easier to deal in foreign securities because the actual stock certificates do not have to be physically transferred.
+Equity Index|Statistical movement of the stock market as represented by a basket of stocks.
+Equity Option|Option. A contract that provides the right, but not the obligation, to buy or sell a specific amount of a specific security within a predetermined time period. A call option provides the right to buy 100 shares of the underlying security.A put option provides the right to sell 100 shares of theunderlying security. The seller of the contracts is called the writer. Bloomberg abbreviates option as OPT.
+Equity WRT|Indicates that the underlying is an equity
+ETP|Exchange Traded Product is a derivatively-priced security which trades intra-day on a national stock exchange. ETPs are typically benchmarked to indices, stocks, commodities, or may be actively managed.
+EURO CD|Eurodollar Certificate of Deposit. A certificate of deposit issued by a bank outside the United States, with interest and principal paid in dollars.
+EURO CP|Euro Commercial Paper
+EURO MTN|Euro Medium Term Note (EMTN). Continuously offered notes with maturities ranging from nine months to 40 years. Typically unsecured debt obligations, each euro medium term note issue (also known as a tranche) is a drawdown from a program (prospectus) level. EMTNs are flexible in structure and market timing because of this type of issuance (modeled from the commercial paper market). EMTNs are traded in the Euro market.
+EURO NON-DOLLAR|Euro Non-Dollar. Any security issued by a U.S. company in a foreign country in a currency other than U.S. dollars.
+EURO STRUCTRD LN|Euro Structured Loan Note
+EURO TIME DEPST|Time Deposit / Euro Market
+EURO-DOLLAR|Eurodollar Bonds. Bonds paying interest and principal in Eurodollars. Such bonds are not regulated by the Securities and Exchange Commission and can therefore be sold at interest rates that are lower than U.S. rates.
+EURO-ZONE|Bonds issued by the countries that redenominated their debt from their legacy country to the Euro. Currency of the bond is in Euro.
+EXTEND COMM NOTE|Extendible Commercial Notes
+EXTEND. NOTE MTN|Extendible Note issued off of MTN type prospectus
+FDIC|Federal Deposit Insurance Corporation. A federal agency that insures deposits in member banks and thrifts up to $100,000.
+FED FUNDS|The Fed Funds type is used by banks to track the overnight borrowing they partake in to meet bank reserve requirements. Banks needs to have certain amount of cash on hand at close of every day, if they are short they will borrow from another bank for the night. This program type was established to help the banks manage this process.
+FIDC|This stands for Fundo De Investimento Em Direitos Creditorios in Portuguese
+Financial commodity future.|Commodity Future. A contract to buy or sell a specific commodity at a specified price at a certain future date.
+Financial commodity generic.|Cash Settled (Financial) Generics on Commodity Futures. Generics are used to combine multiple futures contracts to build a generic history stream.
+Financial commodity option.|Cash Settled (Financial) Options on Commodity Futures.
+Financial commodity spot.|Cash Settled (Financial) Spot on Commodity Futures. The commodity will be delivered and settled immediately or in which a futures contract will expire in one month or less.
+Financial index future.|Futures contracts that use indices as their base and theoretically settle by delivery of the underlying securities or commodities that make up the indices.
+Financial index generic.|Valid return for generic tickers.
+Financial index option.|An option that is based on a stock index (performance measure of a group of stocks). Such options enable investors to trade in a particular market or industry group without having to buy individual stocks. Index options are issued by the Options Clearing Corporation.
+FINNISH CD|Finland Domestic Certificates of Deposit
+FINNISH CP|Finland Domestic Commercial Paper
+FIXED|The coupon stays constant through maturity.
+FIXED, OID|The coupon stays constant through maturity. The security is an Original Issue Discount.
+FIXING RATE|The rate set at a specific time
+FLOATING|The coupon is based off an index or benchmark, and changes in value as the index changes.
+FLOATING CP|Floating Rate Commercial Paper
+FLOATING, OID|The coupon is based off an index or benchmark, and changes in value as the index changes. The security is an Original Issue Discount.
+Foreign Sh.|Foreign Share is a common stock, but it is the foreign line of the security and it trades on the foreign board. The foreign board was set up as an alternative board for foreign investors seeking direct ownership of securities
+FORWARD|Forward. A financial instrument an investor sells for future delivery. This act is in direct violation of federal securities laws.
+FORWARD CROSS|Same as a forward but traded currencies do not follow spot conventions.
+FORWARD CURVE|The forward rates over different time periods
+FRA|Forward rate agreements are common OTC financial derivatives in which the buyer or seller will be compensated based upon the difference between an agreed upon future interest rate level and the realized interest rate. The contract will determine the rates to be used along with the termination date and notional value. On this type of agreement, it is only the differential that is paid on the notional amount of the contract.
+FRENCH CD|French Domestic Certificates of Deposit
+French Cert|French Certificate - Depositary Receipt issued in France
+FRENCH CP|French Domestic Commercial Paper
+Fund of Funds|A mutual fund that invests in other mutual funds.
+FWD SWAP|Forward starting swap, swap starting in a future date
+FX DISCOUNT NOTE|Setup for Fixed Rate Agency Discount Notes
+GDR|Global Depository Receipts. (GDR) A negotiable certificate held in the bank of one country representing a specific number of shares of a stock traded on an exchange of another country.
+Generic currency future.|Futures contracts on major currencies
+Generic index future.|Generics on Index Futures. Generics are used to combine multiple futures contracts to build a generic history stream.
+German Cert|Also known as Deutsches Zertifikat (German certificate). The DTZ identifies deposit receipts issued by German banks evidencing the ownership of foreign securities.
+GERMAN CP|German Domestic Commercial Paper
+GLOBAL|Global Bond. A certificate representing the total debt of an issue. Such bonds are created to control the primary market distribution of an issue in compliance with selling restrictions in certain jurisdictions or because definitive bond certificates are not available. Also known as global certificate.
+GUARANTEE FAC|Also known as a performance bond/guarantee, is a contingent liability which is issued by a bank to ensure/guarantee that an underlying project is completed. Similar to a letter of credit.
+HB|Hybrid (Only for CDO,CLO,CBO securities)
+HDR|Hong Kong Depository Receipt
+HONG KONG CD|Hong Kong Certificates of Deposit
+I.R. Fut WRT|Indicates that the underlying is an interest rate future
+I.R. Swp WRT|Indicates that the underlying is an interest rate swap
+IDR|International Depository Receipt. A receipt given for a foreign corporation's share certificates.
+IMM FORWARD|Represents an FX forward contract with a maturity on an IMM date
+IMM SWAP|Forward swap rates with payment dates that align with Eurodollar future contracts' expiration dates.
+Index|Index. A compilation of statistical data that tracks changes in the economy or in financial markets.
+Index Option|Option on Index Futures. Investors trading index options are essentially betting on the overall movement of the stock market as represented by a basket of stocks. Options on the S and P 500 are some of the most actively traded options in the world.
+Index WRT|Index Warrant - Indicates that the underlying is an index
+INDIAN CD|Indian Certificates of Deposit
+INDIAN CP|Indian Commercial Paper
+INDONESIAN CP|Indonesian Commercial Paper
+Indx Fut WRT|Indicates that the underlying is an index future
+INFLATION SWAP|A derivative used to transfer inflation risk from one party to another through an exchange of cash flows.
+INT BEAR FIXBIS|Bank of Intl Settlement Discount Notes / Interest Bearing Coupon Rate
+Int. Rt. WRT|Interest Rate Warrant - Indicates that the underlying is an interest rate
+INTER. APPRECIATION|Also called Convertible Capital Appreciate Bonds. The bond starts as a Zero Coupon, then converts at some predetermined date to a fixed rate or current interest bond.
+INTER. APPRECIATION, OID|Also called Convertible Capital Appreciate Bonds. The bond starts as a Zero Coupon, then converts at some predetermined date to a fixed rate or current interest bond.
+ISLAMIC|A type of loan that interest cannot be charged on, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements. Lenders are generally referred to as depositors. Islamic loans are further classified into sub-categories such as ljara, Murabaha, Mudarabah, etc.
+ISLAMIC BA|Islamic Bankers Acceptances
+ISLAMIC CP|Islamic Commercial Paper
+ISLAMIC LOC|Interest cannot be charged, complying with Islamic/sharpie law. Guaranteed by the lender(s) and used for purchase of goods, completion of construction projects, and/or general purposes.
+ISLAMIC REV|Interest cannot be charged, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements. Once borrowed funds are repaid they can be borrowed again.
+ISLAMIC STANDBY|Interest cannot be charged, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements. Issued on a stand-by basis and borrowed only if and when needed.
+ISLAMIC STANDBY REV|Interest cannot be charged, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements. Issued on a stand-by basis and borrowed only if and when needed. Once borrowed, cannot be borrowed again.
+ISLAMIC TERM|Interest cannot be charged, complying with Islamic/sharpie law. Instead, the loan is structured using discounts, sale or lease, profit participation, or repurchase agreements. Once borrowed, cannot be borrowed again.
+JUMBO CD|Jumbo Certificate of Deposit. A certificate of deposit with a denomination of at least $100,000, usually purchased by institutional investors.
+KOREAN CD|Korean Certificates of Deposit
+KOREAN CP|Korean Commercial Paper
+LEBANESE CP|Lebanese Commercial Paper
+LIQUIDITY NOTE|Liquidity Note - asset backed, cp-like extendible instruments
+LOC|A financial obligation of the borrower which has been guaranteed by the lender(s). There are different types of Letters of Credit (L/Cs) used for various purposes. Trade and Commercial L/Cs are used for purchases of goods. Standby and Documentary L/Cs are used for the completion of construction projects and/or general purposes.
+LOC GUARANTEE FAC|A financial obligation of the borrower which has been guaranteed by the lender(s) to ensure a project is completed.
+Ltd Part|Limited Partnership. A partnership with at least one of the partners holding only a limited liability.
+MALAYSIAN CP|Malaysian Commercial Paper
+Managed Account|An investment account that is owned by anindividual investorand looked after by a hired professional money manager. In contrast to mutual funds (which are professionally managed on behalf of many mutual-fund holders), managed accounts are personalizedinvestment portfolios tailored to the specific needs of the account holder.
+MARGIN TERM DEP|Margin Term Deposits
+MASTER NOTES|MMKT instrument issued by large, creditworthy companies to banks.
+MBS 10yr|Mortgage-Backed Security (MBS). A debt instrument with a pool of real estate loans as the underlying collateral. The mortgage payments of the individual real estate assets are used to pay interest and principal on the bonds. - 10 years
+MBS 15yr|Mortgage-Backed Security (MBS). A debt instrument with a pool of real estate loans as the underlying collateral. The mortgage payments of the individual real estate assets are used to pay interest and principal on the bonds. - 15 years
+MBS 20yr|Mortgage-Backed Security (MBS). A debt instrument with a pool of real estate loans as the underlying collateral. The mortgage payments of the individual real estate assets are used to pay interest and principal on the bonds. - 20 years
+MBS 30yr|Mortgage-Backed Security (MBS). A debt instrument with a pool of real estate loans as the underlying collateral. The mortgage payments of the individual real estate assets are used to pay interest and principal on the bonds. - 30 years
+MBS ARM|Mortgage-Backed Security (MBS). A debt instrument with a pool of real estate loans as the underlying collateral. The mortgage payments of the individual real estate assets are used to pay interest and principal on the bonds.
+MBS balloon|Balloon. The final payment on a loan or mortgage that is much larger than previous payments. Some debts are structured with balloon payments to account for events such as increased interest rates during the life of the loan.
+MBS Other|Description for Agency Pools (Fannie, Freddie, Ginnie) that are unable to be mapped to a generic security.
+MED TERM NOTE|Medium Term Note (MTN). Continuously offered notes with maturities ranging from nine months to 40 years. Typically unsecured debt obligations, each medium term note issue (also known as a tranche) is a drawdown from a program (prospectus) level. MTNs are flexible in structure and market timing because of this type of issuance (modeled from the commercial paper market).
+MEDIUM TERM CD|Medium Term Certificates of Deposit - medium term maturities
+MEDIUM TERM ECD|Medium Term Euro Certificates of Deposit - medium term maturities
+MEXICAN CP|Mexican Commercial Paper
+MEXICAN PAGARE|Mexican Short Term MMKT instrument
+MLP|Master Limited Partnership: A type of limited partnership that is publicly traded. There are two types of partners in this type of partnership: The limited partner is the person or group that provides the capital to the MLP and receives periodic income distributions from the MLP's cash flow, whereas the general partner is the party responsible for managing the MLP's affairs and receives compensation that is linked to the performance of the venture.
+MONEY MARKET CALL|A short-term money market, which allows for large financial institutions, such as banks, mutual funds and corporations to borrow and lend money at interbank rates
+MUNI CP|Commercial Paper. An unsecured short-term promise to repay a fixed amount on a certain future date. Commercial paper usually matures from 2 to 270 days and is traded on a discount basis. This debt instrument, issued by banks, companies and other borrowers, use only their credit ratings to back the security. Commercial Paper House. A dealer who buys commercial paper at one price, then tries to sell it at another.
+MUNI INT BEAR CP|Municipal Commercial Paper / Interest Bearing
+MUNI SWAP|A Municipal Swap is a swap that exchanges a municipal bond index with a funding leg
+MURABAHA|An Islamic financing structure, where an intermediary buys a property with free and clear title to it. The intermediary and prospective buyer then agree upon a sale price (including an agreed upon profit for the intermediary) that can be made through a series of installments, or as a lump sum payment.
+Mutual Fund|Mutual Fund. An investment company that pools individual, institutional and other investors' money and invests it in a variety of securities or markets. Shares can be redeemed at Net Asset Value (NAV). The funds offer investors diversification and professional management for a yearly management fee.
+MV|Market Value (Only for CDO,CLO,CBO securities)
+MX CERT BURSATIL|Short term Mexican Mmkt instrument
+NDF SWAP|A swap that is similar to a non-deliverable forward, with the only difference being that settlement for both parties is done through a major currency. Non-deliverable swaps are used when the swap includes a major currency, such as the U.S. dollar, and a restricted currency, such as the Philippine peso or South Korean won.
+NEG INST DEPOSIT|Negotiable Institutional Deposit
+NEGOTIABLE CD|Negotiable Certificate of Deposit. A negotiable money market instrument that trades on the open market with high returns and low risks. These instruments are typically large-dollar denominated and are held by large institutional investors. Alsoknown as jumbo CD's
+NEW ZEALAND CP|New Zealand Commercial Paper
+NON-DELIVERABLE FORWARD|Non-deliverable forwards are a type of cash settled financial derivative. In the foreign exchange market, traders and investors will enter into an outright forward or futures contract where counterparties agree to settle based upon the difference between a strike price and the prevailing spot rate for a specified notional amount on a defined fixing date in the future.
+NON-DELIVERABLE IRS SWAP|Denominated in a currency on a non-deliverable basis, but settled in another currency that is deliverable
+NVDR|Thailand Non Voting Depositary Receipt.
+NY Reg Shrs|New York Registered Shares. A foreign company's shares that are registered through their home office in New York.
+OID|Original Issue Discount (OID). A bond with its par value discounted at the time it is issued. The difference between the purchase price and the adjusted price is considered income in addition to any interest that may be paid. If held to maturity, no capital gains tax will be paid since the gain is considered interest.
+ONSHORE FORWARD|Onshore forward foreign exchange transactions occur in controlled domestic markets and involve the purchase of a specified amount of one currency and selling of another on an agreed future date. Onshore forward rates are not necessarily determined by an arbitrage free relationship between the interest rates of the two currencies and the current spot rate.
+ONSHORE SWAP|The Swap can only be traded in the local currency in the local market (ex: KRW onshore swaps)
+Open-End Fund|A fund that allows investors to buy and sell stock in it on an on-going basis since it has unlimited shares. It continuously issues and redeems shares so the number of shares issued and outstanding varies from day to day.
+OPTION|A contract that provides the right, but not the obligation, to buy or sell a specific amount of a specific security within a predetermined time period.
+OPTION VOLATILITY|A measure of the variation of the price of the underlying asset
+OVER/NIGHT|Used for ticketing Overnight transactions
+OVERNIGHT INDEXED SWAP|An overnight index swap uses an overnight rate index, such as the Federal Funds Rate, as the underlying for its floating leg.
+PHILIPPINE CP|Philippino Commercial Paper
+Physical commodity forward.|The amount of a specified underlying asset of a contract that is physically delivered by the seller of the contract to the exchange, and by the exchange to the buyers of the contract.
+Physical commodity future.|Commodity Future. A contract to buy or sell a specific commodity a ta specified price at a certain future date.
+Physical commodity generic.|Physically Deliverable (Physical) Generics on Commodity Futures. Generics are used to combine multiple futures contracts to build a generic history stream.
+Physical commodity option.|Physical Commodity. The actual, tangible commodity, such as corn or soybeans, which a seller delivers to the buyer of a commodities contract.
+Physical commodity spot.|Physically Deliverable (Physical) Spot on Commodity Futures. Spot is the actual physical product on which a futures contract is based.
+Physical index future.|Stock Index Future. A futures contract that uses a stock index as its base, and which is settled by delivery of the underlying stocks.
+Physical index option.|Index Options. An option that is based on a stock index (performance measure of a group of stocks). Such options enable investors to trade in a particular market or industry group without having to buy individual stocks. Index options are issued by the Options Clearing Corporation.
+PIK|A loan whereby interest may be capitalized and added to the principal amount of the loan, which is then compounded and the aggregated amount of which will be due to lenders at maturity. PIK loans are usually in the form of a term loan.
+PIK REV|A loan whereby interest may be capitalized and added to the principal amount of the loan, which is then compounded and the aggregated amount of which will be due to lenders at maturity. Once borrowed, can be borrowed again.
+PIK SYNTH LOC|A loan whereby interest may be capitalized and added to the principal amount of the loan, which is then compounded and the aggregated amount of which will be due to lenders at maturity. Fully cash collateralized with proceeds of a term loan which has been issued by the same borrower, usually with the same amount and terms.
+PIK TERM|A loan whereby interest may be capitalized and added to the principal amount of the loan, which is then compounded and the aggregated amount of which will be due to lenders at maturity. Once borrowed, cannot be re-borrowed.
+PLAZOS FIJOS|Argentinian Money-Mkt instrument
+PORTUGUESE CP|Portugal Domestic Commercial Paper
+Preference|Preference Stock. A special type of common stock that shares in the earnings of the company, has limited voting rights, and may have a dividend preference. Preference shares may also have liquidation preference.
+Preferred|Preferred Stock. Stock shares that represent a portion of ownership in a company, with the shares normally carrying fixed dividends. Sometimes the shares have voting rights, but not generally.
+PRES|Not used
+Prfd WRT|Indicates that the underlying is a preferred security
+PRIV PLACEMENT|Private Placement. A large block of securities offered for sale to an institutional investor or a small number of investors through private negotiations, as opposed to the securities being acquired in a public offering. Such placements are not registered with the SEC.
+PRIVATE|a preferred security issued as a private placement (not registered with SEC). This also includes 144A securities that typically get exchanged into public securities once the company has the documentation ready for the SEC. 144A securities allow issuing entities to obtain their money be selling the securities and then typically have 90-180 days to file the correct documentation with the SEC.
+Private Comp|Private Company: A company whose ownership is private. As a result, it does not need to meet the strict Securities and Exchange Commission filing requirements of public companies. Private companies may issue stock and have shareholders. However, their shares do not trade on public exchanges and are not issued through an initial public offering. In general, the shares of these businesses are less liquid and the values are difficult to determine.
+PROMISSORY NOTE|Promissory Note. A written commitment to pay another party a specific amount of money by a specific date. A note, for example, is a promissory note.
+PROV T-BILL|Commercial Paper issued by Canadian Provinces
+Prvt CMO FLT|Privately Issued CMO Floating Rate Security
+Prvt CMO INV|Privately Issued CMO Inverse Floating Rate Security
+Prvt CMO IO|Privately Issued CMO Interest Only Security
+Prvt CMO Other|Privately Issued CMO Other type (Less common type of security such as PAC or Sequential)
+Prvt CMO PO|Privately Issued CMO Principal Only Security
+Prvt CMO Z|Privately Issued CMO Z (Accrual Bond)
+PUBLIC|non private issue
+Pvt Eqty Fund|A private equity fund is a collective investment scheme used for making investments in various equity (and to a lesser extent debt) securities according to one of the investment strategies associated with private equity. Private equity funds are typically limited partnerships with a fixed term of 10 years (often with annual extensions). At inception, institutional investors make an unfunded commitment to the limited partnership, which is then drawn over the term of the fund. From investors point of view funds can be traditional where all the investors invest with equal terms or asymmetric where different investors have different terms.
+RDC|Russian Depositary Certificate. The Russian Depositary Certificates represent fractional undivided interests in Sub-Trusts of the Russian Depositary.
+Receipt|Certificates issued by a bank, representing shares held by the bank, usually by a branch or correspondent in the country of issue.
+REIT|Real Estate Investment Trust (REIT). A corporation or business trust which owns, manages and/or leases commercial real estate properties, and/or invests in Real Estate related securities, such as mortgaged-backed securities or whole loans and when meeting certain tax code requirements, is exempt at the entity level from corporate income tax. A creation of Congress, REIT legislation was initially passed in 1960 and was amended in 1986 to enhance and increase ownership and management focus on the underlying asset operations. REITs are exempt from federal (and usually state) corporate income taxation, subject to meeting certain IRS requirements for real estate investment and ownership, real estate income and dividend levels, i.e., dividend payout requirements for REITs require that 95% of taxable income be paid as a dividend.
+REPO|A form of short-term borrowing for dealers in government securities. The dealer sells the government securities to investors, usually on an overnight basis, and buys them back the following day.
+RESTRUCTURD DEBT|Bonds that came out of the Brady plan in the 1980's that addressed the LDC debt crisis.
+RETAIL CD|Certificates of Deposit sold to Retail customers
+RETURN IDX|Not applicable to currencies
+REV|Funds may be borrowed, repaid, and then borrowed again throughout the life of the loan. (Resembles a credit card).
+REV GUARANTEE FAC|Funds may be borrowed, repaid, and then borrowed again throughout the life of the loan. Contingent liability which is issued by a bank to ensure/guarantee that an underlying project is completed.
+REV VAT-TRNCH|Funds may be borrowed, repaid, and then borrowed again throughout the life of the loan. Given as temporary reimbursement for a VAT credit it has with the state.
+Right|A security giving stockholders entitlement to purchase new shares issued by the corporation at a predetermined price (normally less than the current market price) in proportion to the number of shares already owned. Rights are issued only for a short period of time, after which they expire.
+Royalty Trst|Royalty Trust. An oil or gas company spins off property to its shareholders, which means it will not be taxed at the corporate level and will offer high returns to stockholders.
+S.TERM LOAN NOTE|Short Term Loan Notes
+SAMURAI|Samurai Bond. A debt instrument denominated in Japanese yen, but not issued by a Japanese agency or company.
+Savings Plan|Savings Plan is a general category which groups variable annuity, collective investment trusts and separately managed accounts. Securities categorized under collective investment trusts and separately managed accounts fund types are for Bloombergs internal use.
+SBA Pool|Agency Pool issued by Small Business Association
+SDR|Swedish Depository Receipt
+Sec Lending|Security Lending. aka stock lending. Refers to the lending of securities by one party to another. The terms of the loan will be governed by a Securities Lending Agreement, which, under U.S. law, requires that the borrower provides the lender with collateral, in the form of cash, government securities, or a Letter of Credit of value equal to or greater than the loaned securities. As payment for the loan, the parties negotiate a fee, quoted as an annualized percentage of the value of the loaned securities. If the agreed form of collateral is cash, then the fee may be quoted as a rebate, meaning that the lender will earn all of the interest which accrues on the cash collateral, and will rebate an agreed rate of interest to the borrower.
+SHOGUN|Shogun Security. A foreign corporation-issued, non-yen denominated security distributed in Japan. Also known as a geisha bond.
+SHORT TERM BN|Short Term Bank Notes
+SHORT TERM DN|Short Term Deposit Notes- Short-term deposit notes issued directly by the bank. These deposit notes are issued for the bank's own general funding purposes
+SINGAPORE CP|Singapore Commercial Paper
+SINGLE STOCK DIVIDEND FUTURE|Single Stock Dividend Future. A dividend future is a derivative contract that allows investors to take positions on future dividend payments.
+SINGLE STOCK FORWARD|Single Stock Forward. A forward contract is a non-standardized contract between two parties where the price is agreed at the initial trade date. These contracts are not exchange listed.
+SINGLE STOCK FUTURE|All standard equity futures are single stock futures or SSFs. Other possible returns are SSDF, Single Stock Dividend Future, DNSF, Dividend Neutral Stock Future, and CFD, Contract For Difference. These returns only apply to the equity button.
+SN|Structured Note
+SPECIAL LMMK PGM|Auxiliary program type setup for linking securities to mmkt ticker
+SPOT|Spot. Available for immediate delivery
+Spot index.|Statistical movement of the underlying security as represented by a basket of spot traded securities.
+STANDBY|A financial commitment issued on a stand-by basis and borrowed only if and when needed. It is not used alone as a loan type.
+STANDBY LOC|A financial commitment issued on a stand-by basis and borrowed only if and when needed. Guaranteed by the lender(s) and used for purchase of goods, completion of construction projects, and/or general purposes.
+STANDBY REV|A financial commitment issued on a stand-by basis and borrowed only if and when needed. Once borrowed, can be borrowed again.
+STANDBY TERM|A financial commitment issued on a stand-by basis and borrowed only if and when needed. Once borrowed, cannot be re-borrowed.
+STERLING CD|Certificates of Deposit issued in British Sterling Market
+STERLING CP|Certificate of Deposit (CD). A debt instrument issued by a bank that will pay interest, periodically or at maturity (set by competitive forces in the marketplace), and principal when it reaches maturity. Maturities range from a few weeks to several years. It may have a fixed or floating rate of interest. Certificate of Deposit Rollover. An investment strategy used to defer taxes on income from a Certificate of Deposit. An individual who has purchased a certificate of deposit on margin expected to mature in the following year, can deduct the interest on the loan in the current year and move the income from the certificate to the up-coming year. - STERLING
+SWAP|Swap Rates. Interest rate swaps are highly customized agreements that possess a wide range of configurations and complexities. However, most are of the generic, or plain vanilla sort. A plain vanilla swap is an agreement of two parties to exchange interest payments with each other during an agreed-upon period of time. In a plain vanilla swap, one of the interest payment streams is fixed, while the other is floating, and no exchange of principle takes place.
+SWAP SPREAD|Primarily quoted in basis points, swap spreads take the difference between two different interest rate swaps.
+SWAPTION VOLATILITY|Volatility of the underlying swap rate
+SWEDISH CP|Swedish Commercial Paper
+SWINGLINE|Short term loan that allows the borrower to draw funds on short notice, usually the same day. It is not used alone as a loan type.
+Swiss Cert|Swiss Certificate. Original share certificate of a foreign company, mainly originating in the US, the UK or Canada, which is quoted on a Swiss Stock Exchange and is registered in the nominee name of a specified Swiss nominee endorsed in blank. For dividend payments or in corporate actions it must be stamped by the nominee company.
+SYNTH LOC|A letter of credit facility which is fully cash collateralized with proceeds of a term loan which has been issued by the same borrower, usually with the same amount and terms.
+SYNTH REV|A letter of credit facility which is fully cash collateralized with proceeds of a term loan which has been issued by the same borrower, usually with the same amount and terms. Once borrowed, can be borrowed again.
+SYNTH TERM|A letter of credit facility which is fully cash collateralized with proceeds of a term loan which has been issued by the same borrower, usually with the same amount and terms. Once borrowed, cannot be re-borrowed.
+TAIWAN CP|Taiwan Commercial Paper
+TAIWAN CP GUAR|Taiwan Guaranteed Commercial Paper
+TAIWAN NEGO CD|Taiwan Negotiable Certificates of Deposit
+TAIWAN TIME DEPO|Taiwan Time Deposits
+TAX CREDIT|The bond pays little or no interest, but gives a tax credit to bondholders.
+TAX CREDIT, OID|The bond pays little or no interest, but gives a tax credit to bondholders. The security is an Original Issue Discount.
+TDR|Taiwan Depository Receipt
+TERM|A loan with a fixed availability period and often includes some minimum repayment schedule. Once borrowings have been repaid, they cannot be re-borrowed.
+Term|A loan with a fixed availability period and often includes some minimum repayment schedule. Once borrowings have been repaid, they cannot be re-borrowed.
+TERM DEPOSITS|Term Deposits
+TERM VAT-TRNCH|A loan with a fixed availability period and often includes some minimum repayment schedule. Once borrowings have been repaid, they cannot be re-borrowed. Given as temporary reimbursement for a VAT credit it has with the state.
+THAILAND CP|Thailand Commercial Paper
+Tracking Stk|Tracking Stock. Shares issued by a company which pay a dividend determined by the performance of a specific portion of the whole company. Tracking stocks do not represent or require any change in business structure. Holders of tracking stock are considered to hold equity in the parent company and not the specific entity represented by the tracking stock. Tracking stock is often set up by companies that have several diverse divisions, both so that investors can take a share in a division of their interest, and so that the performance of these divisions can be tracked in terms of shareholder interest. A company will sometimes issue a tracking stock when it has a very successful division that it feels is underappreciated by the market and not fully reflected in the company's stock price.
+TREASURY BILL|Represents the interest rate of short term bonds issued by governments.
+U.S. CD|US Certificates of Deposit
+U.S. CP|US Commercial Paper
+U.S. INT BEAR CP|Interest-Bearing Note. A note on which the issuer has agreed to pay the face value plus interest.
+UIT|Unit Investment Trust. A portfolio made up of a variety of different income securities that are pooled together and sold to investors as units. Each unit represents a fractional, undivided interest in the portfolio's principal and income.
+UK GILT STOCK|Gilt. A British word used to connote a debt obligation.
+Unit|A unit is an exchange traded equity-type investment that is similar to common stock. By owning securities or assets of an underlying business (or businesses), an income trust is structured to distribute cash flows from those businesses to unit holders in a tax efficient manner.
+US DOMESTIC|US issuer issuing in US dollar in the US market.
+US GOVERNMENT|US Government issued security
+US NON-DOLLAR|A US issuer issuing into the US domestic mkt in a currency other than US Dollars
+VAR RATE DEM OBL|Variable Rate Demand Obligation, Municipal instrument with varying resets frequencies
+VAT-TRNCH|A facility a company is given as temporary reimbursement for a VAT credit it has with the state. The banks anticipate a credit that should be covered by the state.
+VENEZUELAN CP|Venezuelan Commercial Paper
+VOLATILITY DERIVATIVE|Volatility derivatives are a class of derivative securities.
+Warrant|Warrant. A company-issued certificate that represents an option to buy a certain number of stock shares at a specific price before a predetermined date. A warrant, because it has a value of its own, can be traded on the open market. Bloomberg abbreviates warrants as WRNTS or WT.
+YANKEE|Yankee Bond. A foreign bond denominated in U.S. dollars and registered with the Securities and Exchange Commission for sale in the United States.
+YANKEE CD|Yankee Certificates of Deposit, issued by Foreign Banks via US Branch
+YEN CD|Japanese Yen Certificates of Deposit
+YEN CP|Japanese Yen Commercial Paper
+Yield Curve|A chart consisting of the yields of bonds of the same quality but different maturities. This can be used as a gauge to evaluate the future of the interest rates. An upward trend with short-term rates lower than long-term rates is called a positive yield curve, while a down trend is a negative or inverted yield curve.
+ZERO COUPON|Zero Coupon Bond. A bond sold at deep discount that pays no interest until maturity, at which time the holder receives the bond's face value plus all accrued interest. While holders receive no interest on the bond until maturity, they are responsible for paying taxes each year on the unpaid interest.
+ZERO COUPON, OID|Also called a Capital Appreciation Bond (CAB). The bond is sold at a deep discount, but on interest payments are made. The bondholder receives the full value (par amount) of the bond at maturity. The security is an Original Issue Discount

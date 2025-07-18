@@ -1,0 +1,27 @@
+value|description
+ID_ISIN|ISIN - International Securities Identification Number. Example: `[{"idType":"ID_ISIN","idValue":"XX1234567890"}]`
+ID_BB_UNIQUE|Unique Bloomberg Identifier - A legacy, internal Bloomberg identifier. Example: `[{"idType":"ID_BB_UNIQUE","idValue":"EQ0010080100001000"}]`
+ID_SEDOL|Sedol Number - Stock Exchange Daily Official List. Example: `[{"idType":"ID_SEDOL","idValue":"1234567"}]`
+ID_COMMON|Common Code - A nine digit identification number. Example: `[{"idType":"ID_COMMON","idValue":"123456789"}]`
+ID_WERTPAPIER|Wertpapierkennnummer/WKN - German securities identification code. Example: `[{"idType":"ID_WERTPAPIER","idValue":"123456"}]`
+ID_CUSIP|CUSIP - Committee on Uniform Securities Identification Procedures. Example: `[{"idType":"ID_CUSIP","idValue":"123456789"}]`
+ID_CINS|CINS - CUSIP International Numbering System. Example: `[{"idType":"ID_CINS","idValue":"A12345678"}]`
+ID_BB|A legacy Bloomberg identifier. Example: `[{"idType":"ID_BB","idValue":"123456789"}]`
+ID_BB_8_CHR|A legacy Bloomberg identifier (8 characters only). Example: `[{"idType":"ID_BB_8_CHR","idValue":"12345678"}]`
+ID_TRACE|Trace eligible bond identifier issued by FINRA. Example: `[{"idType":"ID_TRACE","idValue":"12345678"}]`
+ID_ITALY|Italian Identifier Number - The Italian Identification number consisting of five or six digits. Example: `[{"idType":"ID_ITALY","idValue":"123456"}]`
+ID_EXCH_SYMBOL|Common Code - A nine digit identification number. Example: `[{"idType":"ID_EXCH_SYMBOL","idValue":"IBM123"}]`
+ID_FULL_EXCHANGE_SYMBOL|Full Exchange Symbol - Contains the exchange symbol for futures, options, indices inclusive of base symbol and other security elements. Example: `[{"idType":"ID_FULL_EXCHANGE_SYMBOL", "idValue":"ABC 123456789"}]`
+COMPOSITE_ID_BB_GLOBAL|Composite Financial Instrument Global Identifier - The Composite Financial Instrument Global Identifier (FIGI) enables users to link multiple FIGIs at the trading venue level within the same country or market in order to obtain an aggregated view for an instrument within that country or market. Example: `[{"idType":"COMPOSITE_ID_BB_GLOBAL", "idValue":"BBG000BLNNH6"}]`
+ID_BB_GLOBAL_SHARE_CLASS_LEVEL|Share Class Financial Instrument Global Identifier - A Share Class level Financial Instrument Global Identifier is assigned to an instrument that is traded in more than one country. This enables users to link multiple Composite FIGIs for the same instrument in order to obtain an aggregated view for that instrument across all countries (globally). Example: `[{"idType":"ID_BB_GLOBAL_SHARE_CLASS_LEVEL", "idValue":"BBG001S5S399"}]`
+ID_BB_GLOBAL|Financial Instrument Global Identifier (FIGI) - An identifier that is assigned to instruments of all asset classes and is unique to an individual instrument. Once issued, the FIGI assigned to an instrument will not change. Example: `[{"idType":"ID_BB_GLOBAL", "idValue":"BBG0000362Y4"}]`
+ID_BB_SEC_NUM_DES|Security ID Number Description - Descriptor for a financial instrument. Similar to the ticker field, but will provide additional metadata data. Example: `[{"idType":"ID_BB_SEC_NUM_DES", "idValue":"IBM 7 10/30/25"}]`
+TICKER|Ticker - Ticker is a specific identifier for a financial instrument that reflects common usage. Example: `[{"idType":"TICKER", "idValue":"IBM"}]`
+BASE_TICKER|An indistinct identifier which may be linked to multiple instruments. May need to be combined with other values to identify a unique instrument. Example: `[{"idType":"BASE_TICKER","idValue":"IBM"}]`
+ID_CUSIP_8_CHR|CUSIP (8 Characters Only) - Committee on Uniform Securities Identification Procedures. Example: `[{"idType":"ID_CUSIP_8_CHR","idValue":"12345678"}]`
+OCC_SYMBOL|OCC Symbol - A twenty-one character option symbol standardized by the Options Clearing Corporation (OCC) to identify a U.S. option. Example: `[{"idType":"OCC_SYMBOL","idValue":"ABC 123456789123456789"}]`
+UNIQUE_ID_FUT_OPT|Unique Identifier for Future Option - Bloomberg unique ticker with logic for index, currency, single stock futures, commodities and commodity options. Example: `[{"idType":"UNIQUE_ID_FUT_OPT","idValue":"ABCD=A1 Equity"}]`
+OPRA_SYMBOL|OPRA Symbol - Option symbol standardized by the Options Price Reporting Authority (OPRA) to identify a U.S. option. Example: `[{"idType":"OPRA_SYMBOL","idValue":"ABC A123A456789"}]`
+TRADING_SYSTEM_IDENTIFIER|Trading System Identifier - Unique identifier for the instrument as used on the source trading system. Example: `[{"idType":"TRADING_SYSTEM_IDENTIFIER","idValue":"FZH18 IBMG"}]`
+ID_SHORT_CODE|An exchange venue specific code to identify fixed income instruments primarily traded in Asia. Example: `[{"idType":"ID_SHORT_CODE","idValue":"123456.AB"}]`
+VENDOR_INDEX_CODE|Index code assigned by the index provider for the purpose of identifying the security. Example: `[{"idType":"VENDOR_INDEX_CODE","idValue":"123456"}]`

@@ -1,9 +1,17 @@
 //! This build script fetches data from the OpenFIGI API
 
 use serde::Deserialize;
-use std::fmt::Write;
-use std::fs::{self, File};
-use std::path::{Path, PathBuf};
+use std::{
+    collections::HashMap,
+    fmt::Write,
+    fs::{self, File},
+    path::{Path, PathBuf},
+};
+
+// ######################################################################################
+// All constants used in the build script
+// These constants define API URLs, cache paths, and file names for enum variants.
+// ######################################################################################
 
 // Constants for the build script
 const FORCE_REBUILD: &str = "OPENFIGI_FORCE_REBUILD";
@@ -21,10 +29,28 @@ const EXCHCODE_CACHE_PATH: &str = "target/exch_code_cache.json";
 const EXCHCODE_VARIANTS_FILE: &str = "exch_code_enum.rs";
 const EXCHCODE_DOC: &str = "/// Enum for all supported exchange codes.";
 
+const IDTYPE_API_URL: &str = "https://api.openfigi.com/v3/mapping/values/idType";
+const IDTYPE_CACHE_PATH: &str = "target/id_type_cache.json";
+const IDTYPE_VARIANTS_FILE: &str = "id_type_enum.rs";
+const IDTYPE_DOC: &str = "/// Enum for all supported ID types.";
+const IDTYPE_VARIANTS_DOC_FILE: &str = "resources/id_type_enum_docs.csv";
+
+const MARKETSECDESC_API_URL: &str = "https://api.openfigi.com/v3/mapping/values/marketSecDes";
+const MARKETSECDESC_CACHE_PATH: &str = "target/market_sec_desc_cache.json";
+const MARKETSECDESC_VARIANTS_FILE: &str = "market_sec_desc_enum.rs";
+const MARKETSECDESC_DOC: &str = "/// Enum for all supported market sector descriptions.";
+const MARKETSECDESC_VARIANTS_DOC_FILE: &str = "resources/market_sec_desc_enum_docs.csv";
+
 const MICCODE_API_URL: &str = "https://api.openfigi.com/v3/mapping/values/micCode";
 const MICCODE_CACHE_PATH: &str = "target/mic_code_cache.json";
 const MICCODE_VARIANTS_FILE: &str = "mic_code_enum.rs";
 const MICCODE_DOC: &str = "/// Enum for all supported market identifiers codes.";
+
+const SECURITYTYPE_API_URL: &str = "https://api.openfigi.com/v3/mapping/values/securityType";
+const SECURITYTYPE_CACHE_PATH: &str = "target/security_type_cache.json";
+const SECURITYTYPE_VARIANTS_FILE: &str = "security_type_enum.rs";
+const SECURITYTYPE_DOC: &str = "/// Enum for all supported security types.";
+const SECURITYTYPE_VARIANTS_DOC_FILE: &str = "resources/security_type_enum_docs.csv";
 
 const SECURITYTYPE2_API_URL: &str = "https://api.openfigi.com/v3/mapping/values/securityType2";
 const SECURITYTYPE2_CACHE_PATH: &str = "target/security_type2_cache.json";
@@ -57,6 +83,7 @@ fn main() {
         CURRENCY_VARIANTS_FILE,
         CURRENCY_DOC,
         should_fetch,
+        None,
     ) {
         eprintln!("Error processing currency data: {e}");
     }
@@ -69,8 +96,35 @@ fn main() {
         EXCHCODE_VARIANTS_FILE,
         EXCHCODE_DOC,
         should_fetch,
+        None,
     ) {
         eprintln!("Error processing exchange code data: {e}");
+    }
+
+    // Process exchange code enum
+    if let Err(e) = process_endpoint(
+        "IdType",
+        IDTYPE_API_URL,
+        IDTYPE_CACHE_PATH,
+        IDTYPE_VARIANTS_FILE,
+        IDTYPE_DOC,
+        should_fetch,
+        Some(IDTYPE_VARIANTS_DOC_FILE),
+    ) {
+        eprintln!("Error processing exchange code data: {e}");
+    }
+
+    // Process market sector description enum
+    if let Err(e) = process_endpoint(
+        "MarketSecDesc",
+        MARKETSECDESC_API_URL,
+        MARKETSECDESC_CACHE_PATH,
+        MARKETSECDESC_VARIANTS_FILE,
+        MARKETSECDESC_DOC,
+        should_fetch,
+        Some(MARKETSECDESC_VARIANTS_DOC_FILE),
+    ) {
+        eprintln!("Error processing market sector description data: {e}");
     }
 
     // Process mic code enum
@@ -81,8 +135,22 @@ fn main() {
         MICCODE_VARIANTS_FILE,
         MICCODE_DOC,
         should_fetch,
+        None,
     ) {
         eprintln!("Error processing mic code data: {e}");
+    }
+
+    // Process security type enum
+    if let Err(e) = process_endpoint(
+        "SecurityType",
+        SECURITYTYPE_API_URL,
+        SECURITYTYPE_CACHE_PATH,
+        SECURITYTYPE_VARIANTS_FILE,
+        SECURITYTYPE_DOC,
+        should_fetch,
+        Some(SECURITYTYPE_VARIANTS_DOC_FILE),
+    ) {
+        eprintln!("Error processing security type data: {e}");
     }
 
     // Process security type 2 enum
@@ -93,6 +161,7 @@ fn main() {
         SECURITYTYPE2_VARIANTS_FILE,
         SECURITYTYPE2_DOC,
         should_fetch,
+        None,
     ) {
         eprintln!("Error processing security type 2 data: {e}");
     }
@@ -105,6 +174,7 @@ fn main() {
         STATECODE_VARIANTS_FILE,
         STATECODE_DOC,
         should_fetch,
+        None,
     ) {
         eprintln!("Error processing state code data: {e}");
     }
@@ -124,6 +194,7 @@ fn process_endpoint(
     variants_file: &str,
     doc: &str,
     should_fetch: bool,
+    doc_file: Option<&str>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let data = if should_fetch {
         println!("Forcing fresh {name} data fetch from API.");
@@ -134,6 +205,15 @@ fn process_endpoint(
             println!("-> Cache for {name} failed ('{err}'), fetching from API as fallback.");
             fetch_data(api_url, cache_path)
         })?
+    };
+
+    let docs_map = if let Some(path) = doc_file {
+        let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+        let path = Path::new(&manifest_dir).join(path);
+        println!("Attempting to load documentation from {}", path.display());
+        load_docs_from_csv(&path)?
+    } else {
+        HashMap::new()
     };
 
     let attributes = format!(
@@ -148,7 +228,7 @@ fn process_endpoint(
     // Generate the enum variants file in OUT_DIR
     let out_dir = std::env::var("OUT_DIR")?;
     let dest_path = Path::new(&out_dir).join(variants_file);
-    generate_enum(name, &attributes, &data, &dest_path)?;
+    generate_enum(name, &attributes, &data, &docs_map, &dest_path)?;
 
     Ok(())
 }
@@ -254,6 +334,7 @@ fn generate_enum(
     enum_name: &str,
     attributes: &str,
     data: &[String],
+    docs_map: &HashMap<String, String>,
     path: &PathBuf,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let mut file_content = String::new();
@@ -264,6 +345,13 @@ fn generate_enum(
     for item in data {
         // Sanitize the name for the Rust enum variant
         let variant_name = generate_variant_name(item);
+
+        // Look up the documentation for the current item.
+        if let Some(doc_comment) = docs_map.get(item) {
+            // Write the doc comment if found.
+            writeln!(&mut file_content, "    /// {doc_comment}")?;
+        }
+
         writeln!(&mut file_content, "    #[serde(rename = \"{item}\")]")?;
         writeln!(&mut file_content, "    {variant_name},")?;
     }
@@ -317,4 +405,22 @@ fn generate_variant_name(name: &str) -> String {
     }
 
     final_name
+}
+
+/// Loads documentation from a pipe-separated file into a HashMap.
+fn load_docs_from_csv(
+    path: &PathBuf,
+) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
+    let mut map = HashMap::new();
+
+    // Use a ReaderBuilder to configure the CSV parser.
+    let mut reader = csv::ReaderBuilder::new()
+        .delimiter(b'|') // Specify the pipe as the delimiter.
+        .from_path(path)?;
+
+    for result in reader.deserialize() {
+        let (key, description): (String, String) = result?;
+        map.insert(key, description);
+    }
+    Ok(map)
 }
