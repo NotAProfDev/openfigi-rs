@@ -57,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Map an ISIN to its corresponding FIGI
     let mapping_results = client
-        .mapping(IdType::IdIsin, "US4592001014") // IBM
+        .mapping(IdType::ID_ISIN, "US4592001014") // IBM
         .send()
         .await?;
 
@@ -172,7 +172,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Single mapping request with optional parameters
     let single_result = client
-        .mapping(IdType::IdIsin, "US4592001014")
+        .mapping(IdType::ID_ISIN, "US4592001014")
         .currency(Currency::USD)
         .exch_code(ExchCode::US)
         .send()
@@ -180,8 +180,8 @@ async fn main() -> anyhow::Result<()> {
 
     // Bulk mapping request for multiple identifiers using a prebuilt vector of requests
     let requests = vec![
-        MappingRequest::new(IdType::IdIsin, "US4592001014"),
-        MappingRequest::new(IdType::Ticker, "AAPL"),
+        MappingRequest::new(IdType::ID_ISIN, "US4592001014"),
+        MappingRequest::new(IdType::TICKER, "AAPL"),
     ];
 
     let bulk_results = client
@@ -195,12 +195,12 @@ async fn main() -> anyhow::Result<()> {
         .bulk_mapping()
         .add_request_with(|j| {
             // Simple mapping request
-            j.id_type(IdType::IdIsin)
+            j.id_type(IdType::ID_ISIN)
                 .id_value("US4592001014")
         })?
         .add_request_with(|j| { 
             // Complex mapping request with filters
-            j.id_type(IdType::Ticker)
+            j.id_type(IdType::TICKER)
                 .id_value("IBM")
                 .currency(Currency::USD)
                 .exch_code(ExchCode::US)
@@ -272,8 +272,8 @@ async fn handle_mapping() -> anyhow::Result<()> {
     let client = OpenFIGIClient::new();
 
     let requests = vec![
-        MappingRequest::new(IdType::IdIsin, "US4592001014"), // Valid
-        MappingRequest::new(IdType::IdIsin, "INVALID_ISIN"), // Invalid
+        MappingRequest::new(IdType::ID_ISIN, "US4592001014"), // Valid
+        MappingRequest::new(IdType::ID_ISIN, "INVALID_ISIN"), // Invalid
     ];
 
     match client.bulk_mapping().add_requests(requests).send().await {

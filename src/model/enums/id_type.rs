@@ -1,3 +1,4 @@
+#![allow(clippy::allow_attributes)]
 //! Enum for all supported idType values in [OpenFIGI](https://www.openfigi.com/) mapping requests.
 //!
 //! This list is based on the [OpenFIGI documentation](https://www.openfigi.com/api/documentation) and may be incomplete or subject to change.
@@ -5,7 +6,7 @@
 //! Example usage:
 //! ```rust
 //! use openfigi_rs::model::enums::IdType;
-//! let id_type = IdType::IdIsin; // International Securities Identification Number
+//! let id_type = IdType::ID_ISIN; // International Securities Identification Number
 //! ```
 //!
 //! For the full list of values, see: <https://api.openfigi.com/v3/mapping/values/idType>

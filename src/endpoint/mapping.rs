@@ -23,7 +23,7 @@
 //! let client = OpenFIGIClient::new();
 //!
 //! let result = client
-//!     .mapping(IdType::IdIsin, json!("US4592001014"))
+//!     .mapping(IdType::ID_ISIN, json!("US4592001014"))
 //!     .currency(Currency::USD)
 //!     .exch_code(ExchCode::US)
 //!     .send()
@@ -45,11 +45,11 @@
 //!
 //! let requests = vec![
 //!     MappingRequest::builder()
-//!         .id_type(IdType::IdIsin)
+//!         .id_type(IdType::ID_ISIN)
 //!         .id_value(json!("US4592001014"))
 //!         .build()?,
 //!     MappingRequest::builder()
-//!         .id_type(IdType::Ticker)
+//!         .id_type(IdType::TICKER)
 //!         .id_value(json!("AAPL"))
 //!         .build()?,
 //! ];
@@ -96,7 +96,7 @@ use reqwest::Method;
 /// let client = OpenFIGIClient::new();
 ///
 /// let response = client
-///     .mapping(IdType::IdIsin, json!("US4592001014"))
+///     .mapping(IdType::ID_ISIN, json!("US4592001014"))
 ///     .currency(Currency::USD)
 ///     .send()
 ///     .await?;
@@ -199,8 +199,8 @@ impl SingleMappingRequestBuilder {
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let client = OpenFIGIClient::new();
 /// let requests = vec![
-///     MappingRequest::new(IdType::IdIsin, json!("US4592001014")),
-///     MappingRequest::new(IdType::Ticker, json!("AAPL")),
+///     MappingRequest::new(IdType::ID_ISIN, json!("US4592001014")),
+///     MappingRequest::new(IdType::TICKER, json!("AAPL")),
 /// ];
 ///
 /// let result = client
@@ -253,9 +253,9 @@ impl BulkMappingRequestBuilder {
     /// # let client = OpenFIGIClient::new();
     /// let result = client
     ///     .bulk_mapping()
-    ///     .add_request_with(|j| j.id_type(IdType::IdIsin).id_value("US4592001014"))? // Simple job
+    ///     .add_request_with(|j| j.id_type(IdType::ID_ISIN).id_value("US4592001014"))? // Simple job
     ///     .add_request_with(|j| { // Complex mapping request with filters
-    ///         j.id_type(IdType::Ticker)
+    ///         j.id_type(IdType::TICKER)
     ///             .id_value("IBM")
     ///             .currency(Currency::USD)
     ///             .exch_code(ExchCode::US)
@@ -344,7 +344,7 @@ impl OpenFIGIClient {
     /// use openfigi_rs::model::enums::IdType;
     ///
     /// let client = OpenFIGIClient::new();
-    /// let builder = client.mapping(IdType::IdIsin, "US4592001014");
+    /// let builder = client.mapping(IdType::ID_ISIN, "US4592001014");
     /// ```
     #[must_use]
     pub fn mapping<T: Into<serde_json::Value>>(
@@ -399,7 +399,7 @@ mod tests {
     #[test]
     fn test_single_mapping_request_builder_creation() {
         let client = create_test_client();
-        let builder = client.mapping(IdType::IdIsin, json!("US4592001014"));
+        let builder = client.mapping(IdType::ID_ISIN, json!("US4592001014"));
 
         // Builder should be created successfully with correct client reference
         assert_eq!(builder.client.base_url(), client.base_url());
@@ -413,7 +413,7 @@ mod tests {
         );
 
         let request = request_result.unwrap();
-        assert_eq!(request.id_type, IdType::IdIsin);
+        assert_eq!(request.id_type, IdType::ID_ISIN);
         assert_eq!(request.id_value, json!("US4592001014"));
     }
 
@@ -421,7 +421,7 @@ mod tests {
     fn test_single_mapping_request_builder_chaining() {
         let client = create_test_client();
         let builder = client
-            .mapping(IdType::IdIsin, json!("US4592001014"))
+            .mapping(IdType::ID_ISIN, json!("US4592001014"))
             .exch_code(ExchCode::US)
             .currency(Currency::USD)
             .market_sec_des(MarketSecDesc::Equity)
@@ -435,7 +435,7 @@ mod tests {
             .expect("Should build valid mapping request");
 
         // Check all the chained values are correctly set
-        assert_eq!(request.id_type, IdType::IdIsin);
+        assert_eq!(request.id_type, IdType::ID_ISIN);
         assert_eq!(request.id_value, json!("US4592001014"));
         assert_eq!(request.filters.exch_code, Some(ExchCode::US));
         assert_eq!(request.filters.currency, Some(Currency::USD));
@@ -454,7 +454,7 @@ mod tests {
     fn test_single_mapping_request_builder_option_fields() {
         let client = create_test_client();
         let builder = client
-            .mapping(IdType::Ticker, json!("AAPL"))
+            .mapping(IdType::TICKER, json!("AAPL"))
             .option_type(OptionType::Call)
             .strike([Some(150.0), Some(200.0)])
             .contract_size([Some(100.0), None])
@@ -466,7 +466,7 @@ mod tests {
             .build()
             .expect("Should build valid mapping request");
 
-        assert_eq!(request.id_type, IdType::Ticker);
+        assert_eq!(request.id_type, IdType::TICKER);
         assert_eq!(request.id_value, json!("AAPL"));
         assert_eq!(request.filters.option_type, Some(OptionType::Call));
         assert_eq!(request.filters.strike, Some([Some(150.0), Some(200.0)]));
@@ -485,7 +485,7 @@ mod tests {
         let maturity_start = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
 
         let builder = client
-            .mapping(IdType::IdCusip, json!("037833100"))
+            .mapping(IdType::ID_CUSIP, json!("037833100"))
             .expiration([Some(expiration_start), Some(expiration_end)])
             .maturity([Some(maturity_start), None])
             .state_code(StateCode::CA);
@@ -496,7 +496,7 @@ mod tests {
             .build()
             .expect("Should build valid mapping request");
 
-        assert_eq!(request.id_type, IdType::IdCusip);
+        assert_eq!(request.id_type, IdType::ID_CUSIP);
         assert_eq!(request.id_value, json!("037833100"));
         assert_eq!(
             request.filters.expiration,
@@ -522,7 +522,7 @@ mod tests {
     #[test]
     fn test_bulk_mapping_request_builder_add_request() {
         let client = create_test_client();
-        let request = MappingRequest::new(IdType::IdIsin, json!("US4592001014"));
+        let request = MappingRequest::new(IdType::ID_ISIN, json!("US4592001014"));
 
         let builder = client.bulk_mapping().add_request(request);
 
@@ -531,7 +531,7 @@ mod tests {
 
         // Verify that the added request has the correct properties
         let added_request = &builder.requests[0];
-        assert_eq!(added_request.id_type, IdType::IdIsin);
+        assert_eq!(added_request.id_type, IdType::ID_ISIN);
         assert_eq!(added_request.id_value, json!("US4592001014"));
 
         // Verify client reference is preserved
@@ -543,9 +543,9 @@ mod tests {
     fn test_bulk_mapping_request_builder_add_requests() {
         let client = create_test_client();
         let requests = vec![
-            MappingRequest::new(IdType::IdIsin, json!("US4592001014")),
-            MappingRequest::new(IdType::IdIsin, json!("US0378331005")),
-            MappingRequest::new(IdType::Ticker, json!("MSFT")),
+            MappingRequest::new(IdType::ID_ISIN, json!("US4592001014")),
+            MappingRequest::new(IdType::ID_ISIN, json!("US0378331005")),
+            MappingRequest::new(IdType::TICKER, json!("MSFT")),
         ];
 
         let builder = client.bulk_mapping().add_requests(requests);
@@ -554,13 +554,13 @@ mod tests {
         assert_eq!(builder.requests.len(), 3);
 
         // Verify that the added requests have the correct properties
-        assert_eq!(builder.requests[0].id_type, IdType::IdIsin);
+        assert_eq!(builder.requests[0].id_type, IdType::ID_ISIN);
         assert_eq!(builder.requests[0].id_value, json!("US4592001014"));
 
-        assert_eq!(builder.requests[1].id_type, IdType::IdIsin);
+        assert_eq!(builder.requests[1].id_type, IdType::ID_ISIN);
         assert_eq!(builder.requests[1].id_value, json!("US0378331005"));
 
-        assert_eq!(builder.requests[2].id_type, IdType::Ticker);
+        assert_eq!(builder.requests[2].id_type, IdType::TICKER);
         assert_eq!(builder.requests[2].id_value, json!("MSFT"));
 
         // Verify client reference is preserved
@@ -571,11 +571,11 @@ mod tests {
     #[test]
     fn test_bulk_mapping_request_builder_chaining() {
         let client = create_test_client();
-        let request1 = MappingRequest::new(IdType::IdIsin, json!("US4592001014"));
-        let request2 = MappingRequest::new(IdType::IdIsin, json!("US0378331005"));
+        let request1 = MappingRequest::new(IdType::ID_ISIN, json!("US4592001014"));
+        let request2 = MappingRequest::new(IdType::ID_ISIN, json!("US0378331005"));
         let additional_requests = vec![
-            MappingRequest::new(IdType::Ticker, json!("MSFT")),
-            MappingRequest::new(IdType::Ticker, json!("GOOGL")),
+            MappingRequest::new(IdType::TICKER, json!("MSFT")),
+            MappingRequest::new(IdType::TICKER, json!("GOOGL")),
         ];
 
         let builder = client
@@ -588,16 +588,16 @@ mod tests {
         assert_eq!(builder.requests.len(), 4);
 
         // Verify that each request was added in the correct order with correct properties
-        assert_eq!(builder.requests[0].id_type, IdType::IdIsin);
+        assert_eq!(builder.requests[0].id_type, IdType::ID_ISIN);
         assert_eq!(builder.requests[0].id_value, json!("US4592001014"));
 
-        assert_eq!(builder.requests[1].id_type, IdType::IdIsin);
+        assert_eq!(builder.requests[1].id_type, IdType::ID_ISIN);
         assert_eq!(builder.requests[1].id_value, json!("US0378331005"));
 
-        assert_eq!(builder.requests[2].id_type, IdType::Ticker);
+        assert_eq!(builder.requests[2].id_type, IdType::TICKER);
         assert_eq!(builder.requests[2].id_value, json!("MSFT"));
 
-        assert_eq!(builder.requests[3].id_type, IdType::Ticker);
+        assert_eq!(builder.requests[3].id_type, IdType::TICKER);
         assert_eq!(builder.requests[3].id_value, json!("GOOGL"));
 
         // Verify client reference is preserved
@@ -624,7 +624,7 @@ mod tests {
     async fn test_bulk_mapping_too_many_requests_without_api_key() {
         let client = create_test_client(); // No API key
         let requests = (0..6)
-            .map(|i| MappingRequest::new(IdType::Ticker, json!(format!("TEST{}", i))))
+            .map(|i| MappingRequest::new(IdType::TICKER, json!(format!("TEST{}", i))))
             .collect();
 
         let builder = client.bulk_mapping().add_requests(requests);
@@ -643,7 +643,7 @@ mod tests {
     async fn test_bulk_mapping_too_many_requests_with_api_key() {
         let client = create_test_client_with_api_key();
         let requests = (0..101)
-            .map(|i| MappingRequest::new(IdType::Ticker, json!(format!("TEST{}", i))))
+            .map(|i| MappingRequest::new(IdType::TICKER, json!(format!("TEST{}", i))))
             .collect();
 
         let builder = client.bulk_mapping().add_requests(requests);

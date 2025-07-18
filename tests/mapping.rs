@@ -39,7 +39,7 @@ async fn test_mapping_single_isin_request() {
 
     // Test basic ISIN mapping request
     let mapping_data = client
-        .mapping(IdType::IdIsin, "US4592001014")
+        .mapping(IdType::ID_ISIN, "US4592001014")
         .send()
         .await
         .expect("Mapping request should succeed");
@@ -76,7 +76,7 @@ async fn test_mapping_with_filters() {
 
     // Test mapping with multiple filters
     let mapping_data = client
-        .mapping(IdType::Ticker, "IBM")
+        .mapping(IdType::TICKER, "IBM")
         .currency(Currency::USD)
         .exch_code(ExchCode::US)
         .market_sec_des(MarketSecDesc::Equity)
@@ -119,9 +119,9 @@ async fn test_mapping_with_filters() {
 async fn test_mapping_bulk_request() {
     let client = create_test_client();
     let requests = vec![
-        MappingRequest::new(IdType::IdIsin, json!("US4592001014")),
-        MappingRequest::new(IdType::Ticker, json!("AAPL")),
-        MappingRequest::new(IdType::Ticker, json!("MSFT")),
+        MappingRequest::new(IdType::ID_ISIN, json!("US4592001014")),
+        MappingRequest::new(IdType::TICKER, json!("AAPL")),
+        MappingRequest::new(IdType::TICKER, json!("MSFT")),
     ];
 
     // Test mapping with multiple requests in a single bulk call
@@ -165,7 +165,7 @@ async fn test_mapping_invalid_identifier() {
     let client = create_test_client();
 
     let mapping_data = client
-        .mapping(IdType::IdIsin, json!("INVALID_ISIN"))
+        .mapping(IdType::ID_ISIN, json!("INVALID_ISIN"))
         .send()
         .await;
 

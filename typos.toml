@@ -7,4 +7,5 @@ extend-exclude = [
     "src/model/enums/*",
     "**/*.tsv",
     "**/src/model/exchange_info.rs",
+    "resources/*",
 ]

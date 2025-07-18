@@ -11,7 +11,7 @@
 //! use openfigi_rs::model::request::MappingRequest;
 //! use openfigi_rs::model::enums::IdType;
 //!
-//! let request = MappingRequest::new(IdType::IdIsin, "US4592001014");
+//! let request = MappingRequest::new(IdType::ID_ISIN, "US4592001014");
 //! ```
 //!
 //! ### Mapping request with additional filters
@@ -21,7 +21,7 @@
 //! use openfigi_rs::model::enums::{IdType, Currency, ExchCode};
 //!
 //! let request = MappingRequest::builder()
-//!     .id_type(IdType::IdIsin)
+//!     .id_type(IdType::ID_ISIN)
 //!     .id_value("US4592001014")
 //!     .currency(Currency::USD)
 //!     .exch_code(ExchCode::US)
@@ -71,11 +71,11 @@ use serde::{Deserialize, Serialize};
 /// use openfigi_rs::model::enums::{IdType, Currency};
 ///
 /// // Simple identifier mapping
-/// let request = MappingRequest::new(IdType::IdIsin, "US4592001014");
+/// let request = MappingRequest::new(IdType::ID_ISIN, "US4592001014");
 ///
 /// // Mapping with additional filters
 /// let request = MappingRequest::builder()
-///     .id_type(IdType::Ticker)
+///     .id_type(IdType::TICKER)
 ///     .id_value("AAPL")
 ///     .currency(Currency::USD)
 ///     .build()
@@ -114,8 +114,8 @@ impl MappingRequest {
     /// use openfigi_rs::model::request::MappingRequest;
     /// use openfigi_rs::model::enums::IdType;
     ///
-    /// let request = MappingRequest::new(IdType::IdIsin, "US4592001014");
-    /// assert_eq!(request.id_type, IdType::IdIsin);
+    /// let request = MappingRequest::new(IdType::ID_ISIN, "US4592001014");
+    /// assert_eq!(request.id_type, IdType::ID_ISIN);
     /// ```
     #[must_use]
     pub fn new<T: Into<serde_json::Value>>(id_type: IdType, id_value: T) -> Self {
@@ -137,7 +137,7 @@ impl MappingRequest {
     /// use openfigi_rs::model::enums::{IdType, Currency};
     ///
     /// let request = MappingRequest::builder()
-    ///     .id_type(IdType::Ticker)
+    ///     .id_type(IdType::TICKER)
     ///     .id_value("AAPL")
     ///     .currency(Currency::USD)
     ///     .build()
@@ -167,7 +167,7 @@ impl MappingRequest {
     /// use openfigi_rs::model::enums::{IdType, SecurityType2};
     ///
     /// // This will fail validation - BASE_TICKER requires security_type2
-    /// let mut request = MappingRequest::new(IdType::BaseTicker, "AAPL");
+    /// let mut request = MappingRequest::new(IdType::BASE_TICKER, "AAPL");
     /// assert!(request.validate().is_err());
     ///
     /// // Add required security_type2
@@ -208,7 +208,7 @@ impl MappingRequest {
 /// use openfigi_rs::model::enums::{IdType, Currency, ExchCode};
 ///
 /// let request = MappingRequestBuilder::new()
-///     .id_type(IdType::IdIsin)
+///     .id_type(IdType::ID_ISIN)
 ///     .id_value("US4592001014")
 ///     .currency(Currency::USD)
 ///     .exch_code(ExchCode::US)
@@ -248,7 +248,7 @@ impl MappingRequestBuilder {
     /// use openfigi_rs::model::request::MappingRequestBuilder;
     /// use openfigi_rs::model::enums::IdType;
     ///
-    /// let builder = MappingRequestBuilder::new().id_type(IdType::IdIsin);
+    /// let builder = MappingRequestBuilder::new().id_type(IdType::ID_ISIN);
     /// ```
     #[must_use]
     pub fn id_type(mut self, id_type: IdType) -> Self {
@@ -306,7 +306,7 @@ impl MappingRequestBuilder {
     /// use openfigi_rs::model::enums::IdType;
     ///
     /// let request = MappingRequestBuilder::new()
-    ///     .id_type(IdType::IdIsin)
+    ///     .id_type(IdType::ID_ISIN)
     ///     .id_value("US4592001014")
     ///     .build()
     ///     .unwrap();
@@ -337,8 +337,8 @@ mod tests {
 
     #[test]
     fn test_mapping_request_new_minimal() {
-        let request = MappingRequest::new(IdType::IdIsin, json!("US1234567890"));
-        assert_eq!(request.id_type, IdType::IdIsin);
+        let request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
+        assert_eq!(request.id_type, IdType::ID_ISIN);
         assert_eq!(request.id_value, json!("US1234567890"));
         assert!(request.filters.exch_code.is_none());
         assert!(request.filters.mic_code.is_none());
@@ -347,18 +347,18 @@ mod tests {
     #[test]
     fn test_mapping_request_builder_minimal() {
         let request = MappingRequest::builder()
-            .id_type(IdType::IdIsin)
+            .id_type(IdType::ID_ISIN)
             .id_value("US1234567890")
             .build()
             .unwrap();
-        assert_eq!(request.id_type, IdType::IdIsin);
+        assert_eq!(request.id_type, IdType::ID_ISIN);
         assert_eq!(request.id_value, json!("US1234567890"));
     }
 
     #[test]
     fn test_mapping_request_builder_with_currency() {
         let request = MappingRequest::builder()
-            .id_type(IdType::IdIsin)
+            .id_type(IdType::ID_ISIN)
             .id_value("US1234567890")
             .currency(Currency::USD)
             .build()
@@ -368,7 +368,7 @@ mod tests {
 
     #[test]
     fn test_mapping_request_validate_exch_and_mic_code_conflict() {
-        let mut request = MappingRequest::new(IdType::IdIsin, json!("US1234567890"));
+        let mut request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
         request.filters.exch_code = Some(ExchCode::A0);
         request.filters.mic_code = Some(MicCode::XCME);
         let result = request.validate();
@@ -379,7 +379,7 @@ mod tests {
 
     #[test]
     fn test_mapping_request_validate_security_type2_required() {
-        let mut request = MappingRequest::new(IdType::BaseTicker, json!("IBM"));
+        let mut request = MappingRequest::new(IdType::BASE_TICKER, json!("IBM"));
         request.filters.security_type2 = None;
         let result = request.validate();
         assert!(result.is_err());
@@ -389,7 +389,7 @@ mod tests {
 
     #[test]
     fn test_mapping_request_validate_strike_range() {
-        let mut request = MappingRequest::new(IdType::IdIsin, json!("US1234567890"));
+        let mut request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
         request.filters.strike = Some([Some(10.0), Some(5.0)]);
         let result = request.validate();
         assert!(result.is_err());
@@ -399,7 +399,7 @@ mod tests {
 
     #[test]
     fn test_mapping_request_validate_expiration_required_for_option() {
-        let mut request = MappingRequest::new(IdType::IdIsin, json!("US1234567890"));
+        let mut request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
         request.filters.security_type2 = Some(SecurityType2::Option);
         request.filters.expiration = None;
         let result = request.validate();
@@ -410,7 +410,7 @@ mod tests {
 
     #[test]
     fn test_mapping_request_validate_maturity_required_for_pool() {
-        let mut request = MappingRequest::new(IdType::IdIsin, json!("US1234567890"));
+        let mut request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
         request.filters.security_type2 = Some(SecurityType2::Pool);
         let result = request.validate();
         assert!(result.is_err());
@@ -420,7 +420,7 @@ mod tests {
 
     #[test]
     fn test_mapping_request_validate_date_range_too_long() {
-        let mut request = MappingRequest::new(IdType::IdIsin, json!("US1234567890"));
+        let mut request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
         let start = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
         let end = NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
         request.filters.expiration = Some([Some(start), Some(end)]);
@@ -433,7 +433,7 @@ mod tests {
     #[test]
     fn test_serialize_deserialize_mapping_request() {
         let request = MappingRequest::builder()
-            .id_type(IdType::IdIsin)
+            .id_type(IdType::ID_ISIN)
             .id_value("US1234567890")
             .currency(Currency::USD)
             .build()

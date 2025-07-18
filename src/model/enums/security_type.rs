@@ -1,3 +1,4 @@
+#![allow(clippy::allow_attributes)]
 //! Enum for all supported security types in [OpenFIGI](https://www.openfigi.com/) mapping requests.
 //!
 //! This list is based on the [OpenFIGI documentation](https://www.openfigi.com/api/documentation) and may be incomplete or subject to change.
