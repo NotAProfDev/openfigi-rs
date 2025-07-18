@@ -179,7 +179,7 @@ impl MappingRequest {
         self.filters.validate()?;
 
         // securityType2 is required when idType is BASE_TICKER or ID_EXCH_SYMBOL
-        if (self.id_type == IdType::BaseTicker || self.id_type == IdType::IdExchSymbol)
+        if (self.id_type == IdType::BASE_TICKER || self.id_type == IdType::ID_EXCH_SYMBOL)
             && self.filters.security_type2.is_none()
         {
             return Err(OpenFIGIError::other_error(
