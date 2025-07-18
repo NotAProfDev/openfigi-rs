@@ -220,8 +220,11 @@ const ENDPOINTS: &[EndpointConfig] = &[
 // MAIN ENTRY POINT
 // ============================================================================================
 
-fn main() {
+fn main() -> BuildResult<()> {
     println!("cargo:rerun-if-changed=build.rs");
+
+    // Validate endpoint configurations
+    validate_endpoint_configs();
 
     let manifest_dir = match env::var("CARGO_MANIFEST_DIR") {
         Ok(dir) => dir,
@@ -243,25 +246,13 @@ fn main() {
     }
 
     // Process each endpoint configuration
-    let mut errors = Vec::new();
+    println!("Processing {} OpenFIGI enums...", ENDPOINTS.len());
     for config in ENDPOINTS {
-        if let Err(e) = process_endpoint_config(config, &manifest_dir, should_fetch_fresh_data) {
-            let error_msg = format!("Failed to process '{}': {}", config.name, e);
-            eprintln!("{error_msg}");
-            errors.push(error_msg);
-        }
-    }
-
-    // Report any errors and exit with failure if needed
-    if !errors.is_empty() {
-        eprintln!("Build completed with {} error(s):", errors.len());
-        for error in &errors {
-            eprintln!("  - {error}");
-        }
-        std::process::exit(1);
+        process_endpoint_config(config, &manifest_dir, should_fetch_fresh_data)?;
     }
 
     println!("Successfully generated all OpenFIGI enums");
+    Ok(())
 }
 
 /// Register documentation files for Cargo rebuild tracking
@@ -271,6 +262,45 @@ fn register_doc_files_for_rebuild(manifest_dir: &str) {
             println!("cargo:rerun-if-changed={}", docs_path.display());
         }
     }
+}
+
+/// Validates endpoint configurations for consistency
+fn validate_endpoint_configs() {
+    let mut names = std::collections::HashSet::new();
+    let mut cache_files = std::collections::HashSet::new();
+    let mut enum_files = std::collections::HashSet::new();
+
+    for config in ENDPOINTS {
+        // Check for duplicate names
+        assert!(
+            names.insert(config.name),
+            "Duplicate endpoint name: {}",
+            config.name
+        );
+
+        // Check for duplicate cache files
+        assert!(
+            cache_files.insert(config.cache_filename),
+            "Duplicate cache filename: {}",
+            config.cache_filename
+        );
+
+        // Check for duplicate enum files
+        assert!(
+            enum_files.insert(config.enum_filename),
+            "Duplicate enum filename: {}",
+            config.enum_filename
+        );
+
+        // Validate names are valid Rust identifiers
+        assert!(
+            !config.name.is_empty() && config.name.chars().next().unwrap().is_ascii_alphabetic(),
+            "Invalid enum name: {}",
+            config.name
+        );
+    }
+
+    println!("Validated {} endpoint configurations", ENDPOINTS.len());
 }
 
 // ============================================================================================
@@ -386,7 +416,7 @@ fn load_cached_data(config: &EndpointConfig) -> BuildResult<Vec<String>> {
     let data = fs::read_to_string(&cache_path)?;
     let values: Vec<String> = serde_json::from_str(&data)?;
 
-    if values.is_empty() {
+    if values.is_empty() || values.len() < 5 {
         return Err(BuildError::InvalidData(
             "Cache contains no values".to_string(),
         ));
@@ -411,7 +441,7 @@ fn fetch_fresh_data_from_api(config: &EndpointConfig) -> BuildResult<Vec<String>
     let api_response: ApiResponse = response.json()?;
     let values = api_response.values;
 
-    if values.is_empty() {
+    if values.is_empty() || values.len() < 5 {
         return Err(BuildError::InvalidData(format!(
             "API response from {url} contains no values"
         )));
@@ -566,7 +596,10 @@ fn load_documentation_from_csv(csv_path: &Path) -> BuildResult<HashMap<String, S
     for (line_number, result) in reader.deserialize::<(String, String)>().enumerate() {
         match result {
             Ok((key, description)) => {
-                documentation.insert(key, description);
+                // Skip empty keys or descriptions
+                if !key.trim().is_empty() && !description.trim().is_empty() {
+                    documentation.insert(key.trim().to_string(), description.trim().to_string());
+                }
             }
             Err(e) => {
                 return Err(BuildError::InvalidData(format!(
