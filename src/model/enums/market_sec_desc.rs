@@ -12,32 +12,8 @@
 
 use serde::{Deserialize, Serialize};
 
-/// Enum for all supported market sector description values.
-#[non_exhaustive]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub enum MarketSecDesc {
-    /// Equities
-    Equity,
-    /// Commodities
-    Comdty,
-    /// Corporate Bonds
-    Corp,
-    /// Currencies
-    Curncy,
-    /// Government Bonds
-    Govt,
-    /// Indices
-    Index,
-    /// Money Market Instruments
-    #[serde(rename = "M-Mkt")]
-    MMkt,
-    /// Mortgages
-    Mtge,
-    /// Municipal Bonds
-    Muni,
-    /// Preferred Stocks
-    Pfd,
-}
+// Enum for all supported market sector description values.
+include!(concat!(env!("OUT_DIR"), "/market_sec_desc_enum.rs"));
 
 #[cfg(test)]
 mod tests {
