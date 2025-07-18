@@ -569,12 +569,12 @@ fn load_documentation_from_csv(csv_path: &Path) -> BuildResult<HashMap<String, S
                 documentation.insert(key, description);
             }
             Err(e) => {
-                eprintln!(
-                    "Warning: Failed to parse line {} in {}: {}",
+                return Err(BuildError::InvalidData(format!(
+                    "Failed to parse line {} in {}: {}",
                     line_number + 1,
                     csv_path.display(),
                     e
-                );
+                )));
             }
         }
     }
