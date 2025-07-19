@@ -4,6 +4,46 @@ All notable changes to the openfigi-rs library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/NotAProfDev/openfigi-rs/compare/v0.2.0...v0.3.0) - 2025-07-19
+
+### Added
+
+- add UnexpectedApiResponse error type for handling unexpected API responses
+
+### Fixed
+
+- add delay to API calls to avoid hitting rate limits in CI
+- improve error handling in CSV documentation loading by returning an error instead of printing a warning
+- update enum variants to use uppercase constants in MappingRequest validation to match automated enum variants
+
+### Other
+
+- update IdType references from IdIsin to ID_ISIN and similar adjustments across mapping requests and tests
+- enhance main function with endpoint validation and improve error handling for empty responses
+- update header from 'value' to 'key' in enum documentation files
+- enhance build script structure and error handling for OpenFIGI API enums
+- streamline endpoint configuration and processing in build script
+- replace security type enum definition with generated file
+- replace MarketSecDesc enum definition with generated file
+- replace IdType enum definition with generated file and update test cases
+- add csv as a build dependency
+- added new enum builds and resources for documentation
+- remove enum generation scripts as part of cleanup
+- remove StateCode enum definition and include generated file
+- remove SecurityType2 enum definition and include generated file
+- remove MicCode enum definition and include generated file
+- automated ExchCode enum generation
+- remove redundant currency enum definition and include generated file
+- add build script to automate the enum generation
+- fix emoji in Configuration section for consistency
+- update comment for PLAZOSFIJOS to clarify description
+- enhanced docs
+- improve README and mapping.rs documentation for clarity and consistency
+- add anyhow as test dependency for improved error handling and update README structure
+- mark internal modules and methods as hidden for cleaner API documentation
+- update dependencies in Cargo.toml
+- remove unused common.rs file
+
 ## [0.2.0](https://github.com/NotAProfDev/openfigi-rs/compare/v0.1.1...v0.2.0) - 2025-07-03
 
 ### Other
