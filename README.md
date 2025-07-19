@@ -309,7 +309,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -322,7 +322,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For help with this library, please use the following resources:
 
-- **📚 [Documentation](https://docs.rs/openfigi-rs):** Check the API reference for detailed information.
+- **📚 Documentation:** Check the [API reference](https://docs.rs/openfigi-rs) for detailed information.
 - **🐛 Issues:** For bugs and feature requests, please use the [GitHub Issue Tracker](https://github.com/NotAProfDev/openfigi-rs/issues).
 - **💬 Discussions:** For questions and general discussion, please use the [GitHub Discussions](https://github.com/NotAProfDev/openfigi-rs/discussions).
 
