@@ -11,6 +11,8 @@ use std::{
     fmt::{self, Display, Write},
     fs::{self, File},
     path::{Path, PathBuf},
+    thread,
+    time::Duration,
 };
 
 // ============================================================================================
@@ -450,6 +452,9 @@ fn fetch_fresh_data_from_api(config: &EndpointConfig) -> BuildResult<Vec<String>
     // Cache the fetched data
     let cache_path = config.cache_path();
     fs::write(&cache_path, serde_json::to_string(&values)?)?;
+
+    // Delay to avoid hitting API rate limits
+    thread::sleep(Duration::from_millis(5000));
 
     Ok(values)
 }
