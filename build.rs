@@ -9,7 +9,7 @@ use std::{
     collections::HashMap,
     env,
     fmt::{self, Display, Write},
-    fs::{self, File},
+    fs,
     path::{Path, PathBuf},
     thread,
     time::Duration,
@@ -21,12 +21,6 @@ use std::{
 
 /// Environment variable to force rebuilding of all enums regardless of cache status
 const FORCE_REBUILD_ENV_VAR: &str = "OPENFIGI_FORCE_REBUILD";
-
-/// Path to the build trigger file that tracks when we last fetched fresh data
-const BUILD_TRIGGER_FILE: &str = "target/build_trigger";
-
-/// Maximum age of cached data before forcing a refresh (4 weeks in seconds)
-const CACHE_MAX_AGE_SECONDS: u64 = 4 * 7 * 24 * 60 * 60;
 
 /// Base URL for OpenFIGI mapping values API
 const OPENFIGI_BASE_URL: &str = "https://api.openfigi.com/v3/mapping/values";
@@ -130,13 +124,13 @@ impl EndpointConfig {
 
     /// Get the full cache file path
     fn cache_path(&self) -> String {
-        format!("resources/{}", self.cache_filename)
+        format!("resources/cached_data/{}", self.cache_filename)
     }
 
     /// Get the documentation CSV path if it exists
     fn docs_path(&self, manifest_dir: &str) -> Option<PathBuf> {
         self.docs_csv_path
-            .map(|path| Path::new(manifest_dir).join("resources").join(path))
+            .map(|path| Path::new(manifest_dir).join("resources/docs").join(path))
     }
 }
 
@@ -241,11 +235,6 @@ fn main() -> BuildResult<()> {
 
     // Determine if we need to fetch fresh data
     let should_fetch_fresh_data = should_rebuild_enums();
-    if should_fetch_fresh_data {
-        if let Err(e) = update_build_trigger() {
-            eprintln!("Warning: Failed to update build trigger: {e}");
-        }
-    }
 
     // Process each endpoint configuration
     println!("Processing {} OpenFIGI enums...", ENDPOINTS.len());
@@ -320,7 +309,10 @@ fn process_endpoint_config(
     // Fetch the enum values (either from cache or API)
     let enum_values = if should_fetch_fresh {
         println!("  → Fetching fresh {} data from API", config.name);
-        fetch_fresh_data_from_api(config)?
+        fetch_fresh_data_from_api(config).or_else(|api_err| {
+            println!("  → API fetch failed ({api_err}), falling back to cache");
+            load_cached_data(config)
+        })?
     } else {
         println!("  → Attempting to load {} from cache", config.name);
         load_cached_data(config).or_else(|cache_err| {
@@ -351,6 +343,12 @@ fn process_endpoint_config(
 
 /// Determines if we should rebuild/refresh enum data
 fn should_rebuild_enums() -> bool {
+    // Never fetch from network on docs.rs
+    if env::var("DOCS_RS").is_ok() {
+        println!("Detected docs.rs build: will not fetch from network");
+        return false;
+    }
+
     // Check if it's a release build
     if env::var("PROFILE").unwrap_or_default() == "release" {
         println!("Triggering rebuild: release build detected");
@@ -363,49 +361,9 @@ fn should_rebuild_enums() -> bool {
         return true;
     }
 
-    // Check build trigger file existence and age
-    let trigger_path = Path::new(BUILD_TRIGGER_FILE);
-    if !trigger_path.exists() {
-        println!("Triggering rebuild: build trigger file missing");
-        return true;
-    }
-
-    // Check the age of the trigger file
-    match fs::metadata(trigger_path).and_then(|metadata| metadata.modified()) {
-        Ok(modified) => match modified.elapsed() {
-            Ok(duration) if duration.as_secs() > CACHE_MAX_AGE_SECONDS => {
-                println!("Triggering rebuild: cache older than {CACHE_MAX_AGE_SECONDS} seconds");
-                true
-            }
-            Ok(_) => {
-                println!("Using cached data: trigger file is recent enough");
-                false
-            }
-            Err(e) => {
-                println!("Triggering rebuild: failed to get elapsed time: {e}");
-                true
-            }
-        },
-        Err(e) => {
-            println!("Triggering rebuild: failed to read trigger file metadata: {e}");
-            true
-        }
-    }
-}
-
-/// Updates the build trigger file to mark when we last fetched fresh data
-fn update_build_trigger() -> BuildResult<()> {
-    let trigger_path = Path::new(BUILD_TRIGGER_FILE);
-
-    // Ensure the target directory exists
-    if let Some(parent) = trigger_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-
-    // Create/update the trigger file
-    File::create(trigger_path)?;
-    println!("Updated build trigger file at {}", trigger_path.display());
-    Ok(())
+    // Default to using cache in development builds
+    println!("Using cached data: development build");
+    false
 }
 
 // ============================================================================================
@@ -420,7 +378,7 @@ fn load_cached_data(config: &EndpointConfig) -> BuildResult<Vec<String>> {
 
     if values.is_empty() || values.len() < 5 {
         return Err(BuildError::InvalidData(
-            "Cache contains no values".to_string(),
+            "Cache contains no values or too few values".to_string(),
         ));
     }
 
@@ -445,16 +403,17 @@ fn fetch_fresh_data_from_api(config: &EndpointConfig) -> BuildResult<Vec<String>
 
     if values.is_empty() || values.len() < 5 {
         return Err(BuildError::InvalidData(format!(
-            "API response from {url} contains no values"
+            "API response from {url} contains no values or too few values"
         )));
     }
 
     // Cache the fetched data
     let cache_path = config.cache_path();
     fs::write(&cache_path, serde_json::to_string(&values)?)?;
+    println!("  → Updated cached file {cache_path}");
 
     // Delay to avoid hitting API rate limits
-    thread::sleep(Duration::from_millis(5000));
+    thread::sleep(Duration::from_millis(10000));
 
     Ok(values)
 }
