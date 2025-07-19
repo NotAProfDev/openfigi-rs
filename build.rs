@@ -130,7 +130,7 @@ impl EndpointConfig {
 
     /// Get the full cache file path
     fn cache_path(&self) -> String {
-        format!("target/{}", self.cache_filename)
+        format!("resources/{}", self.cache_filename)
     }
 
     /// Get the documentation CSV path if it exists
