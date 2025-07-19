@@ -309,7 +309,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/NotAProfDev/openfigi-rs/blob/main/LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
