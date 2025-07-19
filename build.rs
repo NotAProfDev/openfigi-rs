@@ -413,7 +413,7 @@ fn fetch_fresh_data_from_api(config: &EndpointConfig) -> BuildResult<Vec<String>
     println!("  → Updated cached file {cache_path}");
 
     // Delay to avoid hitting API rate limits
-    thread::sleep(Duration::from_millis(10000));
+    thread::sleep(Duration::from_millis(5000));
 
     Ok(values)
 }
