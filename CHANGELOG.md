@@ -4,6 +4,13 @@ All notable changes to the openfigi-rs library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.3](https://github.com/NotAProfDev/openfigi-rs/compare/v0.3.2...v0.3.3) - 2025-07-19
+
+### Fixed
+
+- update license link to point to the correct GitHub location
+- update rate limit header parsing to match OpenFIGI API changes
+
 ## [0.3.2](https://github.com/NotAProfDev/openfigi-rs/compare/v0.3.1...v0.3.2) - 2025-07-19
 
 ### Fixed
