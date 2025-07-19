@@ -437,7 +437,7 @@ impl OpenFIGIClient {
 
     /// Extracts rate limit information from HTTP response headers.
     ///
-    /// Parses the `X-RateLimit-Remaining` and `X-RateLimit-Reset` headers commonly
+    /// Parses the `ratelimit-policy` and `ratelimit-reset` / `retry-after` headers commonly
     /// used by the OpenFIGI API to communicate rate limiting status. This information
     /// is used to provide helpful error messages when rate limits are exceeded.
     ///
@@ -450,18 +450,20 @@ impl OpenFIGIClient {
     /// Returns `Some(String)` with formatted rate limit information if both headers
     /// are present and valid, `None` otherwise.
     fn extract_rate_limit_info(headers: &reqwest::header::HeaderMap) -> Option<String> {
-        let remaining = headers
-            .get("X-RateLimit-Remaining")
+        let policy = headers
+            .get("ratelimit-policy")
             .and_then(|v| v.to_str().ok());
 
         let reset = headers
-            .get("X-RateLimit-Reset")
-            .and_then(|v| v.to_str().ok());
+            .get("ratelimit-reset")
+            .and_then(|v| v.to_str().ok())
+            .or_else(|| headers.get("retry-after").and_then(|v| v.to_str().ok()));
 
-        match (remaining, reset) {
-            (Some(remaining), Some(reset)) => Some(format!(
-                "Rate limit: {remaining} requests remaining, resets at {reset} seconds"
+        match (policy, reset) {
+            (Some(policy), Some(reset)) => Some(format!(
+                "Rate limit policy: {policy}, resets in {reset} seconds"
             )),
+            (None, Some(reset)) => Some(format!("Rate limit reset in {reset} seconds")),
             _ => None,
         }
     }
