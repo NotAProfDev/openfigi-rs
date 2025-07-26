@@ -113,8 +113,8 @@ use url::Url;
 ///
 /// // Basic configuration
 /// let client = OpenFIGIClientBuilder::new()
-///     .api_key("your-api-key")
 ///     .base_url("https://api.openfigi.com/v3")
+///     .api_key("your-api-key")
 ///     .build()?;
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
@@ -311,8 +311,8 @@ impl OpenFIGIClientBuilder {
     ///
     /// // With custom settings  
     /// let client = OpenFIGIClientBuilder::new()
-    ///     .api_key("your-api-key")
     ///     .base_url("https://api.openfigi.com/v3/")
+    ///     .api_key("your-api-key")
     ///     .build()?;
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
