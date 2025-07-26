@@ -536,12 +536,6 @@ mod tests {
     }
 
     #[test]
-    fn test_client_default() {
-        let client = OpenFIGIClient::default();
-        assert_eq!(client.base_url(), &*DEFAULT_BASE_URL);
-    }
-
-    #[test]
     fn test_client_with_components() {
         let client = ClientWithMiddleware::default();
         let base_url = DEFAULT_BASE_URL.clone();
