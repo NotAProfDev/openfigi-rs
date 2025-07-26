@@ -11,8 +11,8 @@
 use serde::{Deserialize, Serialize};
 
 /// Enum for all supported option types.
-#[non_exhaustive]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum OptionType {
     /// Call option.
     Call,

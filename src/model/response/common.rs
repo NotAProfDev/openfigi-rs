@@ -108,8 +108,7 @@ pub struct FigiResult {
     /// A Share Class level Financial Instrument Global Identifier is assigned to Equities
     /// and Funds. This enables users to link multiple Composite FIGIs for the same instrument
     /// in order to obtain an aggregated view for that instrument across all countries globally.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "shareClassFIGI")]
+    #[serde(rename = "shareClassFIGI", skip_serializing_if = "Option::is_none")]
     pub share_class_figi: Option<String>,
 
     /// FIGI identifier for the composite level.
@@ -117,8 +116,7 @@ pub struct FigiResult {
     /// The Composite Financial Instrument Global Identifier (FIGI) enables users to
     /// link multiple FIGIs at the Trading Venue-level within the same country or market
     /// in order to obtain an aggregated view for that instrument.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "compositeFIGI")]
+    #[serde(rename = "compositeFIGI", skip_serializing_if = "Option::is_none")]
     pub composite_figi: Option<String>,
 
     /// Alternative security type of the instrument.
