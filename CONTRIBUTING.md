@@ -43,7 +43,7 @@ We welcome contributions in various forms:
 1. **Fork and clone the repository**
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/openfigi-rs.git
+   git clone https://github.com/NotAProfDev/openfigi-rs.git
    cd openfigi-rs
    ```
 
