@@ -4,6 +4,7 @@
 [![Documentation](https://docs.rs/openfigi-rs/badge.svg)](https://docs.rs/openfigi-rs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/NotAProfDev/openfigi-rs/workflows/CI/badge.svg)](https://github.com/NotAProfDev/openfigi-rs/actions)
+[![Code Coverage](https://codecov.io/github/NotAProfDev/openfigi-rs/graph/badge.svg?token=UKCWC5BSIS)](https://codecov.io/github/NotAProfDev/openfigi-rs)
 [![Downloads](https://img.shields.io/crates/d/openfigi-rs.svg)](https://crates.io/crates/openfigi-rs)
 
 A high-performance asynchronous Rust client library for the [OpenFIGI API](https://www.openfigi.com/api), providing type-safe access to financial instrument identification and mapping services.
