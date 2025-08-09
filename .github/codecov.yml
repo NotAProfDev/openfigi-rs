@@ -15,6 +15,7 @@ coverage:
 # https://docs.codecov.com/docs/ignoring-paths
 ignore:
   - "tests"
+  - "src/test_utils.rs"
   - "scripts"
   - "*.md"
   - "*.toml"
