@@ -1,0 +1,34 @@
+# Codecov configuration file
+# https://docs.codecov.com/docs/codecovyml-reference
+
+# https://docs.codecov.com/docs/coverage-configuration
+coverage:
+  range: 85..100
+  round: down
+  status:
+    project:
+      default:
+        threshold: 1%
+      branches:
+        threshold: 1%
+
+# https://docs.codecov.com/docs/ignoring-paths
+ignore:
+  - "tests"
+  - "scripts"
+  - "*.md"
+  - "*.toml"
+
+# https://docs.codecov.com/docs/pull-request-comments
+comment:
+  layout: "files"
+  require_changes: true
+
+# https://docs.codecov.com/docs/flags
+flags:
+  unit_tests:
+    paths:
+      - "src/"
+  integration_tests:
+    paths:
+      - "tests/"
