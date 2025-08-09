@@ -309,8 +309,8 @@ mod tests {
     #[test]
     fn test_invalid_date_range_order() {
         let start_date =
-            NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid start_date");
-        let end_date = NaiveDate::from_ymd_opt(2024, 6, 1).expect("Should create valid end_date");
+            NaiveDate::from_ymd_opt(2024, 6, 1).expect("Should create valid start_date");
+        let end_date = NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid end_date");
         let filters = RequestFilters {
             expiration: Some([Some(start_date), Some(end_date)]),
             ..Default::default()
@@ -332,7 +332,7 @@ mod tests {
     fn test_invalid_date_range_too_long() {
         let start_date =
             NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid start_date");
-        let end_date = NaiveDate::from_ymd_opt(2024, 6, 1).expect("Should create valid end_date"); // > 1 year
+        let end_date = NaiveDate::from_ymd_opt(2025, 2, 1).expect("Should create valid end_date"); // > 1 year
         let filters = RequestFilters {
             expiration: Some([Some(start_date), Some(end_date)]),
             ..Default::default()
