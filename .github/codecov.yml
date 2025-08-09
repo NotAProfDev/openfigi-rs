@@ -23,12 +23,3 @@ ignore:
 comment:
   layout: "files"
   require_changes: true
-
-# https://docs.codecov.com/docs/flags
-flags:
-  unit_tests:
-    paths:
-      - "src/"
-  integration_tests:
-    paths:
-      - "tests/"
