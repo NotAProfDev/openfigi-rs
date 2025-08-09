@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - replace unwrap with expect for better error handling in tests and request builders
 - streamline serde attributes for share_class_figi and composite_figi in FigiResult
 - remove redundant default client test for clarity
-- correct placement of api_key in examples for clarity and consitency
+- correct placement of api_key in examples for clarity and consistency
 - reorder dependencies in Cargo.toml for clarity
 - remove spaces around OPENFIGI_API_KEY assignment in .env.example
 - update repository clone URL in CONTRIBUTING.md
