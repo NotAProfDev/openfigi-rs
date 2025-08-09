@@ -82,13 +82,13 @@ impl RequestFilters {
         field: Option<&[Option<f64>; 2]>,
         field_name: &'static str,
     ) -> Result<()> {
-        if let Some([Some(start), Some(end)]) = field {
-            if start > end {
-                return Err(OpenFIGIError::other_error(
-                    OtherErrorKind::Validation,
-                    format!("{field_name}: start value cannot be greater than end value"),
-                ));
-            }
+        if let Some([Some(start), Some(end)]) = field
+            && start > end
+        {
+            return Err(OpenFIGIError::other_error(
+                OtherErrorKind::Validation,
+                format!("{field_name}: start value cannot be greater than end value"),
+            ));
         }
         Ok(())
     }
