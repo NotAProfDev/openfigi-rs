@@ -13,6 +13,12 @@ if ! command -v cargo-audit &>/dev/null; then
     echo "Installed cargo-audit"
 fi
 
+# Install cargo-llvm-cov, if not already installed
+if ! command -v cargo-llvm-cov &>/dev/null; then
+    cargo install cargo-llvm-cov --locked
+    echo "Installed cargo-llvm-cov"
+fi
+
 # Check typos
 (echo "Checking for typos..." && typos) || exit 1
 
@@ -36,3 +42,6 @@ fi
 
 # Audit dependencies for security vulnerabilities
 (echo "Auditing dependencies..." && cargo audit) || exit 1
+
+# Generate code coverage report
+(echo "Generating code coverage report..." && cargo llvm-cov --workspace --lcov --output-path lcov.info) || exit 1
