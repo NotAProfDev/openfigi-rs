@@ -1,5 +1,45 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.3.4](https://github.com/NotAProfDev/openfigi-rs/compare/v0.3.3...v0.3.4) - 2025-08-09
+
+### Added
+
+- add Codecov configuration file for coverage reporting
+
+### Fixed
+
+- update Codecov configuration to ignore specific test utility file and adjust coverage report generation
+- remove flags configuration from Codecov YAML, since they only work for PRO versions
+- Codecov configuration file for coverage reporting
+- update chrono dependency version and add dependency status badge to README
+- correct casing of Codecov badge in README
+- add missing Code Coverage badge to README
+- update CI configuration to include llvm-tools-preview and coverage report generation
+- add lcov.info to .gitignore to ignore code coverage files
+- ensure cargo-llvm-cov is installed and add coverage report generation to CI script
+- resolve collapsible if lint to restore CI stability
+- correct date range order in tests for accurate validation
+- format deserialization line for improved readability in test macro
+- replace unwrap with expect for better error handling in tests and request builders
+- streamline serde attributes for share_class_figi and composite_figi in FigiResult
+- remove redundant default client test for clarity
+- correct placement of api_key in examples for clarity and consitency
+- reorder dependencies in Cargo.toml for clarity
+- remove spaces around OPENFIGI_API_KEY assignment in .env.example
+- update repository clone URL in CONTRIBUTING.md
+
+### Other
+
+- added new mapping table between MIC and FIGI exchange codes
+# Changelog
+
 All notable changes to the openfigi-rs library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
