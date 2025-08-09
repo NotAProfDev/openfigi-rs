@@ -175,7 +175,7 @@ mod tests {
             "Builder should create a valid filter request"
         );
 
-        let request = request_result.unwrap();
+        let request = request_result.expect("Builder should create a valid filter request");
         assert_eq!(request.query, Some("ibm".to_string()));
     }
 
@@ -242,9 +242,12 @@ mod tests {
     #[test]
     fn test_single_filter_request_builder_date_fields() {
         let client = create_test_client();
-        let expiration_start = NaiveDate::from_ymd_opt(2024, 1, 1).unwrap();
-        let expiration_end = NaiveDate::from_ymd_opt(2024, 12, 31).unwrap();
-        let maturity_start = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
+        let expiration_start =
+            NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid expiration_start date");
+        let expiration_end =
+            NaiveDate::from_ymd_opt(2024, 12, 31).expect("Should create valid expiration_end date");
+        let maturity_start =
+            NaiveDate::from_ymd_opt(2025, 1, 1).expect("Should create valid maturity_start date");
 
         let builder = client
             .filter()

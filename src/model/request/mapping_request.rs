@@ -350,7 +350,7 @@ mod tests {
             .id_type(IdType::ID_ISIN)
             .id_value("US1234567890")
             .build()
-            .unwrap();
+            .expect("Failed to build a valid mapping request");
         assert_eq!(request.id_type, IdType::ID_ISIN);
         assert_eq!(request.id_value, json!("US1234567890"));
     }
@@ -362,7 +362,7 @@ mod tests {
             .id_value("US1234567890")
             .currency(Currency::USD)
             .build()
-            .unwrap();
+            .expect("Failed to build a valid mapping request");
         assert_eq!(request.filters.currency, Some(Currency::USD));
     }
 
@@ -421,8 +421,8 @@ mod tests {
     #[test]
     fn test_mapping_request_validate_date_range_too_long() {
         let mut request = MappingRequest::new(IdType::ID_ISIN, json!("US1234567890"));
-        let start = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
-        let end = NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+        let start = NaiveDate::from_ymd_opt(2025, 1, 1).expect("Should create a valid date");
+        let end = NaiveDate::from_ymd_opt(2026, 2, 1).expect("Should create a valid date");
         request.filters.expiration = Some([Some(start), Some(end)]);
         let result = request.validate();
         assert!(result.is_err());
@@ -437,9 +437,11 @@ mod tests {
             .id_value("US1234567890")
             .currency(Currency::USD)
             .build()
-            .unwrap();
-        let serialized = serde_json::to_string(&request).unwrap();
-        let deserialized: MappingRequest = serde_json::from_str(&serialized).unwrap();
+            .expect("Failed to build a valid mapping request");
+        let serialized =
+            serde_json::to_string(&request).expect("Failed to serialize mapping request");
+        let deserialized: MappingRequest =
+            serde_json::from_str(&serialized).expect("Failed to deserialize mapping request");
         assert_eq!(request, deserialized);
     }
 }

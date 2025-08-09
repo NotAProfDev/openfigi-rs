@@ -311,7 +311,10 @@ mod tests {
 
     #[test]
     fn test_search_request_builder_minimal() {
-        let request = SearchRequest::builder().query("ibm").build().unwrap();
+        let request = SearchRequest::builder()
+            .query("ibm")
+            .build()
+            .expect("Failed to build search request");
         assert_eq!(request.query, "ibm");
     }
 
@@ -321,7 +324,7 @@ mod tests {
             .query("ibm")
             .currency(Currency::USD)
             .build()
-            .unwrap();
+            .expect("Failed to build search request");
         assert_eq!(request.filters.currency, Some(Currency::USD));
     }
 
@@ -370,8 +373,8 @@ mod tests {
     #[test]
     fn test_search_request_validate_date_range_too_long() {
         let mut request = SearchRequest::new("ibm");
-        let start = NaiveDate::from_ymd_opt(2025, 1, 1).unwrap();
-        let end = NaiveDate::from_ymd_opt(2026, 2, 1).unwrap();
+        let start = NaiveDate::from_ymd_opt(2025, 1, 1).expect("Should create a valid date");
+        let end = NaiveDate::from_ymd_opt(2026, 2, 1).expect("Should create a valid date");
         request.filters.expiration = Some([Some(start), Some(end)]);
         let result = request.validate();
         assert!(result.is_err());
@@ -385,9 +388,11 @@ mod tests {
             .query("ibm")
             .currency(Currency::USD)
             .build()
-            .unwrap();
-        let serialized = serde_json::to_string(&request).unwrap();
-        let deserialized: SearchRequest = serde_json::from_str(&serialized).unwrap();
+            .expect("Failed to build search request");
+        let serialized =
+            serde_json::to_string(&request).expect("Failed to serialize SearchRequest");
+        let deserialized: SearchRequest =
+            serde_json::from_str(&serialized).expect("Failed to deserialize SearchRequest");
         assert_eq!(request, deserialized);
     }
 }

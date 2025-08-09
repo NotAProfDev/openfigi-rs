@@ -295,8 +295,9 @@ mod tests {
 
     #[test]
     fn test_valid_date_range() {
-        let start_date = NaiveDate::from_ymd_opt(2024, 1, 1).unwrap();
-        let end_date = NaiveDate::from_ymd_opt(2024, 6, 1).unwrap();
+        let start_date =
+            NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid start_date");
+        let end_date = NaiveDate::from_ymd_opt(2024, 6, 1).expect("Should create valid end_date");
         let filters = RequestFilters {
             expiration: Some([Some(start_date), Some(end_date)]),
             ..Default::default()
@@ -307,8 +308,9 @@ mod tests {
 
     #[test]
     fn test_invalid_date_range_order() {
-        let start_date = NaiveDate::from_ymd_opt(2024, 6, 1).unwrap();
-        let end_date = NaiveDate::from_ymd_opt(2024, 1, 1).unwrap();
+        let start_date =
+            NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid start_date");
+        let end_date = NaiveDate::from_ymd_opt(2024, 6, 1).expect("Should create valid end_date");
         let filters = RequestFilters {
             expiration: Some([Some(start_date), Some(end_date)]),
             ..Default::default()
@@ -328,8 +330,9 @@ mod tests {
 
     #[test]
     fn test_invalid_date_range_too_long() {
-        let start_date = NaiveDate::from_ymd_opt(2024, 1, 1).unwrap();
-        let end_date = NaiveDate::from_ymd_opt(2025, 2, 1).unwrap(); // > 1 year
+        let start_date =
+            NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid start_date");
+        let end_date = NaiveDate::from_ymd_opt(2024, 6, 1).expect("Should create valid end_date"); // > 1 year
         let filters = RequestFilters {
             expiration: Some([Some(start_date), Some(end_date)]),
             ..Default::default()
@@ -369,7 +372,8 @@ mod tests {
 
     #[test]
     fn test_option_with_valid_expiration() {
-        let expiration_date = NaiveDate::from_ymd_opt(2024, 12, 20).unwrap();
+        let expiration_date =
+            NaiveDate::from_ymd_opt(2024, 12, 20).expect("Should create valid expiration_date");
         let filters = RequestFilters {
             security_type2: Some(SecurityType2::Option),
             expiration: Some([Some(expiration_date), None]),
@@ -401,7 +405,8 @@ mod tests {
 
     #[test]
     fn test_pool_with_valid_maturity() {
-        let maturity_date = NaiveDate::from_ymd_opt(2025, 1, 15).unwrap();
+        let maturity_date =
+            NaiveDate::from_ymd_opt(2025, 1, 15).expect("Should create valid maturity_date");
         let filters = RequestFilters {
             security_type2: Some(SecurityType2::Pool),
             maturity: Some([Some(maturity_date), None]),
@@ -416,7 +421,10 @@ mod tests {
         // Test with only start values
         let mut filters = RequestFilters {
             strike: Some([Some(100.0), None]),
-            expiration: Some([Some(NaiveDate::from_ymd_opt(2024, 1, 1).unwrap()), None]),
+            expiration: Some([
+                Some(NaiveDate::from_ymd_opt(2024, 1, 1).expect("Should create valid date")),
+                None,
+            ]),
             ..Default::default()
         };
 
@@ -424,7 +432,10 @@ mod tests {
 
         // Test with only end values
         filters.strike = Some([None, Some(200.0)]);
-        filters.expiration = Some([None, Some(NaiveDate::from_ymd_opt(2024, 12, 31).unwrap())]);
+        filters.expiration = Some([
+            None,
+            Some(NaiveDate::from_ymd_opt(2024, 12, 31).expect("Should create valid date")),
+        ]);
 
         assert!(filters.validate().is_ok());
     }
@@ -437,7 +448,7 @@ mod tests {
             ..Default::default()
         };
 
-        let json = serde_json::to_string(&filters).unwrap();
+        let json = serde_json::to_string(&filters).expect("Failed to serialize filters to JSON");
         assert!(json.contains("currency"));
         assert!(!json.contains("exchCode"));
     }

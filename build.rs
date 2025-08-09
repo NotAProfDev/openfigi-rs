@@ -285,7 +285,13 @@ fn validate_endpoint_configs() {
 
         // Validate names are valid Rust identifiers
         assert!(
-            !config.name.is_empty() && config.name.chars().next().unwrap().is_ascii_alphabetic(),
+            !config.name.is_empty()
+                && config
+                    .name
+                    .chars()
+                    .next()
+                    .expect("name should not be empty")
+                    .is_ascii_alphabetic(),
             "Invalid enum name: {}",
             config.name
         );

@@ -114,7 +114,8 @@ mod tests {
     #[test]
     fn test_deserialize_simple_example() {
         let json_str = load_test_data("filter", "simple_example.json");
-        let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
+        let filter_response: FilterResponse =
+            serde_json::from_str(&json_str).expect("Failed to deserialize filter response");
 
         let filter_data = match filter_response {
             ResponseResult::Success(ref data) => data,
@@ -140,7 +141,9 @@ mod tests {
         // Verify pagination exists
         assert!(filter_data.next_page().is_some());
         assert_eq!(
-            filter_data.next_page().unwrap(),
+            filter_data
+                .next_page()
+                .expect("Next page token should exist"),
             "QW9Fc1FrSkhNREF3TVZKVVJGY3ogMQ==.wAoXs2FMDgSubHmn4eCvQjx6pvAIM4KU8g7zWH5N0cw="
         );
         assert_eq!(filter_data.total_results(), Some(59_884_674).as_ref());
@@ -149,7 +152,8 @@ mod tests {
     #[test]
     fn test_deserialize_no_data() {
         let json_str = load_test_data("filter", "no_data.json");
-        let filter_response: FilterResponse = serde_json::from_str(&json_str).unwrap();
+        let filter_response: FilterResponse =
+            serde_json::from_str(&json_str).expect("Failed to deserialize filter response");
 
         let filter_data = match filter_response {
             ResponseResult::Success(ref data) => data,

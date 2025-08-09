@@ -169,7 +169,8 @@ mod tests {
     fn test_deserialize_isin_example() {
         let json_str = load_test_data("mapping", "isin_example.json");
 
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
@@ -203,7 +204,8 @@ mod tests {
     #[test]
     fn test_deserialize_invalid_identifier() {
         let json_str = load_test_data("mapping", "invalid_identifier.json");
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
@@ -220,7 +222,8 @@ mod tests {
     #[test]
     fn test_deserialize_bulk_request() {
         let json_str = load_test_data("mapping", "bulk_request.json");
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 2);
@@ -251,7 +254,8 @@ mod tests {
     #[test]
     fn test_deserialize_cusip_with_exchange() {
         let json_str = load_test_data("mapping", "cusip_with_exchange.json");
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
@@ -274,7 +278,8 @@ mod tests {
     #[test]
     fn test_deserialize_ticker_with_security_type() {
         let json_str = load_test_data("mapping", "ticker_with_security_type.json");
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
@@ -297,7 +302,8 @@ mod tests {
     #[test]
     fn test_deserialize_option_example() {
         let json_str = load_test_data("mapping", "option_example.json");
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);
@@ -319,7 +325,8 @@ mod tests {
     #[test]
     fn test_deserialize_currency_mic_example() {
         let json_str = load_test_data("mapping", "currency_mic_example.json");
-        let raw: Vec<ResponseResult<MappingData>> = serde_json::from_str(&json_str).unwrap();
+        let raw: Vec<ResponseResult<MappingData>> =
+            serde_json::from_str(&json_str).expect("Failed to deserialize mapping response");
         let mapping_response = from_response_results(raw);
 
         assert_eq!(mapping_response.len(), 1);

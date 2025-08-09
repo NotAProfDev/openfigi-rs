@@ -100,7 +100,8 @@ mod tests {
     #[test]
     fn test_deserialize_query_example() {
         let json_str = load_test_data("search", "query_example.json");
-        let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
+        let search_response: SearchResponse =
+            serde_json::from_str(&json_str).expect("Failed to deserialize search response");
 
         let search_data = match search_response {
             ResponseResult::Success(ref data) => data,
@@ -130,7 +131,8 @@ mod tests {
     #[test]
     fn test_deserialize_no_data() {
         let json_str = load_test_data("search", "no_data.json");
-        let search_response: SearchResponse = serde_json::from_str(&json_str).unwrap();
+        let search_response: SearchResponse =
+            serde_json::from_str(&json_str).expect("Failed to deserialize search response");
 
         let figi_result = match search_response {
             ResponseResult::Success(ref data) => data.data(),

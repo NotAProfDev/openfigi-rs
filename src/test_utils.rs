@@ -34,10 +34,10 @@ macro_rules! test_enum_serialization {
         #[test]
         fn $name() {
             let val = <$enum_type>::$variant;
-            let serialized = serde_json::to_string(&val).unwrap();
+            let serialized = serde_json::to_string(&val).expect("serialization should succeed");
             assert_eq!(serialized, $expected);
 
-            let deserialized: $enum_type = serde_json::from_str($expected).unwrap();
+            let deserialized: $enum_type = serde_json::from_str($expected).expect("deserialization should succeed");
             assert_eq!(deserialized, val);
         }
     };
