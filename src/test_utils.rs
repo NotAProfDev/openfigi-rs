@@ -37,7 +37,8 @@ macro_rules! test_enum_serialization {
             let serialized = serde_json::to_string(&val).expect("serialization should succeed");
             assert_eq!(serialized, $expected);
 
-            let deserialized: $enum_type = serde_json::from_str($expected).expect("deserialization should succeed");
+            let deserialized: $enum_type =
+                serde_json::from_str($expected).expect("deserialization should succeed");
             assert_eq!(deserialized, val);
         }
     };
