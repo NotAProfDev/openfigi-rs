@@ -13,7 +13,7 @@ categories = ["api-bindings", "data-structures", "finance"]
 keywords = ["openfigi", "symbology", "api", "client", "finance"]
 
 [dependencies]
-chrono = { version = "^0.4", features = ["serde"] }
+chrono = { version = "^0.4.20", features = ["serde"] }
 reqwest = { version = "^0.12", features = ["json"] }
 reqwest-middleware = { version = "^0.4", features = ["json"] }
 serde = { version = "^1.0", features = ["derive"] }
