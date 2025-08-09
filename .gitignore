@@ -43,4 +43,8 @@ rust-project.json
 ### dotenv ###
 .env
 
+### Code Coverage ###
+# Ignore code coverage files
+lcov.info
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,rust-analyzer,rust
